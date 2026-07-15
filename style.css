@@ -2224,4 +2224,8 @@ h1 {
     height: 56px;
     min-width: 56px;
   }
+
+  .desktop-break {
+    display: none;
+  }
 }
