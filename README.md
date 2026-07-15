@@ -125,3 +125,11 @@
 `KART_INTERVAL_MS` 位於 `script.js`，目前為 5000 毫秒。
 
 由於網站使用 `fetch()` 讀取 JSON，請透過 GitHub Pages 或 VS Code Live Server 預覽；部分瀏覽器直接雙擊 `index.html` 會阻擋 JSON 載入。
+
+
+## LINKS 頁面
+- `links.html`：獨立站外連結頁。
+- `links.json`：管理站外連結名稱、說明、分類與網址。
+- `links.js`：讀取 JSON 並自動產生連結卡片。
+
+新增連結時，只要在 `links.json` 增加一筆資料，不需修改 HTML。
