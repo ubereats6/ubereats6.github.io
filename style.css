@@ -2229,3 +2229,96 @@ h1 {
     display: none;
   }
 }
+
+
+/* ===== background music controller ===== */
+.music-toggle {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 80;
+  min-width: 142px;
+  height: 48px;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  color: #a9bdd5;
+  font-family: inherit;
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .10em;
+  border: 1px solid rgba(75, 157, 255, .30);
+  border-radius: 999px;
+  background: rgba(3, 13, 31, .82);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .38), inset 0 1px rgba(255,255,255,.04);
+  cursor: pointer;
+  transition: transform .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.music-toggle:hover {
+  transform: translateY(-2px);
+  color: #eef8ff;
+  border-color: rgba(76, 190, 255, .70);
+  box-shadow: 0 0 22px rgba(33, 132, 255, .24), 0 12px 32px rgba(0,0,0,.38);
+}
+
+.music-toggle:focus-visible {
+  outline: 2px solid #48c7ff;
+  outline-offset: 3px;
+}
+
+.music-toggle-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.music-bars {
+  height: 17px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.music-bars i {
+  width: 3px;
+  height: 5px;
+  border-radius: 3px;
+  background: currentColor;
+  opacity: .45;
+}
+
+.music-toggle.is-playing {
+  color: #66d9ff;
+  border-color: rgba(65, 180, 255, .78);
+  box-shadow: 0 0 24px rgba(27, 137, 255, .25), 0 12px 32px rgba(0,0,0,.38);
+}
+
+.music-toggle.is-playing .music-bars i {
+  opacity: 1;
+  animation: musicBar .65s ease-in-out infinite alternate;
+}
+.music-toggle.is-playing .music-bars i:nth-child(2) { animation-delay: -.28s; }
+.music-toggle.is-playing .music-bars i:nth-child(3) { animation-delay: -.48s; }
+
+@keyframes musicBar {
+  from { height: 4px; }
+  to { height: 16px; }
+}
+
+@media (max-width: 760px) {
+  .music-toggle {
+    right: 14px;
+    bottom: 14px;
+    min-width: 48px;
+    width: 48px;
+    padding: 0;
+  }
+
+  .music-toggle-text,
+  .music-bars {
+    display: none;
+  }
+}
