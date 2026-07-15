@@ -189,3 +189,80 @@ async function loadCurrentGames() {
 }
 
 loadCurrentGames();
+
+
+// Background music: starts only after a user action to comply with browser autoplay rules.
+const bgMusic = document.getElementById("bgMusic");
+const musicToggle = document.getElementById("musicToggle");
+const musicToggleText = musicToggle?.querySelector(".music-toggle-text");
+const MUSIC_STORAGE_KEY = "ubereats6MusicEnabled";
+let musicWanted = localStorage.getItem(MUSIC_STORAGE_KEY) === "true";
+let pausedByVisibility = false;
+
+if (bgMusic) {
+  bgMusic.volume = 0.20;
+}
+
+function renderMusicState(isPlaying) {
+  if (!musicToggle) return;
+  musicToggle.classList.toggle("is-playing", isPlaying);
+  musicToggle.setAttribute("aria-pressed", String(isPlaying));
+  musicToggle.setAttribute("aria-label", isPlaying ? "暫停背景音樂" : "播放背景音樂");
+  if (musicToggleText) musicToggleText.textContent = isPlaying ? "MUSIC ON" : "MUSIC OFF";
+}
+
+async function playMusic() {
+  if (!bgMusic) return false;
+  try {
+    await bgMusic.play();
+    musicWanted = true;
+    localStorage.setItem(MUSIC_STORAGE_KEY, "true");
+    renderMusicState(true);
+    return true;
+  } catch (error) {
+    console.info("Background music is waiting for a user interaction.", error);
+    renderMusicState(false);
+    return false;
+  }
+}
+
+function pauseMusic({ remember = true } = {}) {
+  if (!bgMusic) return;
+  bgMusic.pause();
+  if (remember) {
+    musicWanted = false;
+    localStorage.setItem(MUSIC_STORAGE_KEY, "false");
+  }
+  renderMusicState(false);
+}
+
+musicToggle?.addEventListener("click", async () => {
+  if (!bgMusic) return;
+  if (bgMusic.paused) await playMusic();
+  else pauseMusic();
+});
+
+// If music was enabled previously, resume on the first interaction of this visit.
+if (musicWanted) {
+  const resumeOnce = async () => {
+    await playMusic();
+    document.removeEventListener("pointerdown", resumeOnce);
+    document.removeEventListener("keydown", resumeOnce);
+  };
+  document.addEventListener("pointerdown", resumeOnce, { once: true });
+  document.addEventListener("keydown", resumeOnce, { once: true });
+}
+
+renderMusicState(false);
+
+document.addEventListener("visibilitychange", () => {
+  if (!bgMusic) return;
+  if (document.hidden && !bgMusic.paused) {
+    pausedByVisibility = true;
+    bgMusic.pause();
+    renderMusicState(false);
+  } else if (!document.hidden && pausedByVisibility && musicWanted) {
+    pausedByVisibility = false;
+    playMusic();
+  }
+});
