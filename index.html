@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#020814" />
+  <title>UberEats⁶｜Racing・Gaming・Streaming</title>
+  <meta name="description" content="UberEats⁶ 的 Twitch 個人網站、Discord 社群與重要夥伴連結。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="speed-lines speed-lines-a" aria-hidden="true"></div>
+  <div class="speed-lines speed-lines-b" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand brand-lockup" href="#home" aria-label="回到首頁">
+      <img class="brand-logo" src="assets/ubereats6-twitch-logo.webp" alt="UberEats⁶ Twitch Logo" />
+      <span class="brand-copy">
+        <strong>UberEats<sup>6</sup></strong>
+        <small>SPEED · FOCUS · WIN</small>
+      </span>
+    </a>
+
+    <button class="menu-button" aria-label="開啟選單" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="nav">
+      <a href="#home">HOME</a>
+      <a href="#community">COMMUNITY</a>
+      <a href="#content">CONTENT</a>
+      <a href="#people">CONNECTIONS</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-copy">
+        <div class="live-chip">
+          <span class="live-dot"></span>
+          RACING STREAM
+        </div>
+
+        <p class="eyebrow">KARTRIDER・TWITCH・COMMUNITY</p>
+        <h1 class="hero-logo-heading" aria-label="UberEats⁶">
+          <svg class="hero-logo" viewBox="0 0 760 190" role="img" aria-hidden="true">
+            <defs>
+              <linearGradient id="logoGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="68%" stop-color="#aebfd5"/>
+                <stop offset="100%" stop-color="#edf6ff"/>
+              </linearGradient>
+              <filter id="logoShadow" x="-20%" y="-30%" width="150%" height="170%">
+                <feDropShadow dx="0" dy="12" stdDeviation="15" flood-color="#228fff" flood-opacity=".22"/>
+              </filter>
+            </defs>
+            <g filter="url(#logoShadow)">
+              <text x="8" y="145"
+                    font-family="Inter, Arial, sans-serif"
+                    font-size="142"
+                    font-weight="900"
+                    font-style="italic"
+                    letter-spacing="-10"
+                    fill="url(#logoGradient)">UberEats</text>
+              <text x="610" y="50"
+                    font-family="Inter, Arial, sans-serif"
+                    font-size="48"
+                    font-weight="900"
+                    font-style="italic"
+                    fill="#178dff">6</text>
+            </g>
+          </svg>
+        </h1>
+
+        <p class="hero-lead">
+          追求速度、享受競速，也把每一次直播變成值得記住的旅程。
+        </p>
+
+        <div class="hero-actions">
+          <a class="social-btn twitch" href="https://twitch.tv/ubereatssssss" target="_blank" rel="noopener noreferrer">
+            <span class="icon brand-icon"><img src="assets/twitch.svg" alt="" aria-hidden="true"></span>
+            <span><strong>前往 Twitch</strong><small>Watch Live</small></span>
+          </a>
+          <a class="social-btn discord" href="https://discord.gg/AFacNEgEcK" target="_blank" rel="noopener noreferrer">
+            <span class="icon brand-icon"><img src="assets/discord.svg" alt="" aria-hidden="true"></span>
+            <span><strong>加入 Discord</strong><small>Join Community</small></span>
+          </a>
+          <a class="social-btn youtube" href="https://www.youtube.com/channel/UCqZ-qg_lfVAfo7oZ4I3O1yA" target="_blank" rel="noopener noreferrer">
+            <span class="icon brand-icon"><img src="assets/youtube.svg" alt="" aria-hidden="true"></span>
+            <span><strong>YouTube</strong><small>Watch Videos</small></span>
+          </a>
+          <a class="social-btn tiktok" href="https://www.tiktok.com/@taxi_kartrider?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">
+            <span class="icon brand-icon"><img src="assets/tiktok.svg" alt="" aria-hidden="true"></span>
+            <span><strong>TikTok</strong><small>Short Clips</small></span>
+          </a>
+        </div>
+      </div>
+
+      <div class="car-stage cover-stage" aria-label="精選車輛自動輪播">
+        <div class="cover-glow"></div>
+
+        <div class="cover-frame" id="featuredKart" tabindex="0" aria-live="polite">
+          <div class="kart-loading">Loading featured karts…</div>
+          <div class="cover-overlay"></div>
+          <div class="kart-dots" aria-label="選擇精選車輛"></div>
+        </div>
+
+        <div class="car-label">
+          <span>FEATURED KART</span>
+          <strong id="featuredKartName">LOADING…</strong>
+          <small>AUTO ROTATION</small>
+        </div>
+      </div>
+
+      <a class="scroll-cue" href="#community">
+        <span class="mouse"><i></i></span>
+        <small>SCROLL TO EXPLORE</small>
+      </a>
+    </section>
+
+    <section class="stream-status section" id="status">
+      <div class="stream-status-panel twitch-banner-panel">
+        <img class="stream-banner" src="assets/twitch-banner.jpg" alt="UberEats⁶ Twitch 橫幅" />
+        <div class="stream-banner-overlay"></div>
+        <div class="stream-status-icon">
+          <img src="assets/twitch.svg" alt="" aria-hidden="true" />
+        </div>
+        <div class="stream-status-copy">
+          <div class="section-kicker">TWITCH STATUS</div>
+          <h2>不定期開台，最新狀態請前往 Twitch</h2>
+          <p>之後可串接 Twitch API，自動顯示正在直播、遊戲名稱與觀眾人數。</p>
+        </div>
+        <a class="status-button" href="https://twitch.tv/ubereatssssss" target="_blank" rel="noopener noreferrer">
+          CHECK TWITCH <span>→</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="community section" id="community">
+      <div class="section-kicker">OUR COMMUNITY</div>
+      <div class="community-panel">
+        <div class="community-mark">DC</div>
+        <div class="community-copy">
+          <h2>加入我們的 Discord</h2>
+          <p>
+            一起聊跑跑卡丁車、分享影片、收到直播通知，也可以找人一起競速。
+          </p>
+        </div>
+
+        <div class="community-features">
+          <div><span>01</span><strong>ACTIVE CHAT</strong><small>輕鬆聊天</small></div>
+          <div><span>02</span><strong>STREAM ALERTS</strong><small>直播通知</small></div>
+          <div><span>03</span><strong>RACE TOGETHER</strong><small>一起競速</small></div>
+        </div>
+
+        <a class="join-btn" href="https://discord.gg/AFacNEgEcK" target="_blank" rel="noopener noreferrer">
+          JOIN DISCORD <span>→</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="content-showcase section" id="content">
+      <div class="showcase-column games-column">
+        <div class="section-kicker">CURRENT GAMES</div>
+        <h2>Currently Playing</h2>
+        <p class="section-intro">目前直播與遊玩的主要內容。</p>
+
+        <div class="game-grid" id="gameGrid" aria-live="polite">
+          <noscript>請開啟 JavaScript 以顯示目前遊玩的遊戲。</noscript>
+        </div>
+      </div>
+
+      <div class="showcase-column highlights-column">
+        <div class="section-kicker">LATEST HIGHLIGHTS</div>
+        <h2>Watch More</h2>
+        <p class="section-intro">從 YouTube 與 TikTok 查看最新影片與短片。</p>
+
+        <div class="highlight-grid">
+          <a class="highlight-card youtube-highlight" href="https://www.youtube.com/channel/UCqZ-qg_lfVAfo7oZ4I3O1yA" target="_blank" rel="noopener noreferrer">
+            <img src="assets/youtube.svg" alt="" aria-hidden="true" />
+            <div>
+              <span>YOUTUBE</span>
+              <strong>最新影片與直播精華</strong>
+              <small>前往頻道查看</small>
+            </div>
+            <b>→</b>
+          </a>
+
+          <a class="highlight-card tiktok-highlight" href="https://www.tiktok.com/@taxi_kartrider?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">
+            <img src="assets/tiktok.svg" alt="" aria-hidden="true" />
+            <div>
+              <span>TIKTOK</span>
+              <strong>競速短片與精彩片段</strong>
+              <small>查看更多短片</small>
+            </div>
+            <b>→</b>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="people section" id="people">
+      <div class="section-kicker">CONNECTIONS</div>
+      <h2>Friends &amp; Cooperations</h2>
+      <p class="section-intro">重要的朋友、合作夥伴，以及一路上認識的人。</p>
+
+      
+      <div class="people-grid compact-grid">
+        <article class="person-card compact-card person-alefeae">
+          <div class="avatar-wrap">
+            <img src="assets/alefeae.png" alt="Alefeae 的 Discord 頭像" />
+            <span class="status-ring"></span>
+          </div>
+          <h3>Alefeae</h3>
+          <p class="person-bio">簡介內容可之後補上。</p>
+          <a href="https://www.instagram.com/alefeae?igsh=Ymp2Z2dieTZoejRt" target="_blank" rel="noopener noreferrer">
+            Link <svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.59 13.41a1 1 0 0 1 0-1.41l3.18-3.18a3 3 0 1 1 4.24 4.24l-1.41 1.41a3 3 0 0 1-4.24 0 1 1 0 1 1 1.41-1.41 1 1 0 0 0 1.42 0l1.41-1.41a1 1 0 1 0-1.42-1.42l-3.18 3.18a1 1 0 0 1-1.41 0Zm2.82-2.82a1 1 0 0 1 0 1.41l-3.18 3.18a3 3 0 1 1-4.24-4.24l1.41-1.41a3 3 0 0 1 4.24 0 1 1 0 1 1-1.41 1.41 1 1 0 0 0-1.42 0L7.4 12.35a1 1 0 0 0 1.42 1.42L12 10.59a1 1 0 0 1 1.41 0Z"/>
+            </svg>
+          </a>
+        </article>
+
+        <article class="person-card compact-card person-lia">
+          <div class="avatar-wrap">
+            <img src="assets/lia.png" alt="Lia 的 Discord 頭像" />
+            <span class="status-ring"></span>
+          </div>
+          <h3>Lia</h3>
+          <p class="person-bio">簡介內容可之後補上。</p>
+          <a href="https://www.khi-bin-a.com/" target="_blank" rel="noopener noreferrer">
+            Link <svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.59 13.41a1 1 0 0 1 0-1.41l3.18-3.18a3 3 0 1 1 4.24 4.24l-1.41 1.41a3 3 0 0 1-4.24 0 1 1 0 1 1 1.41-1.41 1 1 0 0 0 1.42 0l1.41-1.41a1 1 0 1 0-1.42-1.42l-3.18 3.18a1 1 0 0 1-1.41 0Zm2.82-2.82a1 1 0 0 1 0 1.41l-3.18 3.18a3 3 0 1 1-4.24-4.24l1.41-1.41a3 3 0 0 1 4.24 0 1 1 0 1 1-1.41 1.41 1 1 0 0 0-1.42 0L7.4 12.35a1 1 0 0 0 1.42 1.42L12 10.59a1 1 0 0 1 1.41 0Z"/>
+            </svg>
+          </a>
+        </article>
+
+        <article class="person-card compact-card person-bucky">
+          <div class="avatar-wrap">
+            <img src="assets/bucky.png" alt="Bucky 的 Discord 頭像" />
+            <span class="status-ring online"></span>
+          </div>
+          <h3>Bucky</h3>
+          <p class="person-bio">簡介內容可之後補上。</p>
+          <span class="profile-status">No public link</span>
+        </article>
+
+        <article class="person-card compact-card person-nick">
+          <div class="avatar-wrap">
+            <img src="assets/nick.png" alt="Nick 的 Discord 頭像" />
+            <span class="status-ring"></span>
+          </div>
+          <h3>Nick</h3>
+          <p class="person-bio">簡介內容可之後補上。</p>
+          <a href="https://portfolio.niku-aws.com/" target="_blank" rel="noopener noreferrer">
+            Link <svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.59 13.41a1 1 0 0 1 0-1.41l3.18-3.18a3 3 0 1 1 4.24 4.24l-1.41 1.41a3 3 0 0 1-4.24 0 1 1 0 1 1 1.41-1.41 1 1 0 0 0 1.42 0l1.41-1.41a1 1 0 1 0-1.42-1.42l-3.18 3.18a1 1 0 0 1-1.41 0Zm2.82-2.82a1 1 0 0 1 0 1.41l-3.18 3.18a3 3 0 1 1-4.24-4.24l1.41-1.41a3 3 0 0 1 4.24 0 1 1 0 1 1-1.41 1.41 1 1 0 0 0-1.42 0L7.4 12.35a1 1 0 0 0 1.42 1.42L12 10.59a1 1 0 0 1 1.41 0Z"/>
+            </svg>
+          </a>
+        </article>
+      </div>
+
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-brand"><span>UberEats</span><sup>6</sup></div>
+    <p>Racing・Gaming・Streaming</p>
+    <div class="footer-links">
+      <a href="https://twitch.tv/ubereatssssss" target="_blank" rel="noopener noreferrer">Twitch</a>
+      <a href="https://discord.gg/AFacNEgEcK" target="_blank" rel="noopener noreferrer">Discord</a>
+      <a href="https://www.youtube.com/channel/UCqZ-qg_lfVAfo7oZ4I3O1yA" target="_blank" rel="noopener noreferrer">YouTube</a>
+      <a href="https://www.tiktok.com/@taxi_kartrider?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">TikTok</a>
+    </div>
+    <small>© 2026 UberEats⁶. All rights reserved.</small>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

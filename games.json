@@ -1,0 +1,16 @@
+[
+  {
+    "name": "跑跑卡丁車",
+    "tag": "MAIN RACING GAME",
+    "description": "競速、車輛收藏與社群交流。",
+    "image": "assets/spike-sr-light-cover.jpg",
+    "accent": "kart"
+  },
+  {
+    "name": "SpiritVale",
+    "tag": "PALADIN ADVENTURE",
+    "description": "聖騎士冒險與輕鬆遊戲時光。",
+    "image": "",
+    "accent": "spirit"
+  }
+]
