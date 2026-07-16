@@ -80,40 +80,12 @@ let musicWanted = localStorage.getItem(MUSIC_STORAGE_KEY) === "true";
 
 if (bgMusic) bgMusic.volume = 0.20;
 
-function clearNowPlayingTimers() {
-  window.clearTimeout(nowPlayingHideTimer);
-  window.clearTimeout(utilityStackTimer);
-  nowPlayingHideTimer = null;
-  utilityStackTimer = null;
-}
-
-function showNowPlaying() {
-  if (!nowPlaying) return;
-  nowPlaying.classList.remove("is-hiding");
-  nowPlaying.classList.add("is-visible");
-  document.body.classList.add("now-playing-active");
-}
-
-function hideNowPlayingAfter(delayMs) {
-  clearNowPlayingTimers();
-
-  nowPlayingHideTimer = window.setTimeout(() => {
-    if (!nowPlaying) return;
-
-    // Keep the panel visible while opacity/transform animate out.
-    nowPlaying.classList.add("is-hiding");
-
-    utilityStackTimer = window.setTimeout(() => {
-      nowPlaying.classList.remove("is-visible", "is-hiding");
-      document.body.classList.remove("now-playing-active");
-    }, 460);
-  }, delayMs);
-}
-
-function renderMusicState(isPlaying) {
+function renderMusicState(isPlaying, { silent = false } = {}) {
   if (!musicToggle) return;
 
-  clearNowPlayingTimers();
+  window.clearTimeout(nowPlayingHideTimer);
+  window.clearTimeout(utilityStackTimer);
+
   const isMobileLayout = window.matchMedia("(max-width: 780px)").matches;
 
   musicToggle.classList.toggle("is-playing", isPlaying);
@@ -123,16 +95,32 @@ function renderMusicState(isPlaying) {
   nowPlaying?.classList.toggle("is-playing", isPlaying);
   if (nowPlayingStatus) nowPlayingStatus.textContent = isPlaying ? "PLAYING" : "PAUSED";
 
-  showNowPlaying();
-
-  if (isPlaying) {
-    // Desktop keeps the full card open. Mobile shows a short toast.
-    if (isMobileLayout) hideNowPlayingAfter(2200);
+  if (silent) {
+    nowPlaying?.classList.remove("is-visible", "is-hiding");
+    document.body.classList.remove("now-playing-active");
     return;
   }
 
-  // Show PAUSED for one second, then fade completely before TOP moves down.
-  hideNowPlayingAfter(1000);
+  nowPlaying?.classList.remove("is-hiding");
+  nowPlaying?.classList.add("is-visible");
+  document.body.classList.add("now-playing-active");
+
+  if (isPlaying && !isMobileLayout) return;
+
+  const visibleTime = isPlaying ? 2200 : 1000;
+  nowPlayingHideTimer = window.setTimeout(() => {
+    const stateStillMatches = isPlaying ? !bgMusic?.paused : bgMusic?.paused;
+    if (!stateStillMatches) return;
+
+    nowPlaying?.classList.add("is-hiding");
+
+    utilityStackTimer = window.setTimeout(() => {
+      const stillMatches = isPlaying ? !bgMusic?.paused : bgMusic?.paused;
+      if (!stillMatches) return;
+      nowPlaying?.classList.remove("is-visible", "is-hiding");
+      document.body.classList.remove("now-playing-active");
+    }, 460);
+  }, visibleTime);
 }
 async function playMusic() {
   if (!bgMusic) return;
@@ -142,7 +130,7 @@ async function playMusic() {
     localStorage.setItem(MUSIC_STORAGE_KEY, "true");
     renderMusicState(true);
   } catch {
-    renderMusicState(false);
+    renderMusicState(false, { silent: true });
   }
 }
 
