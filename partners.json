@@ -46,5 +46,18 @@
     "url": "https://portfolio.niku-aws.com/",
     "className": "person-nick",
     "online": true
+  },
+  {
+    "name": "阿熊熊來囉~",
+    "image": "assets/partner/bear.png",
+    "alt": "Bear 的 twitch 頭像",
+    "description": [
+      "阿熊熊來囉！聊天室永遠不怕冷場，",
+      "從遊戲聊到人生、從美食聊到日常，",
+      "只要你敢聊，他就敢接!"
+    ],
+    "url": "https://www.twitch.tv/bearbear_58",
+    "className": "person-bear",
+    "online": true
   }
 ]
