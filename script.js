@@ -195,6 +195,8 @@ loadCurrentGames();
 const bgMusic = document.getElementById("bgMusic");
 const musicToggle = document.getElementById("musicToggle");
 const musicToggleText = musicToggle?.querySelector(".music-toggle-text");
+const nowPlaying = document.getElementById("nowPlaying");
+const nowPlayingStatus = document.getElementById("nowPlayingStatus");
 const MUSIC_STORAGE_KEY = "ubereats6MusicEnabled";
 let musicWanted = localStorage.getItem(MUSIC_STORAGE_KEY) === "true";
 let pausedByVisibility = false;
@@ -209,6 +211,9 @@ function renderMusicState(isPlaying) {
   musicToggle.setAttribute("aria-pressed", String(isPlaying));
   musicToggle.setAttribute("aria-label", isPlaying ? "暫停背景音樂" : "播放背景音樂");
   if (musicToggleText) musicToggleText.textContent = isPlaying ? "MUSIC ON" : "MUSIC OFF";
+  nowPlaying?.classList.toggle("is-playing", isPlaying);
+  nowPlaying?.classList.toggle("is-visible", isPlaying);
+  if (nowPlayingStatus) nowPlayingStatus.textContent = isPlaying ? "PLAYING" : "PAUSED";
 }
 
 async function playMusic() {
@@ -239,7 +244,13 @@ function pauseMusic({ remember = true } = {}) {
 musicToggle?.addEventListener("click", async () => {
   if (!bgMusic) return;
   if (bgMusic.paused) await playMusic();
-  else pauseMusic();
+  else {
+    pauseMusic();
+    nowPlaying?.classList.add("is-visible");
+    window.setTimeout(() => {
+      if (bgMusic?.paused) nowPlaying?.classList.remove("is-visible");
+    }, 1600);
+  }
 });
 
 // If music was enabled previously, resume on the first interaction of this visit.
