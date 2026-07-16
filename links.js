@@ -86,6 +86,8 @@ function renderMusicState(isPlaying) {
   window.clearTimeout(nowPlayingHideTimer);
   window.clearTimeout(utilityStackTimer);
 
+  const isMobileLayout = window.matchMedia("(max-width: 780px)").matches;
+
   musicToggle.classList.toggle("is-playing", isPlaying);
   musicToggle.setAttribute("aria-pressed", String(isPlaying));
   musicToggle.setAttribute("aria-label", isPlaying ? "暫停背景音樂" : "播放背景音樂");
@@ -93,22 +95,32 @@ function renderMusicState(isPlaying) {
   nowPlaying?.classList.toggle("is-playing", isPlaying);
   if (nowPlayingStatus) nowPlayingStatus.textContent = isPlaying ? "PLAYING" : "PAUSED";
 
-  if (isPlaying) {
-    nowPlaying?.classList.add("is-visible");
-    document.body.classList.add("now-playing-active");
-    return;
-  }
-
   nowPlaying?.classList.add("is-visible");
   document.body.classList.add("now-playing-active");
 
+  if (isPlaying) {
+    // Desktop keeps the card open. Mobile uses a compact 2.2-second toast.
+    if (!isMobileLayout) return;
+
+    nowPlayingHideTimer = window.setTimeout(() => {
+      if (bgMusic?.paused) return;
+      nowPlaying?.classList.remove("is-visible");
+
+      utilityStackTimer = window.setTimeout(() => {
+        if (!bgMusic?.paused) document.body.classList.remove("now-playing-active");
+      }, 380);
+    }, 2200);
+    return;
+  }
+
+  // When paused, show PAUSED briefly, fade out, then move TOP downward.
   nowPlayingHideTimer = window.setTimeout(() => {
     if (!bgMusic?.paused) return;
     nowPlaying?.classList.remove("is-visible");
 
     utilityStackTimer = window.setTimeout(() => {
       if (bgMusic?.paused) document.body.classList.remove("now-playing-active");
-    }, 520);
+    }, isMobileLayout ? 380 : 520);
   }, 1000);
 }
 
