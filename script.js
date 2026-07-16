@@ -232,7 +232,12 @@ function renderMusicState(isPlaying) {
   musicToggle.classList.toggle("is-playing", isPlaying);
   musicToggle.setAttribute("aria-pressed", String(isPlaying));
   musicToggle.setAttribute("aria-label", isPlaying ? "暫停背景音樂" : "播放背景音樂");
-  if (musicToggleText) musicToggleText.textContent = isPlaying ? "MUSIC ON" : "MUSIC OFF";
+  if (musicToggleText) {
+    const mobileLabel = window.matchMedia("(max-width: 760px)").matches;
+    musicToggleText.textContent = mobileLabel
+      ? (isPlaying ? "播放中" : "已暫停")
+      : (isPlaying ? "MUSIC ON" : "MUSIC OFF");
+  }
   nowPlaying?.classList.toggle("is-playing", isPlaying);
   if (nowPlayingStatus) nowPlayingStatus.textContent = isPlaying ? "PLAYING" : "PAUSED";
 

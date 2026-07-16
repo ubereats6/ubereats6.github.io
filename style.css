@@ -2327,15 +2327,51 @@ h1 {
   .music-toggle {
     right: 14px;
     bottom: 14px;
-    min-width: 48px;
-    width: 48px;
-    padding: 0;
+    min-width: 112px;
+    width: auto;
+    height: 46px;
+    padding: 0 13px;
+    gap: 7px;
+    font-size: .72rem;
+    letter-spacing: .06em;
+  }
+
+  .music-toggle-icon {
+    font-size: 1rem;
   }
 
   .music-toggle-text,
   .music-bars {
-    display: none;
+    display: flex;
   }
+
+  .music-toggle-text {
+    white-space: nowrap;
+  }
+
+  .music-bars {
+    height: 15px;
+  }
+
+  .music-toggle:not(.is-playing) .music-bars {
+    opacity: .28;
+  }
+
+  .music-toggle.is-playing::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    flex: 0 0 7px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 10px currentColor;
+    animation: musicPulse 1.1s ease-in-out infinite;
+  }
+}
+
+@keyframes musicPulse {
+  0%, 100% { transform: scale(.72); opacity: .55; }
+  50% { transform: scale(1); opacity: 1; }
 }
 
 
