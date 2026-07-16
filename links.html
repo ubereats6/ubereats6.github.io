@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260716-mobilefix1" />
+  <link rel="stylesheet" href="style.css" />
   <script>
     (() => {
       const savedTheme = localStorage.getItem("ubereats6Theme") || "blue";
@@ -92,8 +92,8 @@
     <small>© 2026 UberEats⁶. All rights reserved.</small>
   </footer>
 
-  <audio id="bgMusic" preload="auto" loop playsinline>
-    <source src="assets/kartrider_music.mp3?v=20260716-mobilefix1" type="audio/mpeg" />
+  <audio id="bgMusic" preload="metadata" loop>
+    <source src="assets/kartrider_music.mp3" type="audio/mpeg" />
   </audio>
 
   <div class="now-playing" id="nowPlaying" aria-live="polite">
@@ -120,6 +120,6 @@
     </button>
   </div>
 
-  <script src="links.js?v=20260716-mobilefix1"></script>
+  <script src="links.js"></script>
 </body>
 </html>
