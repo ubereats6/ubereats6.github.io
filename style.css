@@ -3240,67 +3240,59 @@ html[data-theme="purple"] {
 }
 
 
-/* ===== Smooth theme transition ===== */
-@view-transition {
-  navigation: auto;
+/* ===== Smooth color-only theme transition ===== */
+body {
+  transition: background .68s ease, color .45s ease;
 }
 
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: .52s;
-  animation-timing-function: ease-in-out;
+body::before {
+  transition: background-image .68s ease, opacity .45s ease;
 }
 
-::view-transition-old(root) {
-  animation-name: themeFadeOut;
+.speed-lines {
+  transition: background .68s ease, opacity .45s ease;
 }
 
-::view-transition-new(root) {
-  animation-name: themeFadeIn;
-}
-
-body,
-body::before,
-.speed-lines,
 .site-header,
 .theme-toggle,
-.back-to-top {
-  transition:
-    background-color .48s ease,
-    border-color .48s ease,
-    box-shadow .48s ease,
-    color .48s ease,
-    opacity .22s ease,
-    filter .22s ease;
+.back-to-top,
+.car-stage::before,
+.car-glow,
+.community-panel,
+.community-mark,
+.join-btn {
+  transition-property: background, background-color, border-color, box-shadow, color, text-shadow;
+  transition-duration: .62s;
+  transition-timing-function: ease;
 }
 
-html.theme-changing body {
-  opacity: .74;
-  filter: saturate(.72) brightness(.88);
-}
-
-@keyframes themeFadeOut {
-  from { opacity: 1; filter: saturate(1) brightness(1); }
-  to { opacity: 0; filter: saturate(.78) brightness(.9); }
-}
-
-@keyframes themeFadeIn {
-  from { opacity: 0; filter: saturate(.82) brightness(.92); }
-  to { opacity: 1; filter: saturate(1) brightness(1); }
+.brand sup,
+.footer-brand sup,
+.name-six,
+.eyebrow,
+.section-kicker,
+.community-features span {
+  transition: color .55s ease, text-shadow .55s ease;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: .01ms;
-  }
-
   body,
   body::before,
   .speed-lines,
   .site-header,
   .theme-toggle,
-  .back-to-top {
+  .back-to-top,
+  .car-stage::before,
+  .car-glow,
+  .community-panel,
+  .community-mark,
+  .join-btn,
+  .brand sup,
+  .footer-brand sup,
+  .name-six,
+  .eyebrow,
+  .section-kicker,
+  .community-features span {
     transition-duration: .01ms;
   }
 }
