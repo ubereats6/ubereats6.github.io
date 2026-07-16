@@ -2971,3 +2971,26 @@ html[data-theme="purple"] {
     border-radius: 16px;
   }
 }
+
+/* ===== Dynamic music utility stack ===== */
+@media (min-width: 781px) {
+  .music-toggle { right: 22px; bottom: 18px; }
+  .now-playing { right: 22px; bottom: 82px; width: 220px; }
+  .back-to-top {
+    right: 22px;
+    bottom: 82px;
+    transition: opacity .2s ease, transform .25s ease, bottom .25s ease, border-color .2s ease;
+  }
+  body.now-playing-active .back-to-top { bottom: 162px; }
+}
+
+@media (max-width: 780px) {
+  .music-toggle { right: 14px; bottom: 14px; }
+  .now-playing { right: 14px; bottom: 74px; width: min(220px, calc(100vw - 28px)); }
+  .back-to-top {
+    right: 14px;
+    bottom: 74px;
+    transition: opacity .2s ease, transform .25s ease, bottom .25s ease, border-color .2s ease;
+  }
+  body.now-playing-active .back-to-top { bottom: 194px; }
+}
