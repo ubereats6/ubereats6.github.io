@@ -321,7 +321,7 @@ document.addEventListener("visibilitychange", () => {
   }
 
   if (particles) {
-    const particleCount = window.matchMedia("(max-width: 780px)").matches ? 28 : 52;
+    const particleCount = window.matchMedia("(max-width: 780px)").matches ? 42 : 52;
     const fragment = document.createDocumentFragment();
     for (let index = 0; index < particleCount; index += 1) {
       const particle = document.createElement("i");
