@@ -3124,3 +3124,72 @@ html[data-theme="purple"] {
   border: 1px dashed rgba(73, 152, 255, .28);
   border-radius: 18px;
 }
+
+
+/* ===== Mobile animation reliability fix ===== */
+@media (max-width: 780px) {
+  .cover-frame .kart-slide {
+    opacity: 0;
+    transform: scale(1.015) translateZ(0) !important;
+    animation: none !important;
+    transition: opacity .78s ease !important;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: opacity, transform;
+  }
+
+  .cover-frame .kart-slide.active {
+    opacity: 1;
+    animation: mobileKartKenBurns 5s linear forwards !important;
+  }
+
+  .cover-frame .kart-slide.is-leaving {
+    opacity: 0;
+  }
+
+  .now-playing {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(10px) scale(.98);
+    transition:
+      opacity .42s ease,
+      transform .42s ease,
+      visibility 0s linear .42s !important;
+  }
+
+  .now-playing.is-visible {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-delay: 0s !important;
+  }
+
+  .now-playing.is-visible.is-hiding {
+    visibility: visible;
+    opacity: 0;
+    transform: translateY(10px) scale(.98);
+    transition:
+      opacity .42s ease,
+      transform .42s ease,
+      visibility 0s linear .42s !important;
+  }
+
+  .back-to-top {
+    transition:
+      opacity .2s ease,
+      transform .32s ease,
+      bottom .32s ease,
+      border-color .2s ease !important;
+  }
+}
+
+@keyframes mobileKartKenBurns {
+  0% { transform: scale(1.015) translateZ(0); }
+  100% { transform: scale(1.13) translateZ(0); }
+}
+
+@media (max-width: 780px) and (prefers-reduced-motion: reduce) {
+  .cover-frame .kart-slide.active {
+    animation: mobileKartKenBurns 5s linear forwards !important;
+  }
+}
