@@ -77,6 +77,8 @@ const nowPlaying = document.getElementById("nowPlaying");
 const nowPlayingStatus = document.getElementById("nowPlayingStatus");
 const MUSIC_STORAGE_KEY = "ubereats6MusicEnabled";
 let musicWanted = localStorage.getItem(MUSIC_STORAGE_KEY) === "true";
+let nowPlayingHideTimer = null;
+let utilityStackTimer = null;
 
 if (bgMusic) bgMusic.volume = 0.20;
 
@@ -158,7 +160,16 @@ if (musicWanted) {
   document.addEventListener("keydown", resumeOnce, { once: true });
 }
 
-renderMusicState(false);
+if (musicWanted) {
+  renderMusicState(false);
+} else {
+  musicToggle?.classList.remove("is-playing");
+  musicToggle?.setAttribute("aria-pressed", "false");
+  musicToggle?.setAttribute("aria-label", "播放背景音樂");
+  if (musicToggleText) musicToggleText.textContent = "MUSIC OFF";
+  nowPlaying?.classList.remove("is-visible", "is-playing");
+  document.body.classList.remove("now-playing-active");
+}
 
 
 /* Shared site utilities: loader, theme switcher, and back-to-top */
