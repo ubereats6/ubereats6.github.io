@@ -133,3 +133,32 @@
 - `links.js`：讀取 JSON 並自動產生連結卡片。
 
 新增連結時，只要在 `links.json` 增加一筆資料，不需修改 HTML。
+
+
+## 新增／調整合作人
+
+合作人資料放在 `partners.json`，卡片顯示順序就是檔案中的排列順序。
+
+新增合作人時：
+
+1. 將頭像放進 `assets/`。
+2. 在 `partners.json` 複製一筆資料並修改。
+3. 有公開連結時填入 `url`；沒有連結時將 `url` 留空，網頁會顯示 `No public link`。
+4. `description` 可填兩行文字陣列，以維持目前桌機版的換行排版。
+
+範例：
+
+```json
+{
+  "name": "New Partner",
+  "image": "assets/new-partner.png",
+  "alt": "New Partner 的頭像",
+  "description": [
+    "第一行介紹文字，",
+    "第二行介紹文字。"
+  ],
+  "url": "",
+  "className": "",
+  "online": true
+}
+```
