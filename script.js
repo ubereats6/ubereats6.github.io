@@ -235,7 +235,7 @@ function renderMusicState(isPlaying) {
 
     utilityStackTimer = window.setTimeout(() => {
       if (bgMusic?.paused) document.body.classList.remove("now-playing-active");
-    }, 260);
+    }, 520);
   }, 1000);
 }
 
