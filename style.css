@@ -1531,6 +1531,18 @@ h1 {
   }
 }
 
+@media (max-width: 780px) {
+  .cover-frame .kart-slide {
+    transform: scale(1.08);
+    transition:
+      opacity .72s ease,
+      transform 5.2s ease;
+  }
+
+  .cover-frame .kart-slide.active {
+    transform: scale(1.15);
+  }
+}
 
 
 /* ===== compact profile action rows ===== */
@@ -3002,7 +3014,7 @@ html[data-theme="purple"] {
   body.now-playing-active .back-to-top { bottom: 178px; }
 }
 
-/* ===== Mobile carousel spacing and now-playing fade fix ===== */
+/* ===== Mobile carousel spacing, zoom, and now-playing fade fix ===== */
 .now-playing {
   transition:
     opacity .48s ease,
@@ -3015,6 +3027,7 @@ html[data-theme="purple"] {
 }
 
 @media (max-width: 780px) {
+  /* Add breathing room between the featured-kart label and image. */
   .cover-stage .car-label {
     top: 4px !important;
     right: 14px !important;
@@ -3023,6 +3036,24 @@ html[data-theme="purple"] {
   .cover-frame {
     transform: translateY(30px);
   }
+
+  /* Use a keyframe animation so iOS reliably shows the slow zoom. */
+  .cover-frame .kart-slide {
+    transform: scale(1.02) !important;
+    transition: opacity .82s ease !important;
+    animation: none;
+    will-change: opacity, transform;
+  }
+
+  .cover-frame .kart-slide.active {
+    transform: scale(1.02) !important;
+    animation: mobileKartSlowZoom 5s ease-out forwards;
+  }
+}
+
+@keyframes mobileKartSlowZoom {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.13); }
 }
 
 
@@ -3093,25 +3124,3 @@ html[data-theme="purple"] {
   border: 1px dashed rgba(73, 152, 255, .28);
   border-radius: 18px;
 }
-
-
-/* ===== Mobile featured-kart carousel: simple crossfade only ===== */
-@media (max-width: 780px) {
-  .cover-frame .kart-slide,
-  .cover-frame .kart-slide.active {
-    transform: none !important;
-    animation: none !important;
-    filter: none !important;
-    will-change: auto !important;
-  }
-
-  .cover-frame .kart-slide {
-    opacity: 0;
-    transition: opacity .45s ease !important;
-  }
-
-  .cover-frame .kart-slide.active {
-    opacity: 1;
-  }
-}
-
