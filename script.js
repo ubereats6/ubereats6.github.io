@@ -21,45 +21,26 @@ let kartSlides = [];
 let kartDots = [];
 let currentKart = 0;
 let kartTimer = null;
-const KART_INTERVAL_MS = 5000;
+const KART_INTERVAL_MS = 6500;
 
 function showKart(index) {
   if (kartSlides.length === 0) return;
 
-  const nextKart = (index + kartSlides.length) % kartSlides.length;
-  const previousKart = currentKart;
-  const nextSlide = kartSlides[nextKart];
-  const previousSlide = kartSlides[previousKart];
-
-  if (previousSlide && previousSlide !== nextSlide) {
-    previousSlide.classList.add("is-leaving");
-    previousSlide.classList.remove("active");
-    previousSlide.setAttribute("aria-hidden", "true");
-  }
-
-  currentKart = nextKart;
-
-  // Force Safari to restart the Ken Burns animation every time a slide becomes active.
-  nextSlide.classList.remove("active", "is-leaving");
-  nextSlide.style.animation = "none";
-  void nextSlide.offsetWidth;
-  nextSlide.style.animation = "";
-
-  window.requestAnimationFrame(() => {
-    nextSlide.classList.add("active");
-    nextSlide.setAttribute("aria-hidden", "false");
-  });
+  currentKart = (index + kartSlides.length) % kartSlides.length;
 
   kartSlides.forEach((slide, slideIndex) => {
-    if (slideIndex !== currentKart && slide !== previousSlide) {
-      slide.classList.remove("active", "is-leaving");
-      slide.setAttribute("aria-hidden", "true");
-    }
+    const active = slideIndex === currentKart;
+    slide.classList.remove("active", "zooming");
+    slide.setAttribute("aria-hidden", String(!active));
   });
 
-  window.setTimeout(() => {
-    previousSlide?.classList.remove("is-leaving");
-  }, 850);
+  const activeSlide = kartSlides[currentKart];
+  activeSlide.classList.add("active");
+
+  // Two animation frames ensure mobile Safari paints the starting scale first.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => activeSlide.classList.add("zooming"));
+  });
 
   kartDots.forEach((dot, dotIndex) => {
     const active = dotIndex === currentKart;
@@ -67,7 +48,7 @@ function showKart(index) {
     dot.setAttribute("aria-current", active ? "true" : "false");
   });
 
-  featuredKartName.textContent = nextSlide.dataset.name;
+  featuredKartName.textContent = activeSlide.dataset.name;
 }
 
 function stopKartRotation() {
@@ -234,40 +215,12 @@ if (bgMusic) {
   bgMusic.volume = 0.20;
 }
 
-function clearNowPlayingTimers() {
-  window.clearTimeout(nowPlayingHideTimer);
-  window.clearTimeout(utilityStackTimer);
-  nowPlayingHideTimer = null;
-  utilityStackTimer = null;
-}
-
-function showNowPlaying() {
-  if (!nowPlaying) return;
-  nowPlaying.classList.remove("is-hiding");
-  nowPlaying.classList.add("is-visible");
-  document.body.classList.add("now-playing-active");
-}
-
-function hideNowPlayingAfter(delayMs) {
-  clearNowPlayingTimers();
-
-  nowPlayingHideTimer = window.setTimeout(() => {
-    if (!nowPlaying) return;
-
-    // Keep the panel visible while opacity/transform animate out.
-    nowPlaying.classList.add("is-hiding");
-
-    utilityStackTimer = window.setTimeout(() => {
-      nowPlaying.classList.remove("is-visible", "is-hiding");
-      document.body.classList.remove("now-playing-active");
-    }, 460);
-  }, delayMs);
-}
-
-function renderMusicState(isPlaying) {
+function renderMusicState(isPlaying, { silent = false } = {}) {
   if (!musicToggle) return;
 
-  clearNowPlayingTimers();
+  window.clearTimeout(nowPlayingHideTimer);
+  window.clearTimeout(utilityStackTimer);
+
   const isMobileLayout = window.matchMedia("(max-width: 780px)").matches;
 
   musicToggle.classList.toggle("is-playing", isPlaying);
@@ -277,16 +230,32 @@ function renderMusicState(isPlaying) {
   nowPlaying?.classList.toggle("is-playing", isPlaying);
   if (nowPlayingStatus) nowPlayingStatus.textContent = isPlaying ? "PLAYING" : "PAUSED";
 
-  showNowPlaying();
-
-  if (isPlaying) {
-    // Desktop keeps the full card open. Mobile shows a short toast.
-    if (isMobileLayout) hideNowPlayingAfter(2200);
+  if (silent) {
+    nowPlaying?.classList.remove("is-visible", "is-hiding");
+    document.body.classList.remove("now-playing-active");
     return;
   }
 
-  // Show PAUSED for one second, then fade completely before TOP moves down.
-  hideNowPlayingAfter(1000);
+  nowPlaying?.classList.remove("is-hiding");
+  nowPlaying?.classList.add("is-visible");
+  document.body.classList.add("now-playing-active");
+
+  if (isPlaying && !isMobileLayout) return;
+
+  const visibleTime = isPlaying ? 2200 : 1000;
+  nowPlayingHideTimer = window.setTimeout(() => {
+    const stateStillMatches = isPlaying ? !bgMusic?.paused : bgMusic?.paused;
+    if (!stateStillMatches) return;
+
+    nowPlaying?.classList.add("is-hiding");
+
+    utilityStackTimer = window.setTimeout(() => {
+      const stillMatches = isPlaying ? !bgMusic?.paused : bgMusic?.paused;
+      if (!stillMatches) return;
+      nowPlaying?.classList.remove("is-visible", "is-hiding");
+      document.body.classList.remove("now-playing-active");
+    }, 460);
+  }, visibleTime);
 }
 async function playMusic() {
   if (!bgMusic) return false;
@@ -298,7 +267,7 @@ async function playMusic() {
     return true;
   } catch (error) {
     console.info("Background music is waiting for a user interaction.", error);
-    renderMusicState(false);
+    renderMusicState(false, { silent: true });
     return false;
   }
 }
