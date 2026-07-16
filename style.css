@@ -3126,48 +3126,21 @@ html[data-theme="purple"] {
 }
 
 
-/* ===== Stable mobile animation fixes ===== */
+/* ===== Mobile stability override: crossfade only ===== */
 @media (max-width: 780px) {
-  .cover-frame .kart-slide {
-    opacity: 0;
-    transform: scale(1.02) translateZ(0) !important;
-    transition: opacity .7s ease, transform 6.2s linear !important;
+  .cover-frame .kart-slide,
+  .cover-frame .kart-slide.active {
+    transform: none !important;
     animation: none !important;
     will-change: auto !important;
-    backface-visibility: hidden;
+  }
+
+  .cover-frame .kart-slide {
+    opacity: 0;
+    transition: opacity .55s ease !important;
   }
 
   .cover-frame .kart-slide.active {
     opacity: 1;
-    transform: scale(1.02) translateZ(0) !important;
   }
-
-  .cover-frame .kart-slide.active.zooming {
-    transform: scale(1.12) translateZ(0) !important;
-  }
-
-  .now-playing {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(12px) scale(.98);
-    transition: opacity .42s ease, transform .42s ease, visibility 0s linear .42s !important;
-  }
-
-  .now-playing.is-visible {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0) scale(1);
-    transition-delay: 0s !important;
-  }
-
-  .now-playing.is-visible.is-hiding {
-    opacity: 0;
-    transform: translateY(12px) scale(.98);
-    visibility: visible;
-  }
-}
-
-/* Avoid unnecessary GPU load on phones. */
-@media (max-width: 780px) {
-  .loader-particles i:nth-child(n+25) { display: none; }
 }
