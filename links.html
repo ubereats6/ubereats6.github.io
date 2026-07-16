@@ -11,8 +11,28 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
+  <script>
+    (() => {
+      const savedTheme = localStorage.getItem("ubereats6Theme") || "blue";
+      document.documentElement.dataset.theme = savedTheme;
+      if (!sessionStorage.getItem("ubereats6IntroShown")) {
+        document.documentElement.classList.add("is-loading");
+      }
+    })();
+  </script>
 </head>
 <body class="links-page">
+  <div class="site-loader" id="siteLoader" role="status" aria-live="polite" aria-label="網站載入中">
+    <div class="loader-particles" id="loaderParticles" aria-hidden="true"></div>
+    <div class="garage-loader" id="garageLoader">
+      <span class="garage-kicker">GARAGE IGNITION</span>
+      <h1 class="garage-brand" id="garageBrand">UberEats<sup>6</sup></h1>
+      <p class="garage-status" id="loaderStatus">IGNITION</p>
+      <div class="garage-scanline" aria-hidden="true">
+        <i id="loaderProgressBar"></i>
+      </div>
+    </div>
+  </div>
   <div class="noise" aria-hidden="true"></div>
   <div class="speed-lines speed-lines-a" aria-hidden="true"></div>
   <div class="speed-lines speed-lines-b" aria-hidden="true"></div>
@@ -81,6 +101,18 @@
     <span class="music-toggle-text">MUSIC OFF</span>
     <span class="music-bars" aria-hidden="true"><i></i><i></i><i></i></span>
   </button>
+
+  <div class="utility-controls" aria-label="網站工具">
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="切換網站主題" title="切換網站主題">
+      <span class="theme-toggle-icon" aria-hidden="true">◐</span>
+      <span class="theme-toggle-text">BLUE</span>
+    </button>
+
+    <button class="back-to-top" id="backToTop" type="button" aria-label="回到頁面頂端" title="回到頂端">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5.5 5.5 12l1.8 1.8 3.45-3.45V20h2.5v-9.65l3.45 3.45 1.8-1.8L12 5.5Z"/></svg>
+      <span>TOP</span>
+    </button>
+  </div>
 
   <script src="links.js"></script>
 </body>
