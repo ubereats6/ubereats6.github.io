@@ -26,13 +26,40 @@ const KART_INTERVAL_MS = 5000;
 function showKart(index) {
   if (kartSlides.length === 0) return;
 
-  currentKart = (index + kartSlides.length) % kartSlides.length;
+  const nextKart = (index + kartSlides.length) % kartSlides.length;
+  const previousKart = currentKart;
+  const nextSlide = kartSlides[nextKart];
+  const previousSlide = kartSlides[previousKart];
+
+  if (previousSlide && previousSlide !== nextSlide) {
+    previousSlide.classList.add("is-leaving");
+    previousSlide.classList.remove("active");
+    previousSlide.setAttribute("aria-hidden", "true");
+  }
+
+  currentKart = nextKart;
+
+  // Force Safari to restart the Ken Burns animation every time a slide becomes active.
+  nextSlide.classList.remove("active", "is-leaving");
+  nextSlide.style.animation = "none";
+  void nextSlide.offsetWidth;
+  nextSlide.style.animation = "";
+
+  window.requestAnimationFrame(() => {
+    nextSlide.classList.add("active");
+    nextSlide.setAttribute("aria-hidden", "false");
+  });
 
   kartSlides.forEach((slide, slideIndex) => {
-    const active = slideIndex === currentKart;
-    slide.classList.toggle("active", active);
-    slide.setAttribute("aria-hidden", String(!active));
+    if (slideIndex !== currentKart && slide !== previousSlide) {
+      slide.classList.remove("active", "is-leaving");
+      slide.setAttribute("aria-hidden", "true");
+    }
   });
+
+  window.setTimeout(() => {
+    previousSlide?.classList.remove("is-leaving");
+  }, 850);
 
   kartDots.forEach((dot, dotIndex) => {
     const active = dotIndex === currentKart;
@@ -40,7 +67,7 @@ function showKart(index) {
     dot.setAttribute("aria-current", active ? "true" : "false");
   });
 
-  featuredKartName.textContent = kartSlides[currentKart].dataset.name;
+  featuredKartName.textContent = nextSlide.dataset.name;
 }
 
 function stopKartRotation() {
@@ -207,12 +234,40 @@ if (bgMusic) {
   bgMusic.volume = 0.20;
 }
 
+function clearNowPlayingTimers() {
+  window.clearTimeout(nowPlayingHideTimer);
+  window.clearTimeout(utilityStackTimer);
+  nowPlayingHideTimer = null;
+  utilityStackTimer = null;
+}
+
+function showNowPlaying() {
+  if (!nowPlaying) return;
+  nowPlaying.classList.remove("is-hiding");
+  nowPlaying.classList.add("is-visible");
+  document.body.classList.add("now-playing-active");
+}
+
+function hideNowPlayingAfter(delayMs) {
+  clearNowPlayingTimers();
+
+  nowPlayingHideTimer = window.setTimeout(() => {
+    if (!nowPlaying) return;
+
+    // Keep the panel visible while opacity/transform animate out.
+    nowPlaying.classList.add("is-hiding");
+
+    utilityStackTimer = window.setTimeout(() => {
+      nowPlaying.classList.remove("is-visible", "is-hiding");
+      document.body.classList.remove("now-playing-active");
+    }, 460);
+  }, delayMs);
+}
+
 function renderMusicState(isPlaying) {
   if (!musicToggle) return;
 
-  window.clearTimeout(nowPlayingHideTimer);
-  window.clearTimeout(utilityStackTimer);
-
+  clearNowPlayingTimers();
   const isMobileLayout = window.matchMedia("(max-width: 780px)").matches;
 
   musicToggle.classList.toggle("is-playing", isPlaying);
@@ -222,35 +277,17 @@ function renderMusicState(isPlaying) {
   nowPlaying?.classList.toggle("is-playing", isPlaying);
   if (nowPlayingStatus) nowPlayingStatus.textContent = isPlaying ? "PLAYING" : "PAUSED";
 
-  nowPlaying?.classList.add("is-visible");
-  document.body.classList.add("now-playing-active");
+  showNowPlaying();
 
   if (isPlaying) {
-    // Desktop keeps the card open. Mobile uses a compact 2.2-second toast.
-    if (!isMobileLayout) return;
-
-    nowPlayingHideTimer = window.setTimeout(() => {
-      if (bgMusic?.paused) return;
-      nowPlaying?.classList.remove("is-visible");
-
-      utilityStackTimer = window.setTimeout(() => {
-        if (!bgMusic?.paused) document.body.classList.remove("now-playing-active");
-      }, 380);
-    }, 2200);
+    // Desktop keeps the full card open. Mobile shows a short toast.
+    if (isMobileLayout) hideNowPlayingAfter(2200);
     return;
   }
 
-  // When paused, show PAUSED briefly, fade out, then move TOP downward.
-  nowPlayingHideTimer = window.setTimeout(() => {
-    if (!bgMusic?.paused) return;
-    nowPlaying?.classList.remove("is-visible");
-
-    utilityStackTimer = window.setTimeout(() => {
-      if (bgMusic?.paused) document.body.classList.remove("now-playing-active");
-    }, isMobileLayout ? 380 : 520);
-  }, 1000);
+  // Show PAUSED for one second, then fade completely before TOP moves down.
+  hideNowPlayingAfter(1000);
 }
-
 async function playMusic() {
   if (!bgMusic) return false;
   try {
