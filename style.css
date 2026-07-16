@@ -2876,3 +2876,37 @@ html[data-theme="purple"] {
     height: 21px;
   }
 }
+
+/* ===== Final control alignment fix ===== */
+@media (min-width: 781px) {
+  /* Match the vertical center of the 76px navigation bar (top: 18px). */
+  .theme-toggle {
+    top: 30px;
+    right: 18px;
+  }
+
+  /* Keep TOP directly above the music controller. */
+  .back-to-top {
+    right: 22px;
+    bottom: 80px;
+  }
+}
+
+@media (max-width: 780px) {
+  /* Place the theme button below the mobile header instead of overlapping it. */
+  .theme-toggle {
+    top: 88px;
+    right: 14px;
+  }
+
+  /* Stack TOP and music vertically on the same right edge. */
+  .back-to-top {
+    right: 14px;
+    bottom: 74px;
+  }
+
+  .music-toggle {
+    right: 14px;
+    bottom: 14px;
+  }
+}
