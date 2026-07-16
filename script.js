@@ -1,12 +1,12 @@
 const menuButton = document.querySelector(".menu-button");
 const nav = document.querySelector(".nav");
 
-menuButton?.addEventListener("click", () => {
+menuButton.addEventListener("click", () => {
   const open = nav.classList.toggle("open");
   menuButton.setAttribute("aria-expanded", String(open));
 });
 
-nav?.querySelectorAll("a").forEach(link => {
+nav.querySelectorAll("a").forEach(link => {
   link.addEventListener("click", () => {
     nav.classList.remove("open");
     menuButton.setAttribute("aria-expanded", "false");
@@ -60,37 +60,22 @@ function startKartRotation() {
 }
 
 function createKartCarousel(karts) {
-  if (!featuredKart || !featuredKartName) return;
   const dotsContainer = featuredKart.querySelector(".kart-dots");
-  if (!dotsContainer) return;
+  featuredKart.querySelectorAll(".kart-slide, .kart-loading, .kart-error").forEach((node) => node.remove());
+  dotsContainer.replaceChildren();
 
-  const oldSlides = Array.from(featuredKart.querySelectorAll(".kart-slide"));
-  const newSlides = karts.map((kart, index) => {
+  kartSlides = karts.map((kart, index) => {
     const image = document.createElement("img");
     image.className = `kart-slide${index === 0 ? " active" : ""}`;
-    image.src = `${kart.image}${kart.image.includes("?") ? "&" : "?"}v=20260716-mobilefix1`;
+    image.src = kart.image;
     image.alt = kart.alt || `${kart.name} 封面圖`;
     image.dataset.name = kart.name;
-    image.decoding = "auto";
-    image.loading = index === 0 ? "eager" : "lazy";
+    image.decoding = "async";
     image.setAttribute("aria-hidden", String(index !== 0));
     featuredKart.insertBefore(image, featuredKart.querySelector(".cover-overlay"));
     return image;
   });
 
-  // Only remove the fallback after the first new image has loaded or errored.
-  const finalizeFallback = () => {
-    oldSlides.forEach((slide) => slide.remove());
-    featuredKart.querySelector(".kart-loading")?.remove();
-  };
-  if (newSlides[0]?.complete) finalizeFallback();
-  else {
-    newSlides[0]?.addEventListener("load", finalizeFallback, { once: true });
-    newSlides[0]?.addEventListener("error", finalizeFallback, { once: true });
-  }
-
-  dotsContainer.replaceChildren();
-  kartSlides = newSlides;
   kartDots = karts.map((kart, index) => {
     const dot = document.createElement("button");
     dot.className = `kart-dot${index === 0 ? " active" : ""}`;
@@ -112,17 +97,27 @@ function createKartCarousel(karts) {
 
 async function loadFeaturedKarts() {
   if (!featuredKart) return;
+
   try {
-    const response = await fetch("karts.json?v=20260716-mobilefix1", { cache: "no-store" });
+    const response = await fetch("karts.json", { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
     const karts = await response.json();
-    const validKarts = Array.isArray(karts) ? karts.filter((kart) => kart?.name && kart?.image) : [];
-    if (!validKarts.length) throw new Error("No valid karts found");
+    const validKarts = Array.isArray(karts)
+      ? karts.filter((kart) => kart && kart.name && kart.image)
+      : [];
+
+    if (validKarts.length === 0) throw new Error("No valid karts found");
     createKartCarousel(validKarts);
   } catch (error) {
     console.error("Failed to load karts.json", error);
     featuredKart.querySelector(".kart-loading")?.remove();
-    if (featuredKartName && !featuredKartName.textContent.trim()) featuredKartName.textContent = "尖峰 SR-光";
+
+    const message = document.createElement("div");
+    message.className = "kart-error";
+    message.textContent = "無法載入 karts.json";
+    featuredKart.prepend(message);
+    featuredKartName.textContent = "LOAD ERROR";
   }
 }
 
@@ -196,7 +191,7 @@ async function loadCurrentGames() {
 loadCurrentGames();
 
 
-// Background music: intentionally simple for reliable iPhone/Android playback.
+// Background music: starts only after a user action to comply with browser autoplay rules.
 const bgMusic = document.getElementById("bgMusic");
 const musicToggle = document.getElementById("musicToggle");
 const musicToggleText = musicToggle?.querySelector(".music-toggle-text");
@@ -204,74 +199,117 @@ const nowPlaying = document.getElementById("nowPlaying");
 const nowPlayingStatus = document.getElementById("nowPlayingStatus");
 const MUSIC_STORAGE_KEY = "ubereats6MusicEnabled";
 let musicWanted = localStorage.getItem(MUSIC_STORAGE_KEY) === "true";
-let musicToastTimer = null;
-let utilityTimer = null;
+let pausedByVisibility = false;
+let nowPlayingHideTimer = null;
+let utilityStackTimer = null;
 
-if (bgMusic) bgMusic.volume = 0.20;
-
-function clearMusicTimers() {
-  clearTimeout(musicToastTimer);
-  clearTimeout(utilityTimer);
+if (bgMusic) {
+  bgMusic.volume = 0.20;
 }
 
-function setMusicUI(isPlaying, showToast = true) {
-  musicToggle?.classList.toggle("is-playing", isPlaying);
-  musicToggle?.setAttribute("aria-pressed", String(isPlaying));
-  musicToggle?.setAttribute("aria-label", isPlaying ? "暫停背景音樂" : "播放背景音樂");
+function renderMusicState(isPlaying) {
+  if (!musicToggle) return;
+
+  window.clearTimeout(nowPlayingHideTimer);
+  window.clearTimeout(utilityStackTimer);
+
+  const isMobileLayout = window.matchMedia("(max-width: 780px)").matches;
+
+  musicToggle.classList.toggle("is-playing", isPlaying);
+  musicToggle.setAttribute("aria-pressed", String(isPlaying));
+  musicToggle.setAttribute("aria-label", isPlaying ? "暫停背景音樂" : "播放背景音樂");
   if (musicToggleText) musicToggleText.textContent = isPlaying ? "MUSIC ON" : "MUSIC OFF";
   nowPlaying?.classList.toggle("is-playing", isPlaying);
   if (nowPlayingStatus) nowPlayingStatus.textContent = isPlaying ? "PLAYING" : "PAUSED";
 
-  if (!showToast || !nowPlaying) return;
-  clearMusicTimers();
-  nowPlaying.classList.add("is-visible");
+  nowPlaying?.classList.add("is-visible");
   document.body.classList.add("now-playing-active");
-  const isMobile = matchMedia("(max-width: 780px)").matches;
-  const delay = isMobile ? (isPlaying ? 2200 : 900) : (isPlaying ? 86400000 : 900);
-  musicToastTimer = setTimeout(() => {
-    nowPlaying.classList.remove("is-visible");
-    utilityTimer = setTimeout(() => document.body.classList.remove("now-playing-active"), 420);
-  }, delay);
+
+  if (isPlaying) {
+    // Desktop keeps the card open. Mobile uses a compact 2.2-second toast.
+    if (!isMobileLayout) return;
+
+    nowPlayingHideTimer = window.setTimeout(() => {
+      if (bgMusic?.paused) return;
+      nowPlaying?.classList.remove("is-visible");
+
+      utilityStackTimer = window.setTimeout(() => {
+        if (!bgMusic?.paused) document.body.classList.remove("now-playing-active");
+      }, 380);
+    }, 2200);
+    return;
+  }
+
+  // When paused, show PAUSED briefly, fade out, then move TOP downward.
+  nowPlayingHideTimer = window.setTimeout(() => {
+    if (!bgMusic?.paused) return;
+    nowPlaying?.classList.remove("is-visible");
+
+    utilityStackTimer = window.setTimeout(() => {
+      if (bgMusic?.paused) document.body.classList.remove("now-playing-active");
+    }, isMobileLayout ? 380 : 520);
+  }, 1000);
 }
 
-musicToggle?.addEventListener("click", (event) => {
-  event.preventDefault();
-  if (!bgMusic) return;
+async function playMusic() {
+  if (!bgMusic) return false;
+  try {
+    await bgMusic.play();
+    musicWanted = true;
+    localStorage.setItem(MUSIC_STORAGE_KEY, "true");
+    renderMusicState(true);
+    return true;
+  } catch (error) {
+    console.info("Background music is waiting for a user interaction.", error);
+    renderMusicState(false);
+    return false;
+  }
+}
 
-  if (bgMusic.paused) {
-    const playPromise = bgMusic.play();
-    if (playPromise && typeof playPromise.then === "function") {
-      playPromise.then(() => {
-        musicWanted = true;
-        localStorage.setItem(MUSIC_STORAGE_KEY, "true");
-        setMusicUI(true);
-      }).catch((error) => {
-        console.info("Background music could not start.", error);
-        musicWanted = false;
-        localStorage.setItem(MUSIC_STORAGE_KEY, "false");
-        setMusicUI(false);
-      });
-    }
-  } else {
-    bgMusic.pause();
+function pauseMusic({ remember = true } = {}) {
+  if (!bgMusic) return;
+  bgMusic.pause();
+  if (remember) {
     musicWanted = false;
     localStorage.setItem(MUSIC_STORAGE_KEY, "false");
-    setMusicUI(false);
+  }
+  renderMusicState(false);
+}
+
+musicToggle?.addEventListener("click", async () => {
+  if (!bgMusic) return;
+  if (bgMusic.paused) await playMusic();
+  else {
+    pauseMusic();
   }
 });
 
-setMusicUI(false, false);
-
-// A remembered ON state resumes only after a normal user gesture.
-if (musicWanted && bgMusic) {
-  const resumeOnce = (event) => {
-    if (event.target instanceof Element && event.target.closest("#musicToggle")) return;
+// If music was enabled previously, resume on the first interaction of this visit.
+if (musicWanted) {
+  const resumeOnce = async () => {
+    await playMusic();
     document.removeEventListener("pointerdown", resumeOnce);
-    const promise = bgMusic.play();
-    promise?.then(() => setMusicUI(true)).catch(() => {});
+    document.removeEventListener("keydown", resumeOnce);
   };
-  document.addEventListener("pointerdown", resumeOnce, { passive: true });
+  document.addEventListener("pointerdown", resumeOnce, { once: true });
+  document.addEventListener("keydown", resumeOnce, { once: true });
 }
+
+renderMusicState(false);
+
+document.addEventListener("visibilitychange", () => {
+  if (!bgMusic) return;
+  if (document.hidden && !bgMusic.paused) {
+    pausedByVisibility = true;
+    bgMusic.pause();
+    renderMusicState(false);
+  } else if (!document.hidden && pausedByVisibility && musicWanted) {
+    pausedByVisibility = false;
+    playMusic();
+  }
+});
+
+
 
 
 const PEOPLE_LINK_ICON_PATH = "M10.59 13.41a1 1 0 0 1 0-1.41l3.18-3.18a3 3 0 1 1 4.24 4.24l-1.41 1.41a3 3 0 0 1-4.24 0 1 1 0 1 1 1.41-1.41 1 1 0 0 0 1.42 0l1.41-1.41a1 1 0 1 0-1.42-1.42l-3.18 3.18a1 1 0 0 1-1.41 0Zm2.82-2.82a1 1 0 0 1 0 1.41l-3.18 3.18a3 3 0 1 1-4.24-4.24l1.41-1.41a3 3 0 0 1 4.24 0 1 1 0 1 1-1.41 1.41 1 1 0 0 0-1.42 0L7.4 12.35a1 1 0 0 0 1.42 1.42L12 10.59a1 1 0 0 1 1.41 0Z";
