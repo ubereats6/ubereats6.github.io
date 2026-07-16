@@ -1,7 +1,7 @@
 [
   {
     "name": "Alefeae",
-    "image": "assets/alefeae.png",
+    "image": "assets/partner/alefeae.png",
     "alt": "Alefeae 的 Discord 頭像",
     "description": [
       "幽默帥氣的陽光系男演員，有他在的地方，",
@@ -13,7 +13,7 @@
   },
   {
     "name": "Lia",
-    "image": "assets/lia.png",
+    "image": "assets/partner/lia.png",
     "alt": "Lia 的 Discord 頭像",
     "description": [
       "美麗又專業的牙醫師兼牙刷品牌創辦人，",
@@ -25,7 +25,7 @@
   },
   {
     "name": "Bucky",
-    "image": "assets/bucky.png",
+    "image": "assets/partner/bucky.png",
     "alt": "Bucky 的 Discord 頭像",
     "description": [
       "幽默風趣的香港人，一口道地台灣國罵，",
@@ -37,7 +37,7 @@
   },
   {
     "name": "Nick",
-    "image": "assets/nick.png",
+    "image": "assets/partner/nick.png",
     "alt": "Nick 的 Discord 頭像",
     "description": [
       "澳洲工程師，專治各種程式疑難雜症，",
