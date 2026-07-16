@@ -96,6 +96,12 @@
     <source src="assets/kartrider_music.mp3" type="audio/mpeg" />
   </audio>
 
+  <div class="now-playing" id="nowPlaying" aria-live="polite">
+    <span class="now-playing-label">NOW PLAYING</span>
+    <strong class="now-playing-title">KartRider BGM</strong>
+    <span class="now-playing-status" id="nowPlayingStatus">PAUSED</span>
+  </div>
+
   <button class="music-toggle" id="musicToggle" type="button" aria-label="播放背景音樂" aria-pressed="false">
     <span class="music-toggle-icon" aria-hidden="true">♪</span>
     <span class="music-toggle-text">MUSIC OFF</span>
