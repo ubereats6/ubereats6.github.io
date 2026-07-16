@@ -220,9 +220,31 @@ if (musicWanted) {
 
   applyTheme(localStorage.getItem("ubereats6Theme") || document.documentElement.dataset.theme || "blue");
 
+  let themeTransitioning = false;
+
   themeToggle?.addEventListener("click", () => {
+    if (themeTransitioning) return;
+
     const current = themes.findIndex((item) => item.id === document.documentElement.dataset.theme);
-    applyTheme(themes[(current + 1) % themes.length].id);
+    const nextTheme = themes[(current + 1) % themes.length].id;
+    themeTransitioning = true;
+
+    if (document.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const transition = document.startViewTransition(() => applyTheme(nextTheme));
+      transition.finished.finally(() => {
+        themeTransitioning = false;
+      });
+      return;
+    }
+
+    document.documentElement.classList.add("theme-changing");
+    window.setTimeout(() => {
+      applyTheme(nextTheme);
+      document.documentElement.classList.remove("theme-changing");
+      window.setTimeout(() => {
+        themeTransitioning = false;
+      }, 260);
+    }, 150);
   });
 
   const updateBackToTop = () => {

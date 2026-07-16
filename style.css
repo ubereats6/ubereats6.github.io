@@ -3238,3 +3238,69 @@ html[data-theme="purple"] {
   border: 1px dashed rgba(73, 152, 255, .28);
   border-radius: 18px;
 }
+
+
+/* ===== Smooth theme transition ===== */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: .52s;
+  animation-timing-function: ease-in-out;
+}
+
+::view-transition-old(root) {
+  animation-name: themeFadeOut;
+}
+
+::view-transition-new(root) {
+  animation-name: themeFadeIn;
+}
+
+body,
+body::before,
+.speed-lines,
+.site-header,
+.theme-toggle,
+.back-to-top {
+  transition:
+    background-color .48s ease,
+    border-color .48s ease,
+    box-shadow .48s ease,
+    color .48s ease,
+    opacity .22s ease,
+    filter .22s ease;
+}
+
+html.theme-changing body {
+  opacity: .74;
+  filter: saturate(.72) brightness(.88);
+}
+
+@keyframes themeFadeOut {
+  from { opacity: 1; filter: saturate(1) brightness(1); }
+  to { opacity: 0; filter: saturate(.78) brightness(.9); }
+}
+
+@keyframes themeFadeIn {
+  from { opacity: 0; filter: saturate(.82) brightness(.92); }
+  to { opacity: 1; filter: saturate(1) brightness(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: .01ms;
+  }
+
+  body,
+  body::before,
+  .speed-lines,
+  .site-header,
+  .theme-toggle,
+  .back-to-top {
+    transition-duration: .01ms;
+  }
+}
