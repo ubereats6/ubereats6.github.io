@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Alefeae",
+    "image": "assets/alefeae.png",
+    "alt": "Alefeae 的 Discord 頭像",
+    "description": [
+      "幽默帥氣的陽光系男演員，有他在的地方，",
+      "就不缺笑聲與歡樂。"
+    ],
+    "url": "https://www.instagram.com/alefeae?igsh=Ymp2Z2dieTZoejRt",
+    "className": "person-alefeae",
+    "online": true
+  },
+  {
+    "name": "Lia",
+    "image": "assets/lia.png",
+    "alt": "Lia 的 Discord 頭像",
+    "description": [
+      "美麗又專業的牙醫師兼牙刷品牌創辦人，",
+      "刷過的人連牙齒都想按讚。"
+    ],
+    "url": "https://www.khi-bin-a.com/",
+    "className": "person-lia",
+    "online": true
+  },
+  {
+    "name": "Bucky",
+    "image": "assets/bucky.png",
+    "alt": "Bucky 的 Discord 頭像",
+    "description": [
+      "幽默風趣的香港人，一口道地台灣國罵，",
+      "總能讓全場瞬間清醒。"
+    ],
+    "url": "",
+    "className": "person-bucky",
+    "online": true
+  },
+  {
+    "name": "Nick",
+    "image": "assets/nick.png",
+    "alt": "Nick 的 Discord 頭像",
+    "description": [
+      "澳洲工程師，專治各種程式疑難雜症，",
+      "偶爾也和袋鼠切磋一下。"
+    ],
+    "url": "https://portfolio.niku-aws.com/",
+    "className": "person-nick",
+    "online": true
+  }
+]
