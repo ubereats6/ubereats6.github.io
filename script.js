@@ -200,6 +200,8 @@ const nowPlayingStatus = document.getElementById("nowPlayingStatus");
 const MUSIC_STORAGE_KEY = "ubereats6MusicEnabled";
 let musicWanted = localStorage.getItem(MUSIC_STORAGE_KEY) === "true";
 let pausedByVisibility = false;
+let nowPlayingHideTimer = null;
+let utilityStackTimer = null;
 
 if (bgMusic) {
   bgMusic.volume = 0.20;
@@ -207,14 +209,34 @@ if (bgMusic) {
 
 function renderMusicState(isPlaying) {
   if (!musicToggle) return;
+
+  window.clearTimeout(nowPlayingHideTimer);
+  window.clearTimeout(utilityStackTimer);
+
   musicToggle.classList.toggle("is-playing", isPlaying);
   musicToggle.setAttribute("aria-pressed", String(isPlaying));
   musicToggle.setAttribute("aria-label", isPlaying ? "暫停背景音樂" : "播放背景音樂");
   if (musicToggleText) musicToggleText.textContent = isPlaying ? "MUSIC ON" : "MUSIC OFF";
   nowPlaying?.classList.toggle("is-playing", isPlaying);
-  nowPlaying?.classList.toggle("is-visible", isPlaying);
-  document.body.classList.toggle("now-playing-active", isPlaying);
   if (nowPlayingStatus) nowPlayingStatus.textContent = isPlaying ? "PLAYING" : "PAUSED";
+
+  if (isPlaying) {
+    nowPlaying?.classList.add("is-visible");
+    document.body.classList.add("now-playing-active");
+    return;
+  }
+
+  nowPlaying?.classList.add("is-visible");
+  document.body.classList.add("now-playing-active");
+
+  nowPlayingHideTimer = window.setTimeout(() => {
+    if (!bgMusic?.paused) return;
+    nowPlaying?.classList.remove("is-visible");
+
+    utilityStackTimer = window.setTimeout(() => {
+      if (bgMusic?.paused) document.body.classList.remove("now-playing-active");
+    }, 260);
+  }, 1000);
 }
 
 async function playMusic() {
@@ -247,10 +269,6 @@ musicToggle?.addEventListener("click", async () => {
   if (bgMusic.paused) await playMusic();
   else {
     pauseMusic();
-    nowPlaying?.classList.add("is-visible");
-    window.setTimeout(() => {
-      if (bgMusic?.paused) nowPlaying?.classList.remove("is-visible");
-    }, 1600);
   }
 });
 
