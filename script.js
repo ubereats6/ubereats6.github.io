@@ -191,7 +191,7 @@ async function loadCurrentGames() {
 loadCurrentGames();
 
 
-// Background music: starts only after a user action to comply with browser autoplay rules.
+// Background music controls
 const bgMusic = document.getElementById("bgMusic");
 const musicToggle = document.getElementById("musicToggle");
 const musicToggleText = musicToggle?.querySelector(".music-toggle-text");
@@ -231,7 +231,6 @@ function renderMusicState(isPlaying) {
   document.body.classList.add("now-playing-active");
 
   if (isPlaying) {
-    // Desktop keeps the card open. Mobile uses a compact 2.2-second toast.
     if (!isMobileLayout) return;
 
     nowPlayingHideTimer = window.setTimeout(() => {
@@ -245,7 +244,6 @@ function renderMusicState(isPlaying) {
     return;
   }
 
-  // When paused, show PAUSED briefly, fade out, then move TOP downward.
   nowPlayingHideTimer = window.setTimeout(() => {
     if (!bgMusic?.paused) return;
     nowPlaying?.classList.remove("is-visible");
@@ -256,19 +254,18 @@ function renderMusicState(isPlaying) {
   }, 1000);
 }
 
-async function playMusic() {
-  if (!bgMusic) return false;
-  try {
-    await bgMusic.play();
+// 移除原本 playMusic 的 async/await 寫法，改為傳統同步安全觸發
+function playMusicSync() {
+  if (!bgMusic) return;
+  
+  bgMusic.play().then(() => {
     musicWanted = true;
     localStorage.setItem(MUSIC_STORAGE_KEY, "true");
     renderMusicState(true);
-    return true;
-  } catch (error) {
-    console.info("Background music is waiting for a user interaction.", error);
+  }).catch((error) => {
+    console.info("Autoplay prevented or failed:", error);
     renderMusicState(false);
-    return false;
-  }
+  });
 }
 
 function pauseMusic({ remember = true } = {}) {
@@ -281,31 +278,27 @@ function pauseMusic({ remember = true } = {}) {
   renderMusicState(false);
 }
 
+// 核心修正：點擊音樂按鈕時，完全同步、不經任何延遲直接執行 .play()
 musicToggle?.addEventListener("click", () => {
   if (!bgMusic) return;
 
-  // Keep play() directly inside the tap/click handler for iPhone/iPad Safari.
   if (bgMusic.paused) {
-    bgMusic.play().then(() => {
-      musicWanted = true;
-      localStorage.setItem(MUSIC_STORAGE_KEY, "true");
-      renderMusicState(true);
-    }).catch((error) => {
-      console.error("Background music could not start on this device:", error);
-      renderMusicState(false);
-    });
+    playMusicSync();
   } else {
     pauseMusic();
   }
 });
 
-// If music was enabled previously, resume on the first interaction of this visit.
+// 手機自動播放安全解鎖：如果 localStorage 記錄要播放音樂，等使用者摸到螢幕任何地方就直接解鎖播放！
 if (musicWanted) {
-  const resumeOnce = async () => {
-    await playMusic();
+  const resumeOnce = () => {
+    playMusicSync();
+    document.removeEventListener("touchstart", resumeOnce);
     document.removeEventListener("pointerdown", resumeOnce);
     document.removeEventListener("keydown", resumeOnce);
   };
+  // 增加 touchstart 事件以相容所有手機與 Safari
+  document.addEventListener("touchstart", resumeOnce, { once: true });
   document.addEventListener("pointerdown", resumeOnce, { once: true });
   document.addEventListener("keydown", resumeOnce, { once: true });
 }
@@ -320,7 +313,7 @@ document.addEventListener("visibilitychange", () => {
     renderMusicState(false);
   } else if (!document.hidden && pausedByVisibility && musicWanted) {
     pausedByVisibility = false;
-    playMusic();
+    playMusicSync();
   }
 });
 
@@ -411,7 +404,6 @@ async function loadPeople() {
 
     if (validPeople.length === 0) throw new Error("No valid partners found");
 
-    // Display order follows the order in partners.json.
     grid.replaceChildren(...validPeople.map(createPersonCard));
   } catch (error) {
     console.error("Failed to load partners.json", error);
