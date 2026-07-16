@@ -213,6 +213,7 @@ function renderMusicState(isPlaying) {
   if (musicToggleText) musicToggleText.textContent = isPlaying ? "MUSIC ON" : "MUSIC OFF";
   nowPlaying?.classList.toggle("is-playing", isPlaying);
   nowPlaying?.classList.toggle("is-visible", isPlaying);
+  document.body.classList.toggle("now-playing-active", isPlaying);
   if (nowPlayingStatus) nowPlayingStatus.textContent = isPlaying ? "PLAYING" : "PAUSED";
 }
 
