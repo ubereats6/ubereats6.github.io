@@ -3112,3 +3112,15 @@ html[data-theme="purple"] {
     bottom: 142px;
   }
 }
+
+
+/* Dynamic connections data states */
+.people-loading,
+.people-error {
+  grid-column: 1 / -1;
+  padding: 34px 20px;
+  color: #8198b4;
+  text-align: center;
+  border: 1px dashed rgba(73, 152, 255, .28);
+  border-radius: 18px;
+}
