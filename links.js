@@ -70,7 +70,6 @@ async function loadUsefulLinks() {
 
 loadUsefulLinks();
 
-// Background music: intentionally simple for reliable iPhone/Android playback.
 const bgMusic = document.getElementById("bgMusic");
 const musicToggle = document.getElementById("musicToggle");
 const musicToggleText = musicToggle?.querySelector(".music-toggle-text");
@@ -78,74 +77,88 @@ const nowPlaying = document.getElementById("nowPlaying");
 const nowPlayingStatus = document.getElementById("nowPlayingStatus");
 const MUSIC_STORAGE_KEY = "ubereats6MusicEnabled";
 let musicWanted = localStorage.getItem(MUSIC_STORAGE_KEY) === "true";
-let musicToastTimer = null;
-let utilityTimer = null;
 
 if (bgMusic) bgMusic.volume = 0.20;
 
-function clearMusicTimers() {
-  clearTimeout(musicToastTimer);
-  clearTimeout(utilityTimer);
-}
+function renderMusicState(isPlaying) {
+  if (!musicToggle) return;
 
-function setMusicUI(isPlaying, showToast = true) {
-  musicToggle?.classList.toggle("is-playing", isPlaying);
-  musicToggle?.setAttribute("aria-pressed", String(isPlaying));
-  musicToggle?.setAttribute("aria-label", isPlaying ? "暫停背景音樂" : "播放背景音樂");
+  window.clearTimeout(nowPlayingHideTimer);
+  window.clearTimeout(utilityStackTimer);
+
+  const isMobileLayout = window.matchMedia("(max-width: 780px)").matches;
+
+  musicToggle.classList.toggle("is-playing", isPlaying);
+  musicToggle.setAttribute("aria-pressed", String(isPlaying));
+  musicToggle.setAttribute("aria-label", isPlaying ? "暫停背景音樂" : "播放背景音樂");
   if (musicToggleText) musicToggleText.textContent = isPlaying ? "MUSIC ON" : "MUSIC OFF";
   nowPlaying?.classList.toggle("is-playing", isPlaying);
   if (nowPlayingStatus) nowPlayingStatus.textContent = isPlaying ? "PLAYING" : "PAUSED";
 
-  if (!showToast || !nowPlaying) return;
-  clearMusicTimers();
-  nowPlaying.classList.add("is-visible");
+  nowPlaying?.classList.add("is-visible");
   document.body.classList.add("now-playing-active");
-  const isMobile = matchMedia("(max-width: 780px)").matches;
-  const delay = isMobile ? (isPlaying ? 2200 : 900) : (isPlaying ? 86400000 : 900);
-  musicToastTimer = setTimeout(() => {
-    nowPlaying.classList.remove("is-visible");
-    utilityTimer = setTimeout(() => document.body.classList.remove("now-playing-active"), 420);
-  }, delay);
+
+  if (isPlaying) {
+    // Desktop keeps the card open. Mobile uses a compact 2.2-second toast.
+    if (!isMobileLayout) return;
+
+    nowPlayingHideTimer = window.setTimeout(() => {
+      if (bgMusic?.paused) return;
+      nowPlaying?.classList.remove("is-visible");
+
+      utilityStackTimer = window.setTimeout(() => {
+        if (!bgMusic?.paused) document.body.classList.remove("now-playing-active");
+      }, 380);
+    }, 2200);
+    return;
+  }
+
+  // When paused, show PAUSED briefly, fade out, then move TOP downward.
+  nowPlayingHideTimer = window.setTimeout(() => {
+    if (!bgMusic?.paused) return;
+    nowPlaying?.classList.remove("is-visible");
+
+    utilityStackTimer = window.setTimeout(() => {
+      if (bgMusic?.paused) document.body.classList.remove("now-playing-active");
+    }, isMobileLayout ? 380 : 520);
+  }, 1000);
 }
 
-musicToggle?.addEventListener("click", (event) => {
-  event.preventDefault();
+async function playMusic() {
   if (!bgMusic) return;
+  try {
+    await bgMusic.play();
+    musicWanted = true;
+    localStorage.setItem(MUSIC_STORAGE_KEY, "true");
+    renderMusicState(true);
+  } catch {
+    renderMusicState(false);
+  }
+}
 
-  if (bgMusic.paused) {
-    const playPromise = bgMusic.play();
-    if (playPromise && typeof playPromise.then === "function") {
-      playPromise.then(() => {
-        musicWanted = true;
-        localStorage.setItem(MUSIC_STORAGE_KEY, "true");
-        setMusicUI(true);
-      }).catch((error) => {
-        console.info("Background music could not start.", error);
-        musicWanted = false;
-        localStorage.setItem(MUSIC_STORAGE_KEY, "false");
-        setMusicUI(false);
-      });
-    }
-  } else {
-    bgMusic.pause();
-    musicWanted = false;
-    localStorage.setItem(MUSIC_STORAGE_KEY, "false");
-    setMusicUI(false);
+function pauseMusic() {
+  if (!bgMusic) return;
+  bgMusic.pause();
+  musicWanted = false;
+  localStorage.setItem(MUSIC_STORAGE_KEY, "false");
+  renderMusicState(false);
+}
+
+musicToggle?.addEventListener("click", () => {
+  if (!bgMusic) return;
+  if (bgMusic.paused) playMusic();
+  else {
+    pauseMusic();
   }
 });
 
-setMusicUI(false, false);
-
-// A remembered ON state resumes only after a normal user gesture.
-if (musicWanted && bgMusic) {
-  const resumeOnce = (event) => {
-    if (event.target instanceof Element && event.target.closest("#musicToggle")) return;
-    document.removeEventListener("pointerdown", resumeOnce);
-    const promise = bgMusic.play();
-    promise?.then(() => setMusicUI(true)).catch(() => {});
-  };
-  document.addEventListener("pointerdown", resumeOnce, { passive: true });
+if (musicWanted) {
+  const resumeOnce = () => playMusic();
+  document.addEventListener("pointerdown", resumeOnce, { once: true });
+  document.addEventListener("keydown", resumeOnce, { once: true });
 }
+
+renderMusicState(false);
 
 
 /* Shared site utilities: loader, theme switcher, and back-to-top */
