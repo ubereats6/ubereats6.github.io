@@ -307,7 +307,7 @@ document.addEventListener("visibilitychange", () => {
   });
 
   const updateBackToTop = () => {
-    backToTop?.classList.toggle("is-visible", window.scrollY > 520);
+    backToTop?.classList.toggle("is-visible", window.scrollY > 260);
   };
   window.addEventListener("scroll", updateBackToTop, { passive: true });
   updateBackToTop();
