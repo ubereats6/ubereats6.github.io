@@ -73,6 +73,8 @@ loadUsefulLinks();
 const bgMusic = document.getElementById("bgMusic");
 const musicToggle = document.getElementById("musicToggle");
 const musicToggleText = musicToggle?.querySelector(".music-toggle-text");
+const nowPlaying = document.getElementById("nowPlaying");
+const nowPlayingStatus = document.getElementById("nowPlayingStatus");
 const MUSIC_STORAGE_KEY = "ubereats6MusicEnabled";
 let musicWanted = localStorage.getItem(MUSIC_STORAGE_KEY) === "true";
 
@@ -84,6 +86,9 @@ function renderMusicState(isPlaying) {
   musicToggle.setAttribute("aria-pressed", String(isPlaying));
   musicToggle.setAttribute("aria-label", isPlaying ? "暫停背景音樂" : "播放背景音樂");
   if (musicToggleText) musicToggleText.textContent = isPlaying ? "MUSIC ON" : "MUSIC OFF";
+  nowPlaying?.classList.toggle("is-playing", isPlaying);
+  nowPlaying?.classList.toggle("is-visible", isPlaying);
+  if (nowPlayingStatus) nowPlayingStatus.textContent = isPlaying ? "PLAYING" : "PAUSED";
 }
 
 async function playMusic() {
@@ -109,7 +114,13 @@ function pauseMusic() {
 musicToggle?.addEventListener("click", () => {
   if (!bgMusic) return;
   if (bgMusic.paused) playMusic();
-  else pauseMusic();
+  else {
+    pauseMusic();
+    nowPlaying?.classList.add("is-visible");
+    window.setTimeout(() => {
+      if (bgMusic?.paused) nowPlaying?.classList.remove("is-visible");
+    }, 1600);
+  }
 });
 
 if (musicWanted) {
