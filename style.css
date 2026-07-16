@@ -3055,3 +3055,60 @@ html[data-theme="purple"] {
   from { transform: scale(1.02); }
   to { transform: scale(1.13); }
 }
+
+
+/* ===== Mobile compact now-playing toast ===== */
+@media (max-width: 780px) {
+  .now-playing {
+    right: 14px;
+    bottom: 78px;
+    width: min(224px, calc(100vw - 28px));
+    height: 48px;
+    min-height: 48px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 999px;
+    transform: translateY(10px) scale(.98);
+    transition:
+      opacity .36s ease,
+      transform .36s ease,
+      visibility 0s linear .36s;
+  }
+
+  .now-playing::before {
+    content: "♪";
+    flex: 0 0 auto;
+    color: #66d9ff;
+    font-size: 1.05rem;
+    line-height: 1;
+    text-shadow: 0 0 12px rgba(102, 217, 255, .35);
+  }
+
+  .now-playing.is-visible {
+    transform: translateY(0) scale(1);
+    transition-delay: 0s;
+  }
+
+  .now-playing-label,
+  .now-playing-status {
+    display: none;
+  }
+
+  .now-playing-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #f4f8ff;
+    font-size: .78rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  /* With the compact toast visible, keep TOP exactly 16px above it. */
+  body.now-playing-active .back-to-top {
+    bottom: 142px;
+  }
+}
