@@ -563,18 +563,34 @@ loadPeople();
       assetsReady = true;
       return;
     }
+
+    // Mobile browsers have fewer parallel connections. Loading every image at
+    // once can starve the background audio request, so keep image concurrency low.
+    const isMobile = window.matchMedia("(max-width: 780px)").matches;
+    const concurrency = isMobile ? 2 : 6;
     let loaded = 0;
-    await Promise.all(urls.map((url) => new Promise((resolve) => {
-      const image = new Image();
-      const done = () => {
-        loaded += 1;
-        assetProgress = loaded / urls.length;
-        resolve();
-      };
-      image.onload = done;
-      image.onerror = done;
-      image.src = url;
-    })));
+    let nextIndex = 0;
+
+    const loadWorker = async () => {
+      while (nextIndex < urls.length) {
+        const url = urls[nextIndex];
+        nextIndex += 1;
+        await new Promise((resolve) => {
+          const image = new Image();
+          const done = () => {
+            loaded += 1;
+            assetProgress = loaded / urls.length;
+            resolve();
+          };
+          image.onload = done;
+          image.onerror = done;
+          image.decoding = "async";
+          image.src = url;
+        });
+      }
+    };
+
+    await Promise.all(Array.from({ length: Math.min(concurrency, urls.length) }, loadWorker));
     assetProgress = 1;
     assetsReady = true;
   };
