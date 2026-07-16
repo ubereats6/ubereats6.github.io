@@ -2830,8 +2830,8 @@ html[data-theme="purple"] {
 
 .theme-toggle {
   position: fixed;
-  top: 88px;
-  right: 22px;
+  top: 18px;
+  right: 18px;
   bottom: auto;
   z-index: 120;
 }
@@ -2854,7 +2854,7 @@ html[data-theme="purple"] {
 
 @media (max-width: 780px) {
   .theme-toggle {
-    top: 72px;
+    top: 12px;
     right: 12px;
     width: 46px;
     min-width: 46px;
