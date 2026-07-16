@@ -1525,7 +1525,22 @@ h1 {
 
 @media (prefers-reduced-motion: reduce) {
   .cover-frame .kart-slide {
-    transition: opacity .2s linear;
+    transition:
+      opacity .35s linear,
+      transform 5.8s ease;
+  }
+}
+
+@media (max-width: 780px) {
+  .cover-frame .kart-slide {
+    transform: scale(1.08);
+    transition:
+      opacity .72s ease,
+      transform 5.2s ease;
+  }
+
+  .cover-frame .kart-slide.active {
+    transform: scale(1.15);
   }
 }
 
@@ -2776,9 +2791,31 @@ html[data-theme="purple"] {
   .theme-toggle-text, .back-to-top span { display: none; }
   .music-toggle { right: 68px; bottom: 12px; }
 }
+
+@media (max-width: 780px) {
+  .loader-particles i {
+    min-width: 3px;
+    min-height: 9px;
+    opacity: 0;
+    filter: drop-shadow(0 0 5px rgba(111, 202, 255, .55));
+  }
+
+  .site-loader.is-awake .loader-particles i {
+    opacity: var(--opacity, .58);
+  }
+
+  .loader-particles::before { opacity: .72; }
+  .loader-particles::after { opacity: .64; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .loader-particles i { animation: none !important; }
-  .site-loader, .garage-brand, .garage-status, .garage-scanline i { transition-duration: .15s !important; }
+  .site-loader, .garage-brand, .garage-status, .garage-scanline i {
+    transition-duration: .15s !important;
+  }
+
+  .loader-particles i {
+    animation-duration: 4.6s !important;
+  }
 }
 
 
