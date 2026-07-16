@@ -205,6 +205,11 @@ let utilityStackTimer = null;
 
 if (bgMusic) {
   bgMusic.volume = 0.20;
+  bgMusic.addEventListener("error", () => {
+    console.error("Background music failed to load:", bgMusic.error);
+    musicToggle?.classList.add("has-error");
+    if (musicToggleText) musicToggleText.textContent = "MUSIC ERROR";
+  });
 }
 
 function renderMusicState(isPlaying) {
@@ -276,10 +281,20 @@ function pauseMusic({ remember = true } = {}) {
   renderMusicState(false);
 }
 
-musicToggle?.addEventListener("click", async () => {
+musicToggle?.addEventListener("click", () => {
   if (!bgMusic) return;
-  if (bgMusic.paused) await playMusic();
-  else {
+
+  // Keep play() directly inside the tap/click handler for iPhone/iPad Safari.
+  if (bgMusic.paused) {
+    bgMusic.play().then(() => {
+      musicWanted = true;
+      localStorage.setItem(MUSIC_STORAGE_KEY, "true");
+      renderMusicState(true);
+    }).catch((error) => {
+      console.error("Background music could not start on this device:", error);
+      renderMusicState(false);
+    });
+  } else {
     pauseMusic();
   }
 });
