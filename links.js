@@ -70,6 +70,7 @@ async function loadUsefulLinks() {
 
 loadUsefulLinks();
 
+// Background music: starts only after a user action to comply with mobile browser rules.
 const bgMusic = document.getElementById("bgMusic");
 const musicToggle = document.getElementById("musicToggle");
 const musicToggleText = musicToggle?.querySelector(".music-toggle-text");
@@ -77,86 +78,122 @@ const nowPlaying = document.getElementById("nowPlaying");
 const nowPlayingStatus = document.getElementById("nowPlayingStatus");
 const MUSIC_STORAGE_KEY = "ubereats6MusicEnabled";
 let musicWanted = localStorage.getItem(MUSIC_STORAGE_KEY) === "true";
+let pausedByVisibility = false;
+let nowPlayingHideTimer = null;
+let utilityStackTimer = null;
 
-if (bgMusic) bgMusic.volume = 0.20;
+if (bgMusic) {
+  bgMusic.volume = 0.20;
+  bgMusic.load();
+}
 
-function renderMusicState(isPlaying, { silent = false } = {}) {
-  if (!musicToggle) return;
-
+function clearMusicTimers() {
   window.clearTimeout(nowPlayingHideTimer);
   window.clearTimeout(utilityStackTimer);
+  nowPlayingHideTimer = null;
+  utilityStackTimer = null;
+}
 
-  const isMobileLayout = window.matchMedia("(max-width: 780px)").matches;
-
+function setMusicButtonState(isPlaying) {
+  if (!musicToggle) return;
   musicToggle.classList.toggle("is-playing", isPlaying);
   musicToggle.setAttribute("aria-pressed", String(isPlaying));
   musicToggle.setAttribute("aria-label", isPlaying ? "暫停背景音樂" : "播放背景音樂");
   if (musicToggleText) musicToggleText.textContent = isPlaying ? "MUSIC ON" : "MUSIC OFF";
   nowPlaying?.classList.toggle("is-playing", isPlaying);
   if (nowPlayingStatus) nowPlayingStatus.textContent = isPlaying ? "PLAYING" : "PAUSED";
+}
 
-  if (silent) {
-    nowPlaying?.classList.remove("is-visible", "is-hiding");
+function hideNowPlayingAfter(delay) {
+  clearMusicTimers();
+  nowPlayingHideTimer = window.setTimeout(() => {
+    nowPlaying?.classList.remove("is-visible");
+    utilityStackTimer = window.setTimeout(() => {
+      document.body.classList.remove("now-playing-active");
+    }, 420);
+  }, delay);
+}
+
+function renderMusicState(isPlaying, { initial = false } = {}) {
+  setMusicButtonState(isPlaying);
+  if (initial) {
+    nowPlaying?.classList.remove("is-visible");
     document.body.classList.remove("now-playing-active");
     return;
   }
 
-  nowPlaying?.classList.remove("is-hiding");
+  clearMusicTimers();
   nowPlaying?.classList.add("is-visible");
   document.body.classList.add("now-playing-active");
 
-  if (isPlaying && !isMobileLayout) return;
+  const isMobile = window.matchMedia("(max-width: 780px)").matches;
+  if (isPlaying) {
+    if (isMobile) hideNowPlayingAfter(2200);
+    return;
+  }
 
-  const visibleTime = isPlaying ? 2200 : 1000;
-  nowPlayingHideTimer = window.setTimeout(() => {
-    const stateStillMatches = isPlaying ? !bgMusic?.paused : bgMusic?.paused;
-    if (!stateStillMatches) return;
-
-    nowPlaying?.classList.add("is-hiding");
-
-    utilityStackTimer = window.setTimeout(() => {
-      const stillMatches = isPlaying ? !bgMusic?.paused : bgMusic?.paused;
-      if (!stillMatches) return;
-      nowPlaying?.classList.remove("is-visible", "is-hiding");
-      document.body.classList.remove("now-playing-active");
-    }, 460);
-  }, visibleTime);
+  hideNowPlayingAfter(1000);
 }
+
 async function playMusic() {
-  if (!bgMusic) return;
+  if (!bgMusic) return false;
   try {
     await bgMusic.play();
     musicWanted = true;
     localStorage.setItem(MUSIC_STORAGE_KEY, "true");
     renderMusicState(true);
-  } catch {
-    renderMusicState(false, { silent: true });
+    return true;
+  } catch (error) {
+    console.info("Background music could not start.", error);
+    musicWanted = false;
+    localStorage.setItem(MUSIC_STORAGE_KEY, "false");
+    renderMusicState(false);
+    return false;
   }
 }
 
-function pauseMusic() {
+function pauseMusic({ remember = true } = {}) {
   if (!bgMusic) return;
   bgMusic.pause();
-  musicWanted = false;
-  localStorage.setItem(MUSIC_STORAGE_KEY, "false");
+  if (remember) {
+    musicWanted = false;
+    localStorage.setItem(MUSIC_STORAGE_KEY, "false");
+  }
   renderMusicState(false);
 }
 
-musicToggle?.addEventListener("click", () => {
+musicToggle?.addEventListener("click", async (event) => {
+  event.preventDefault();
   if (!bgMusic) return;
-  if (bgMusic.paused) playMusic();
-  else {
-    pauseMusic();
-  }
+  if (bgMusic.paused) await playMusic();
+  else pauseMusic();
 });
 
+// Resume remembered music after a normal page interaction, but never intercept the music button itself.
 if (musicWanted) {
-  const resumeOnce = () => playMusic();
-  document.addEventListener("pointerdown", resumeOnce, { once: true });
-  document.addEventListener("keydown", resumeOnce, { once: true });
+  const resumeOnce = async (event) => {
+    if (event.target instanceof Element && event.target.closest("#musicToggle")) return;
+    document.removeEventListener("pointerdown", resumeOnce);
+    document.removeEventListener("keydown", resumeOnce);
+    await playMusic();
+  };
+  document.addEventListener("pointerdown", resumeOnce);
+  document.addEventListener("keydown", resumeOnce);
 }
 
-renderMusicState(false);
+renderMusicState(false, { initial: true });
+
+document.addEventListener("visibilitychange", () => {
+  if (!bgMusic) return;
+  if (document.hidden && !bgMusic.paused) {
+    pausedByVisibility = true;
+    bgMusic.pause();
+    setMusicButtonState(false);
+  } else if (!document.hidden && pausedByVisibility && musicWanted) {
+    pausedByVisibility = false;
+    playMusic();
+  }
+});
 
 
 /* Shared site utilities: loader, theme switcher, and back-to-top */
