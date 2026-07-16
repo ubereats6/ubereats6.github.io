@@ -2994,3 +2994,22 @@ html[data-theme="purple"] {
   }
   body.now-playing-active .back-to-top { bottom: 194px; }
 }
+
+/* ===== Equal spacing for music utility stack ===== */
+.now-playing {
+  box-sizing: border-box;
+  height: 84px;
+}
+
+@media (min-width: 781px) {
+  .music-toggle { bottom: 18px; }
+  .now-playing { bottom: 82px; }
+  body.now-playing-active .back-to-top { bottom: 182px; }
+}
+
+@media (max-width: 780px) {
+  .music-toggle { bottom: 14px; }
+  .now-playing { bottom: 78px; }
+  .back-to-top { bottom: 78px; }
+  body.now-playing-active .back-to-top { bottom: 178px; }
+}
