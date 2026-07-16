@@ -30,6 +30,9 @@ function showKart(index) {
 
   kartSlides.forEach((slide, slideIndex) => {
     const active = slideIndex === currentKart;
+    if (active && !slide.src && slide.dataset.src) {
+      slide.src = slide.dataset.src;
+    }
     slide.classList.toggle("active", active);
     slide.setAttribute("aria-hidden", String(!active));
   });
@@ -67,10 +70,13 @@ function createKartCarousel(karts) {
   kartSlides = karts.map((kart, index) => {
     const image = document.createElement("img");
     image.className = `kart-slide${index === 0 ? " active" : ""}`;
-    image.src = kart.image;
     image.alt = kart.alt || `${kart.name} 封面圖`;
     image.dataset.name = kart.name;
+    image.dataset.src = kart.image;
     image.decoding = "async";
+    image.loading = index === 0 ? "eager" : "lazy";
+    image.fetchPriority = index === 0 ? "high" : "low";
+    if (index === 0) image.src = kart.image;
     image.setAttribute("aria-hidden", String(index !== 0));
     featuredKart.insertBefore(image, featuredKart.querySelector(".cover-overlay"));
     return image;
@@ -191,6 +197,25 @@ async function loadCurrentGames() {
 loadCurrentGames();
 
 
+// Pause queued image preloads while a user-requested audio start is buffering.
+let imagePreloadPausedForMusic = false;
+let imagePreloadResume = null;
+
+function pauseImagePreloadsForMusic() {
+  imagePreloadPausedForMusic = true;
+}
+
+function resumeImagePreloadsAfterMusic() {
+  imagePreloadPausedForMusic = false;
+  imagePreloadResume?.();
+  imagePreloadResume = null;
+}
+
+function waitForImagePreloadPermission() {
+  if (!imagePreloadPausedForMusic) return Promise.resolve();
+  return new Promise((resolve) => { imagePreloadResume = resolve; });
+}
+
 // Background music: starts only after a user action to comply with browser autoplay rules.
 const bgMusic = document.getElementById("bgMusic");
 const musicToggle = document.getElementById("musicToggle");
@@ -273,12 +298,15 @@ function renderMusicState(isPlaying) {
 async function playMusic() {
   if (!bgMusic) return false;
   try {
+    pauseImagePreloadsForMusic();
     await bgMusic.play();
+    resumeImagePreloadsAfterMusic();
     musicWanted = true;
     saveMusicPreference(true);
     renderMusicState(true);
     return true;
   } catch (error) {
+    resumeImagePreloadsAfterMusic();
     console.info("Background music is waiting for a user interaction.", error);
     renderMusicState(false);
     return false;
@@ -300,13 +328,21 @@ musicToggle?.addEventListener("click", () => {
 
   // Keep play() directly inside the tap/click handler for iPhone/iPad Safari.
   if (bgMusic.paused) {
+    pauseImagePreloadsForMusic();
+    musicToggle?.classList.add("is-loading");
+    if (musicToggleText) musicToggleText.textContent = "音樂載入中";
+
     bgMusic.play().then(() => {
       musicWanted = true;
       saveMusicPreference(true);
+      musicToggle?.classList.remove("is-loading");
       renderMusicState(true);
+      resumeImagePreloadsAfterMusic();
     }).catch((error) => {
       console.error("Background music could not start on this device:", error);
+      musicToggle?.classList.remove("is-loading");
       renderMusicState(false);
+      resumeImagePreloadsAfterMusic();
     });
   } else {
     pauseMusic();
@@ -573,6 +609,7 @@ loadPeople();
 
     const loadWorker = async () => {
       while (nextIndex < urls.length) {
+        await waitForImagePreloadPermission();
         const url = urls[nextIndex];
         nextIndex += 1;
         await new Promise((resolve) => {
