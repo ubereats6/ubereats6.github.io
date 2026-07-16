@@ -3013,3 +3013,45 @@ html[data-theme="purple"] {
   .back-to-top { bottom: 78px; }
   body.now-playing-active .back-to-top { bottom: 178px; }
 }
+
+/* ===== Mobile carousel spacing, zoom, and now-playing fade fix ===== */
+.now-playing {
+  transition:
+    opacity .48s ease,
+    transform .48s ease,
+    visibility 0s linear .48s;
+}
+
+.now-playing.is-visible {
+  transition-delay: 0s;
+}
+
+@media (max-width: 780px) {
+  /* Add breathing room between the featured-kart label and image. */
+  .cover-stage .car-label {
+    top: 4px !important;
+    right: 14px !important;
+  }
+
+  .cover-frame {
+    transform: translateY(30px);
+  }
+
+  /* Use a keyframe animation so iOS reliably shows the slow zoom. */
+  .cover-frame .kart-slide {
+    transform: scale(1.02) !important;
+    transition: opacity .82s ease !important;
+    animation: none;
+    will-change: opacity, transform;
+  }
+
+  .cover-frame .kart-slide.active {
+    transform: scale(1.02) !important;
+    animation: mobileKartSlowZoom 5s ease-out forwards;
+  }
+}
+
+@keyframes mobileKartSlowZoom {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.13); }
+}
