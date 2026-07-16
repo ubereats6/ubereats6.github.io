@@ -2820,3 +2820,59 @@ html[data-theme="purple"] {
 
 
 
+
+
+/* ===== Fixed utility button layout ===== */
+.utility-controls {
+  position: static;
+  display: contents;
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 88px;
+  right: 22px;
+  bottom: auto;
+  z-index: 120;
+}
+
+.back-to-top {
+  position: fixed;
+  right: 22px;
+  bottom: 84px;
+  z-index: 120;
+  min-width: 52px;
+}
+
+.back-to-top svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+  fill: currentColor;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 780px) {
+  .theme-toggle {
+    top: 72px;
+    right: 12px;
+    width: 46px;
+    min-width: 46px;
+    height: 46px;
+    padding: 0;
+  }
+
+  .back-to-top {
+    right: 12px;
+    bottom: 72px;
+    width: 46px;
+    min-width: 46px;
+    height: 46px;
+    padding: 0;
+  }
+
+  .back-to-top svg {
+    width: 21px;
+    height: 21px;
+  }
+}
