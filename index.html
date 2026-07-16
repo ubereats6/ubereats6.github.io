@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260716-mobilefix1" />
+  <link rel="stylesheet" href="style.css" />
   <script>
     (() => {
       const savedTheme = localStorage.getItem("ubereats6Theme") || "blue";
@@ -126,7 +126,6 @@
         <div class="cover-glow"></div>
 
         <div class="cover-frame" id="featuredKart" tabindex="0" aria-live="polite">
-          <img class="kart-slide active" data-fallback="true" src="assets/karts/spike-sr-light.jpg?v=20260716-mobilefix1" alt="尖峰 SR-光封面圖" aria-hidden="false" />
           <div class="kart-loading">Loading featured karts…</div>
           <div class="cover-overlay"></div>
           <div class="kart-dots" aria-label="選擇精選車輛"></div>
@@ -134,7 +133,7 @@
 
         <div class="car-label">
           <span>FEATURED KART</span>
-          <strong id="featuredKartName">尖峰 SR-光</strong>
+          <strong id="featuredKartName">LOADING…</strong>
           <small>AUTO ROTATION</small>
         </div>
       </div>
@@ -252,8 +251,8 @@
   </footer>
 
 
-  <audio id="bgMusic" preload="auto" loop playsinline>
-    <source src="assets/kartrider_music.mp3?v=20260716-mobilefix1" type="audio/mpeg" />
+  <audio id="bgMusic" preload="metadata" loop>
+    <source src="assets/kartrider_music.mp3" type="audio/mpeg" />
   </audio>
 
   <div class="now-playing" id="nowPlaying" aria-live="polite">
@@ -280,6 +279,6 @@
     </button>
   </div>
 
-  <script src="script.js?v=20260716-mobilefix1"></script>
+  <script src="script.js"></script>
 </body>
 </html>
