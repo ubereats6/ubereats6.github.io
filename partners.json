@@ -1,7 +1,7 @@
 [
   {
     "name": "Alefeae",
-    "image": "assets/partner/alefeae.png",
+    "image": "assets/partner/alefeae.webp",
     "alt": "Alefeae 的 Discord 頭像",
     "description": [
       "幽默帥氣的陽光系男演員，有他在的地方，",
@@ -13,7 +13,7 @@
   },
   {
     "name": "Lia",
-    "image": "assets/partner/lia.png",
+    "image": "assets/partner/lia.webp",
     "alt": "Lia 的 Discord 頭像",
     "description": [
       "美麗又專業的牙醫師兼牙刷品牌創辦人，",
@@ -25,7 +25,7 @@
   },
   {
     "name": "Bucky",
-    "image": "assets/partner/bucky.png",
+    "image": "assets/partner/bucky.webp",
     "alt": "Bucky 的 Discord 頭像",
     "description": [
       "幽默風趣的香港人，一口道地台灣國罵，",
@@ -37,7 +37,7 @@
   },
   {
     "name": "Nick",
-    "image": "assets/partner/nick.png",
+    "image": "assets/partner/nick.webp",
     "alt": "Nick 的 Discord 頭像",
     "description": [
       "澳洲工程師，專治各種程式疑難雜症，",
@@ -49,7 +49,7 @@
   },
   {
     "name": "阿熊熊來囉~",
-    "image": "assets/partner/bear.png",
+    "image": "assets/partner/bear.webp",
     "alt": "Bear 的 twitch 頭像",
     "description": [
       "阿熊熊來囉！聊天室永遠不怕冷場，",
@@ -62,7 +62,7 @@
   },
   {
     "name": "stoneywork",
-    "image": "assets/partner/stone.png",
+    "image": "assets/partner/stone.webp",
     "alt": "stone 的 twitch 頭像",
     "description": [
       "Stone，也有人叫他石頭、九桃，",

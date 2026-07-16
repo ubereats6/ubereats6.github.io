@@ -1,27 +1,27 @@
 [
   {
     "name": "尖峰 SR-光",
-    "image": "assets/karts/spike-sr-light.png",
+    "image": "assets/karts/spike-sr-light.webp",
     "alt": "尖峰 SR-光封面圖"
   },
   {
     "name": "舒適 SRX-9",
-    "image": "assets/karts/comfort-srx9.png",
+    "image": "assets/karts/comfort-srx9.webp",
     "alt": "舒適 SRX-9 封面圖"
   },
   {
     "name": "聖騎士 SR",
-    "image": "assets/karts/templar-sr.png",
+    "image": "assets/karts/templar-sr.webp",
     "alt": "聖騎士 SR 封面圖"
   },
   {
     "name": "魔光騎士 SR",
-    "image": "assets/karts/White_Knight-Z7.png",
+    "image": "assets/karts/White_Knight-Z7.webp",
     "alt": "魔光騎士 SR 封面圖"
   },
   {
     "name": "遊俠 9",
-    "image": "assets/karts/Paragon-9.png",
+    "image": "assets/karts/Paragon-9.webp",
     "alt": "遊俠 9 封面圖"
   }
 ]

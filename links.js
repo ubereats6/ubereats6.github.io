@@ -76,11 +76,26 @@ const musicToggleText = musicToggle?.querySelector(".music-toggle-text");
 const nowPlaying = document.getElementById("nowPlaying");
 const nowPlayingStatus = document.getElementById("nowPlayingStatus");
 const MUSIC_STORAGE_KEY = "ubereats6MusicEnabled";
-let musicWanted = localStorage.getItem(MUSIC_STORAGE_KEY) === "true";
+function readMusicPreference() {
+  try { return localStorage.getItem(MUSIC_STORAGE_KEY) === "true"; }
+  catch { return false; }
+}
+function saveMusicPreference(value) {
+  try { localStorage.setItem(MUSIC_STORAGE_KEY, String(value)); }
+  catch { /* Storage may be blocked in private/in-app browsers. */ }
+}
+let musicWanted = readMusicPreference();
 let nowPlayingHideTimer = null;
 let utilityStackTimer = null;
 
-if (bgMusic) bgMusic.volume = 0.20;
+if (bgMusic) {
+  bgMusic.volume = 0.20;
+  bgMusic.load();
+  bgMusic.addEventListener("error", () => {
+    musicToggle?.classList.add("has-error");
+    if (musicToggleText) musicToggleText.textContent = "MUSIC ERROR";
+  });
+}
 
 function renderMusicState(isPlaying) {
   if (!musicToggle) return;
@@ -131,7 +146,7 @@ async function playMusic() {
   try {
     await bgMusic.play();
     musicWanted = true;
-    localStorage.setItem(MUSIC_STORAGE_KEY, "true");
+    saveMusicPreference(true);
     renderMusicState(true);
   } catch {
     renderMusicState(false);
@@ -142,7 +157,7 @@ function pauseMusic() {
   if (!bgMusic) return;
   bgMusic.pause();
   musicWanted = false;
-  localStorage.setItem(MUSIC_STORAGE_KEY, "false");
+  saveMusicPreference(false);
   renderMusicState(false);
 }
 

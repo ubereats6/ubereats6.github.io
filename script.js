@@ -191,20 +191,29 @@ async function loadCurrentGames() {
 loadCurrentGames();
 
 
-// Background music controls
+// Background music: starts only after a user action to comply with browser autoplay rules.
 const bgMusic = document.getElementById("bgMusic");
 const musicToggle = document.getElementById("musicToggle");
 const musicToggleText = musicToggle?.querySelector(".music-toggle-text");
 const nowPlaying = document.getElementById("nowPlaying");
 const nowPlayingStatus = document.getElementById("nowPlayingStatus");
 const MUSIC_STORAGE_KEY = "ubereats6MusicEnabled";
-let musicWanted = localStorage.getItem(MUSIC_STORAGE_KEY) === "true";
+function readMusicPreference() {
+  try { return localStorage.getItem(MUSIC_STORAGE_KEY) === "true"; }
+  catch { return false; }
+}
+function saveMusicPreference(value) {
+  try { localStorage.setItem(MUSIC_STORAGE_KEY, String(value)); }
+  catch { /* Storage may be blocked in private/in-app browsers. */ }
+}
+let musicWanted = readMusicPreference();
 let pausedByVisibility = false;
 let nowPlayingHideTimer = null;
 let utilityStackTimer = null;
 
 if (bgMusic) {
   bgMusic.volume = 0.20;
+  bgMusic.load();
   bgMusic.addEventListener("error", () => {
     console.error("Background music failed to load:", bgMusic.error);
     musicToggle?.classList.add("has-error");
@@ -231,6 +240,7 @@ function renderMusicState(isPlaying) {
   document.body.classList.add("now-playing-active");
 
   if (isPlaying) {
+    // Desktop keeps the card open. Mobile uses a compact 2.2-second toast.
     if (!isMobileLayout) return;
 
     nowPlayingHideTimer = window.setTimeout(() => {
@@ -244,6 +254,7 @@ function renderMusicState(isPlaying) {
     return;
   }
 
+  // When paused, show PAUSED briefly, fade out, then move TOP downward.
   nowPlayingHideTimer = window.setTimeout(() => {
     if (!bgMusic?.paused) return;
     nowPlaying?.classList.remove("is-visible");
@@ -254,18 +265,19 @@ function renderMusicState(isPlaying) {
   }, 1000);
 }
 
-// 移除原本 playMusic 的 async/await 寫法，改為傳統同步安全觸發
-function playMusicSync() {
-  if (!bgMusic) return;
-  
-  bgMusic.play().then(() => {
+async function playMusic() {
+  if (!bgMusic) return false;
+  try {
+    await bgMusic.play();
     musicWanted = true;
-    localStorage.setItem(MUSIC_STORAGE_KEY, "true");
+    saveMusicPreference(true);
     renderMusicState(true);
-  }).catch((error) => {
-    console.info("Autoplay prevented or failed:", error);
+    return true;
+  } catch (error) {
+    console.info("Background music is waiting for a user interaction.", error);
     renderMusicState(false);
-  });
+    return false;
+  }
 }
 
 function pauseMusic({ remember = true } = {}) {
@@ -273,32 +285,36 @@ function pauseMusic({ remember = true } = {}) {
   bgMusic.pause();
   if (remember) {
     musicWanted = false;
-    localStorage.setItem(MUSIC_STORAGE_KEY, "false");
+    saveMusicPreference(false);
   }
   renderMusicState(false);
 }
 
-// 核心修正：點擊音樂按鈕時，完全同步、不經任何延遲直接執行 .play()
 musicToggle?.addEventListener("click", () => {
   if (!bgMusic) return;
 
+  // Keep play() directly inside the tap/click handler for iPhone/iPad Safari.
   if (bgMusic.paused) {
-    playMusicSync();
+    bgMusic.play().then(() => {
+      musicWanted = true;
+      saveMusicPreference(true);
+      renderMusicState(true);
+    }).catch((error) => {
+      console.error("Background music could not start on this device:", error);
+      renderMusicState(false);
+    });
   } else {
     pauseMusic();
   }
 });
 
-// 手機自動播放安全解鎖：如果 localStorage 記錄要播放音樂，等使用者摸到螢幕任何地方就直接解鎖播放！
+// If music was enabled previously, resume on the first interaction of this visit.
 if (musicWanted) {
-  const resumeOnce = () => {
-    playMusicSync();
-    document.removeEventListener("touchstart", resumeOnce);
+  const resumeOnce = async () => {
+    await playMusic();
     document.removeEventListener("pointerdown", resumeOnce);
     document.removeEventListener("keydown", resumeOnce);
   };
-  // 增加 touchstart 事件以相容所有手機與 Safari
-  document.addEventListener("touchstart", resumeOnce, { once: true });
   document.addEventListener("pointerdown", resumeOnce, { once: true });
   document.addEventListener("keydown", resumeOnce, { once: true });
 }
@@ -313,7 +329,7 @@ document.addEventListener("visibilitychange", () => {
     renderMusicState(false);
   } else if (!document.hidden && pausedByVisibility && musicWanted) {
     pausedByVisibility = false;
-    playMusicSync();
+    playMusic();
   }
 });
 
@@ -404,6 +420,7 @@ async function loadPeople() {
 
     if (validPeople.length === 0) throw new Error("No valid partners found");
 
+    // Display order follows the order in partners.json.
     grid.replaceChildren(...validPeople.map(createPersonCard));
   } catch (error) {
     console.error("Failed to load partners.json", error);
