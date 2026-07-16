@@ -310,6 +310,105 @@ document.addEventListener("visibilitychange", () => {
 });
 
 
+
+
+const PEOPLE_LINK_ICON_PATH = "M10.59 13.41a1 1 0 0 1 0-1.41l3.18-3.18a3 3 0 1 1 4.24 4.24l-1.41 1.41a3 3 0 0 1-4.24 0 1 1 0 1 1 1.41-1.41 1 1 0 0 0 1.42 0l1.41-1.41a1 1 0 1 0-1.42-1.42l-3.18 3.18a1 1 0 0 1-1.41 0Zm2.82-2.82a1 1 0 0 1 0 1.41l-3.18 3.18a3 3 0 1 1-4.24-4.24l1.41-1.41a3 3 0 0 1 4.24 0 1 1 0 1 1-1.41 1.41 1 1 0 0 0-1.42 0L7.4 12.35a1 1 0 0 0 1.42 1.42L12 10.59a1 1 0 0 1 1.41 0Z";
+
+function createPersonCard(person) {
+  const card = document.createElement("article");
+  card.className = ["person-card", "compact-card", person.className || ""]
+    .filter(Boolean)
+    .join(" ");
+
+  const avatarWrap = document.createElement("div");
+  avatarWrap.className = "avatar-wrap";
+
+  const image = document.createElement("img");
+  image.src = person.image;
+  image.alt = person.alt || `${person.name} 的頭像`;
+  image.loading = "lazy";
+  image.decoding = "async";
+  avatarWrap.append(image);
+
+  const statusRing = document.createElement("span");
+  statusRing.className = `status-ring${person.online === false ? "" : " online"}`;
+  avatarWrap.append(statusRing);
+
+  const title = document.createElement("h3");
+  title.textContent = person.name;
+
+  const bio = document.createElement("p");
+  bio.className = "person-bio";
+  const descriptionLines = Array.isArray(person.description)
+    ? person.description.filter(Boolean)
+    : [person.description].filter(Boolean);
+
+  descriptionLines.forEach((line, index) => {
+    bio.append(document.createTextNode(line));
+    if (index < descriptionLines.length - 1) {
+      const desktopBreak = document.createElement("span");
+      desktopBreak.className = "desktop-break";
+      desktopBreak.append(document.createElement("br"));
+      bio.append(desktopBreak);
+    }
+  });
+
+  card.append(avatarWrap, title, bio);
+
+  if (typeof person.url === "string" && person.url.trim()) {
+    const link = document.createElement("a");
+    link.href = person.url.trim();
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.append(document.createTextNode(person.linkLabel || "Link"));
+
+    const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    icon.setAttribute("class", "share-icon");
+    icon.setAttribute("viewBox", "0 0 24 24");
+    icon.setAttribute("aria-hidden", "true");
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", PEOPLE_LINK_ICON_PATH);
+    icon.append(path);
+    link.append(icon);
+    card.append(link);
+  } else {
+    const noLink = document.createElement("span");
+    noLink.className = "profile-status";
+    noLink.textContent = "No public link";
+    card.append(noLink);
+  }
+
+  return card;
+}
+
+async function loadPeople() {
+  const grid = document.getElementById("peopleGrid");
+  if (!grid) return;
+
+  try {
+    const response = await fetch("partners.json", { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const people = await response.json();
+    const validPeople = Array.isArray(people)
+      ? people.filter((person) => person && person.name && person.image)
+      : [];
+
+    if (validPeople.length === 0) throw new Error("No valid partners found");
+
+    // Display order follows the order in partners.json.
+    grid.replaceChildren(...validPeople.map(createPersonCard));
+  } catch (error) {
+    console.error("Failed to load partners.json", error);
+    const message = document.createElement("div");
+    message.className = "people-error";
+    message.textContent = "無法載入 partners.json";
+    grid.replaceChildren(message);
+  }
+}
+
+loadPeople();
+
 /* Shared site utilities: loader, theme switcher, and back-to-top */
 (() => {
   const loader = document.getElementById("siteLoader");
