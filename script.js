@@ -231,7 +231,9 @@ function saveMusicPreference(value) {
   try { localStorage.setItem(MUSIC_STORAGE_KEY, String(value)); }
   catch { /* Storage may be blocked in private/in-app browsers. */ }
 }
-let musicWanted = readMusicPreference();
+let musicWanted = false;
+// Music must start only from the MUSIC button, never from a page click or key press.
+saveMusicPreference(false);
 let pausedByVisibility = false;
 let nowPlayingHideTimer = null;
 let utilityStackTimer = null;
@@ -349,17 +351,7 @@ musicToggle?.addEventListener("click", () => {
   }
 });
 
-// If music was enabled previously, resume on the first interaction of this visit.
-if (musicWanted) {
-  const resumeOnce = async () => {
-    await playMusic();
-    document.removeEventListener("pointerdown", resumeOnce);
-    document.removeEventListener("keydown", resumeOnce);
-  };
-  document.addEventListener("pointerdown", resumeOnce, { once: true });
-  document.addEventListener("keydown", resumeOnce, { once: true });
-}
-
+// Do not attach page-wide pointer/keyboard listeners for music playback.
 renderMusicState(false);
 
 document.addEventListener("visibilitychange", () => {

@@ -92,7 +92,9 @@ const musicToggleText = musicToggle?.querySelector(".music-toggle-text");
 const nowPlaying = document.getElementById("nowPlaying");
 const nowPlayingStatus = document.getElementById("nowPlayingStatus");
 const MUSIC_STORAGE_KEY = "ubereats6MusicEnabled";
-let musicWanted = localStorage.getItem(MUSIC_STORAGE_KEY) === "true";
+let musicWanted = false;
+// Clear any old saved ON state so a page click/key press can never start music.
+try { localStorage.setItem(MUSIC_STORAGE_KEY, "false"); } catch {}
 let nowPlayingHideTimer = null;
 let utilityStackTimer = null;
 
@@ -170,22 +172,14 @@ musicToggle?.addEventListener("click", () => {
   }
 });
 
-if (musicWanted) {
-  const resumeOnce = () => playMusic();
-  document.addEventListener("pointerdown", resumeOnce, { once: true });
-  document.addEventListener("keydown", resumeOnce, { once: true });
-}
+// Do not attach page-wide pointer/keyboard listeners for music playback.
 
-if (musicWanted) {
-  renderMusicState(false);
-} else {
-  musicToggle?.classList.remove("is-playing");
-  musicToggle?.setAttribute("aria-pressed", "false");
-  musicToggle?.setAttribute("aria-label", "播放背景音樂");
-  if (musicToggleText) musicToggleText.textContent = "MUSIC OFF";
-  nowPlaying?.classList.remove("is-visible", "is-playing");
-  document.body.classList.remove("now-playing-active");
-}
+musicToggle?.classList.remove("is-playing");
+musicToggle?.setAttribute("aria-pressed", "false");
+musicToggle?.setAttribute("aria-label", "播放背景音樂");
+if (musicToggleText) musicToggleText.textContent = "MUSIC OFF";
+nowPlaying?.classList.remove("is-visible", "is-playing");
+document.body.classList.remove("now-playing-active");
 
 
 /* Shared site utilities: loader, theme switcher, and back-to-top */

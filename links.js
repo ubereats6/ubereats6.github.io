@@ -84,7 +84,9 @@ function saveMusicPreference(value) {
   try { localStorage.setItem(MUSIC_STORAGE_KEY, String(value)); }
   catch { /* Storage may be blocked in private/in-app browsers. */ }
 }
-let musicWanted = readMusicPreference();
+let musicWanted = false;
+// Music must start only from the MUSIC button.
+saveMusicPreference(false);
 let nowPlayingHideTimer = null;
 let utilityStackTimer = null;
 
@@ -169,19 +171,14 @@ musicToggle?.addEventListener("click", () => {
   }
 });
 
-// Music starts only when the MUSIC button is clicked.
-// Keyboard and blank-page clicks must never trigger playback.
+// Do not attach page-wide pointer/keyboard listeners for music playback.
 
-if (musicWanted) {
-  renderMusicState(false);
-} else {
-  musicToggle?.classList.remove("is-playing");
-  musicToggle?.setAttribute("aria-pressed", "false");
-  musicToggle?.setAttribute("aria-label", "播放背景音樂");
-  if (musicToggleText) musicToggleText.textContent = "MUSIC OFF";
-  nowPlaying?.classList.remove("is-visible", "is-playing");
-  document.body.classList.remove("now-playing-active");
-}
+musicToggle?.classList.remove("is-playing");
+musicToggle?.setAttribute("aria-pressed", "false");
+musicToggle?.setAttribute("aria-label", "播放背景音樂");
+if (musicToggleText) musicToggleText.textContent = "MUSIC OFF";
+nowPlaying?.classList.remove("is-visible", "is-playing");
+document.body.classList.remove("now-playing-active");
 
 
 /* Shared site utilities: loader, theme switcher, and back-to-top */
