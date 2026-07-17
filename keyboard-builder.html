@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20" />
+  <link rel="stylesheet" href="style.css?v=21" />
   <script>
     (() => {
       const savedTheme = localStorage.getItem("ubereats6Theme") || "blue";
@@ -66,17 +66,108 @@
       <p>自訂鍵位與外觀，製作適合 OBS 使用的跑跑卡丁車指法鍵盤。</p>
     </section>
 
-    <section class="links-section builder-placeholder" aria-labelledby="builder-title">
-      <div class="builder-placeholder-card">
-        <span class="builder-status">PAGE READY · FUNCTION NEXT</span>
-        <h2 id="builder-title">鍵盤產生器頁面已建立</h2>
-        <p>下一階段會在這裡加入鍵位設定、樣式編輯、即時預覽，以及客製化 ZIP 匯出功能。</p>
-        <div class="builder-key-preview" aria-hidden="true">
-          <span>SHIFT</span><span>↑</span><span>CTRL</span>
-          <span>←</span><span>↓</span><span>→</span>
-          <span class="wide">R</span>
+    <section class="keyboard-builder" aria-labelledby="builder-title">
+      <div class="builder-workspace">
+        <aside class="builder-controls" aria-label="鍵盤設定">
+          <div class="builder-panel-heading">
+            <span class="builder-status">LIVE CUSTOMIZER</span>
+            <h2 id="builder-title">建立你的直播鍵盤</h2>
+            <p>點擊鍵位欄位後按下實體鍵，即可重新設定對應鍵位。</p>
+          </div>
+
+          <div class="builder-control-group">
+            <h3>鍵位對應</h3>
+            <div class="binding-list" id="bindingList"></div>
+          </div>
+
+          <div class="builder-control-group">
+            <h3>版面與風格</h3>
+            <label class="builder-field">
+              <span>排列樣式</span>
+              <select id="layoutSelect">
+                <option value="compact">緊湊競速</option>
+                <option value="classic">經典方向鍵</option>
+                <option value="horizontal">橫向精簡</option>
+              </select>
+            </label>
+            <label class="builder-field">
+              <span>預設主題</span>
+              <select id="presetSelect">
+                <option value="neon">藍色霓虹</option>
+                <option value="cute">可愛粉彩</option>
+                <option value="racing">競速紅黑</option>
+                <option value="minimal">透明簡潔</option>
+              </select>
+            </label>
+            <div class="builder-color-grid">
+              <label><span>按鍵顏色</span><input type="color" id="keyColor" value="#0b2d59"></label>
+              <label><span>按下顏色</span><input type="color" id="pressedColor" value="#52d7ff"></label>
+              <label><span>文字顏色</span><input type="color" id="textColor" value="#ffffff"></label>
+              <label><span>邊框顏色</span><input type="color" id="borderColor" value="#2c98ff"></label>
+            </div>
+            <label class="builder-range-field">
+              <span>鍵盤大小 <strong id="scaleValue">100%</strong></span>
+              <input type="range" id="scaleRange" min="70" max="150" value="100">
+            </label>
+            <label class="builder-range-field">
+              <span>圓角 <strong id="radiusValue">16px</strong></span>
+              <input type="range" id="radiusRange" min="0" max="32" value="16">
+            </label>
+            <label class="builder-range-field">
+              <span>發光強度 <strong id="glowValue">18px</strong></span>
+              <input type="range" id="glowRange" min="0" max="40" value="18">
+            </label>
+            <label class="builder-range-field">
+              <span>背景透明度 <strong id="backgroundOpacityValue">35%</strong></span>
+              <input type="range" id="backgroundOpacityRange" min="0" max="100" value="35">
+            </label>
+          </div>
+
+          <div class="builder-control-group">
+            <h3>自訂背景</h3>
+            <label class="builder-upload" for="backgroundUpload">
+              <strong>上傳背景圖片</strong>
+              <small>支援 PNG、JPG、WebP，建議使用小於 2 MB 的圖片。</small>
+            </label>
+            <input id="backgroundUpload" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+            <button class="builder-secondary-button" id="removeBackground" type="button">移除背景圖片</button>
+          </div>
+
+          <div class="builder-actions">
+            <button class="builder-primary-button" id="downloadConfig" type="button">下載設定 JSON</button>
+            <button class="builder-secondary-button" id="saveConfig" type="button">儲存到瀏覽器</button>
+            <button class="builder-secondary-button" id="resetBuilder" type="button">恢復預設值</button>
+          </div>
+          <p class="builder-save-status" id="builderStatus" aria-live="polite"></p>
+        </aside>
+
+        <div class="builder-preview-column">
+          <div class="builder-preview-header">
+            <div>
+              <span>LIVE PREVIEW</span>
+              <h2>即時預覽</h2>
+            </div>
+            <div class="preview-mode-buttons" aria-label="預覽背景模式">
+              <button type="button" data-preview-bg="dark" class="active">深色</button>
+              <button type="button" data-preview-bg="green">綠幕</button>
+              <button type="button" data-preview-bg="transparent">透明</button>
+            </div>
+          </div>
+
+          <div class="keyboard-preview-stage preview-dark" id="previewStage" tabindex="0" aria-label="鍵盤即時預覽，點擊後可測試按鍵">
+            <div class="overlay-canvas" id="overlayCanvas">
+              <div class="overlay-background" id="overlayBackground"></div>
+              <div class="key-overlay layout-compact" id="keyOverlay"></div>
+            </div>
+            <div class="preview-hint" id="previewHint">點擊預覽區後，按下鍵盤測試亮鍵效果</div>
+          </div>
+
+          <div class="builder-info-card">
+            <strong>目前版本可以做什麼？</strong>
+            <p>這個頁面已能完成鍵位與外觀設定，並輸出之後給 Windows 指法程式讀取的 JSON。下一階段會把通用 EXE 和這份設定自動包成下載 ZIP。</p>
+          </div>
+          <a class="useful-link-button builder-back-button" href="tools.html">BACK TO TOOLS</a>
         </div>
-        <a class="useful-link-button builder-back-button" href="tools.html">BACK TO TOOLS</a>
       </div>
     </section>
   </main>
@@ -123,5 +214,6 @@
   </div>
 
   <script src="tools.js?v=1"></script>
+  <script src="keyboard-builder.js?v=1"></script>
 </body>
 </html>
