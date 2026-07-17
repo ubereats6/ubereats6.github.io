@@ -3729,3 +3729,77 @@ body::before {
   }
 }
 
+
+/* Keyboard Builder interactive feedback */
+.builder-secondary-button,
+.builder-reset-button,
+.builder-field select,
+.builder-color-grid label,
+.builder-color-grid input[type="color"] {
+  transition: transform .18s ease, border-color .18s ease, color .18s ease,
+              background-color .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+
+.builder-secondary-button:hover {
+  color: #eef8ff;
+  border-color: rgba(82, 215, 255, .58);
+  background: rgba(20, 63, 116, .82);
+  box-shadow: 0 0 18px rgba(82, 215, 255, .14), inset 0 1px rgba(255, 255, 255, .06);
+  transform: translateY(-1px);
+}
+
+.builder-secondary-button:active,
+.builder-reset-button:active {
+  transform: translateY(0) scale(.985);
+}
+
+.builder-secondary-button:focus-visible,
+.builder-reset-button:focus-visible,
+.builder-field select:focus-visible,
+.builder-color-grid input[type="color"]:focus-visible {
+  outline: none;
+  border-color: rgba(82, 215, 255, .82);
+  box-shadow: 0 0 0 3px rgba(82, 215, 255, .16), 0 0 18px rgba(82, 215, 255, .14);
+}
+
+.builder-field select:hover {
+  border-color: rgba(82, 215, 255, .58);
+  background-color: #0a2141;
+  box-shadow: 0 0 16px rgba(82, 215, 255, .10);
+  cursor: pointer;
+}
+
+.builder-field select:focus {
+  border-color: rgba(82, 215, 255, .75);
+  background-color: #0a2141;
+}
+
+.builder-color-grid label:hover,
+.builder-color-grid label:focus-within {
+  color: #eef7ff;
+  border-color: rgba(82, 215, 255, .48);
+  background: rgba(14, 48, 91, .72);
+  box-shadow: 0 0 16px rgba(82, 215, 255, .10);
+  transform: translateY(-1px);
+}
+
+.builder-color-grid input[type="color"] {
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 8px;
+}
+
+.builder-color-grid input[type="color"]:hover {
+  filter: brightness(1.13);
+  box-shadow: 0 0 0 3px rgba(82, 215, 255, .12), 0 0 12px rgba(82, 215, 255, .16);
+  transform: scale(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .builder-secondary-button,
+  .builder-reset-button,
+  .builder-field select,
+  .builder-color-grid label,
+  .builder-color-grid input[type="color"] {
+    transition: none;
+  }
+}
