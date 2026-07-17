@@ -169,11 +169,8 @@ musicToggle?.addEventListener("click", () => {
   }
 });
 
-if (musicWanted) {
-  const resumeOnce = () => playMusic();
-  document.addEventListener("pointerdown", resumeOnce, { once: true });
-  document.addEventListener("keydown", resumeOnce, { once: true });
-}
+// Music starts only when the MUSIC button is clicked.
+// Keyboard and blank-page clicks must never trigger playback.
 
 if (musicWanted) {
   renderMusicState(false);
