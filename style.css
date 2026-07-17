@@ -3296,3 +3296,103 @@ body::before {
     transition-duration: .01ms;
   }
 }
+
+/* ===== Links page mobile card layout fix ===== */
+@media (max-width: 640px) {
+  .links-main {
+    width: calc(100% - 28px);
+    padding-top: 122px;
+  }
+
+  .links-section {
+    padding-top: 42px;
+  }
+
+  .links-section-heading {
+    margin-bottom: 20px;
+  }
+
+  .links-section-heading h2 {
+    font-size: clamp(1.9rem, 9vw, 2.5rem);
+    line-height: 1.15;
+  }
+
+  .useful-links-list {
+    gap: 14px;
+  }
+
+  .useful-link-card {
+    grid-template-columns: 52px minmax(0, 1fr);
+    grid-template-areas:
+      "number copy"
+      "number button";
+    align-items: start;
+    column-gap: 14px;
+    row-gap: 15px;
+    min-height: 0;
+    padding: 20px 18px;
+    border-radius: 18px;
+  }
+
+  .useful-link-number {
+    grid-area: number;
+    align-self: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: .92rem;
+  }
+
+  .useful-link-copy {
+    grid-area: copy;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .useful-link-category {
+    display: block;
+    margin-bottom: 7px;
+    font-size: .58rem;
+    line-height: 1.35;
+  }
+
+  .useful-link-copy h3 {
+    margin: 0 0 7px;
+    font-size: 1rem;
+    line-height: 1.45;
+    letter-spacing: 0;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .useful-link-copy p {
+    font-size: .76rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .useful-link-button {
+    grid-area: button;
+    justify-self: start;
+    width: min(100%, 158px);
+    min-width: 0;
+    min-height: 44px;
+    padding: 0 16px;
+    font-size: .7rem;
+    border-radius: 11px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  .useful-link-card {
+    grid-template-columns: 58px minmax(0, 1fr) 138px;
+    gap: 18px;
+    padding: 22px;
+  }
+
+  .useful-link-button {
+    min-width: 138px;
+    padding-inline: 14px;
+  }
+}
