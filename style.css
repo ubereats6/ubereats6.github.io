@@ -3869,3 +3869,23 @@ body::before {
   font-size: .78rem;
   line-height: 1.55;
 }
+
+/* Low-key cumulative visitor counter */
+.visitor-counter {
+  margin-top: 12px;
+  color: rgba(176, 197, 222, .62);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .035em;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.visitor-counter span {
+  color: rgba(214, 230, 247, .78);
+  font-variant-numeric: tabular-nums;
+}
+
+.visitor-counter[hidden] {
+  display: none;
+}
