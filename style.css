@@ -3299,6 +3299,8 @@ body::before {
 
 /* ===== Links page mobile card layout fix ===== */
 @media (max-width: 640px) {
+  .tool-builder-hero { margin-bottom: 24px; }
+
   .links-main {
     width: calc(100% - 28px);
     padding-top: 122px;
@@ -3426,7 +3428,8 @@ body::before {
 }
 
 /* Functional keyboard builder */
-.keyboard-builder { width: min(1240px, calc(100% - 40px)); margin: 0 auto 110px; }
+.tool-builder-hero { margin-bottom: 36px; }
+.keyboard-builder { width: 100%; margin: 0 auto 110px; }
 .builder-workspace { display: grid; grid-template-columns: minmax(320px, 430px) minmax(0, 1fr); gap: 24px; align-items: start; }
 .builder-controls, .builder-preview-column { border: 1px solid var(--line); border-radius: 26px; background: rgba(4, 15, 35, .76); box-shadow: 0 24px 65px rgba(0,0,0,.28), inset 0 1px rgba(255,255,255,.035); backdrop-filter: blur(18px); }
 .builder-controls { padding: 28px; }
@@ -3475,7 +3478,7 @@ body::before {
 .overlay-key { min-width: 76px; min-height: 70px; display: grid; place-items: center; padding: 8px; border: 2px solid var(--key-border); border-radius: var(--key-radius); color: var(--key-text); background: var(--key-color); box-shadow: inset 0 1px rgba(255,255,255,.1), 0 0 calc(var(--key-glow) * .45) color-mix(in srgb, var(--key-border) 60%, transparent); font-weight: 900; font-size: 1.15rem; transition: transform .06s, background .06s, box-shadow .06s; user-select: none; }
 .overlay-key small { display: block; opacity: .65; font-size: .54rem; letter-spacing: .05em; margin-top: 3px; }
 .overlay-key.is-pressed { transform: translateY(4px) scale(.96); background: var(--pressed-color); box-shadow: 0 0 var(--key-glow) var(--pressed-color), inset 0 0 20px rgba(255,255,255,.22); }
-.key-overlay.layout-compact { grid-template-columns: repeat(5, 76px); grid-template-areas: "shift up ctrl r r" "shift left down right r"; }
+.key-overlay.layout-compact { grid-template-columns: repeat(5, 76px); grid-template-areas: "shift up ctrl . r" "shift left down right r"; }
 .key-overlay.layout-compact [data-key-id="shift"] { grid-area: shift; }
 .key-overlay.layout-compact [data-key-id="up"] { grid-area: up; }
 .key-overlay.layout-compact [data-key-id="ctrl"] { grid-area: ctrl; }
