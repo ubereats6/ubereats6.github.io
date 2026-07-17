@@ -3460,7 +3460,7 @@ body::before {
 .builder-primary-button, .builder-secondary-button { padding: 0 14px; cursor: pointer; font-weight: 800; border: 1px solid rgba(78,171,255,.32); }
 .builder-primary-button { grid-column: 1 / -1; color: white; background: linear-gradient(135deg, #147cff, #3250e8); box-shadow: 0 10px 24px rgba(20,105,255,.23); }
 .builder-secondary-button { color: #d8e6f8; background: rgba(13,37,75,.72); }
-#removeBackground { width: 100%; margin-top: 10px; }
+#removeBackground { width: 100%; }
 .builder-save-status { min-height: 20px; margin: 12px 0 0; color: var(--cyan); font-size: .75rem; text-align: center; }
 .builder-preview-header { display: flex; justify-content: space-between; align-items: end; gap: 15px; margin-bottom: 18px; }
 .builder-preview-header > div:first-child > span { color: var(--cyan); font-size: .68rem; font-weight: 900; letter-spacing: .18em; }
@@ -3672,5 +3672,64 @@ body::before {
     width: 100%;
     max-width: none;
     justify-self: stretch;
+  }
+}
+
+/* Keyboard Builder background/export action alignment */
+.builder-background-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.builder-background-actions .builder-primary-button,
+.builder-background-actions .builder-secondary-button {
+  width: 100%;
+  grid-column: auto;
+}
+
+.builder-export-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.builder-export-footer .builder-field-note {
+  flex: 1;
+  margin: 0;
+}
+
+.builder-reset-button {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(78,171,255,.24);
+  border-radius: 9px;
+  color: #aebfd4;
+  background: rgba(13,37,75,.46);
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color .18s ease, color .18s ease, background .18s ease;
+}
+
+.builder-reset-button:hover {
+  color: #e8f3ff;
+  border-color: rgba(82,215,255,.5);
+  background: rgba(20,63,116,.62);
+}
+
+@media (max-width: 520px) {
+  .builder-export-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .builder-reset-button {
+    align-self: flex-end;
   }
 }
