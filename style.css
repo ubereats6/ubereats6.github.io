@@ -3678,41 +3678,30 @@ body::before {
 /* Keyboard Builder background/export action alignment */
 .builder-background-actions {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-top: 10px;
 }
 
 .builder-background-actions .builder-primary-button,
-.builder-background-actions .builder-secondary-button {
+.builder-background-actions .builder-secondary-button,
+.builder-background-actions .builder-reset-button {
   width: 100%;
-  grid-column: auto;
+  min-width: 0;
+  min-height: 44px;
 }
 
-.builder-export-footer {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(145px, 1fr);
-  align-items: stretch;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.builder-export-footer .builder-field-note {
-  display: flex;
-  align-items: center;
-  margin: 0;
+.builder-background-actions #downloadConfig {
+  grid-column: 1 / -1;
 }
 
 .builder-reset-button {
-  width: 100%;
-  height: 100%;
-  min-height: 64px;
-  padding: 10px 16px;
+  padding: 10px 14px;
   border: 1px solid rgba(78,171,255,.24);
   border-radius: 9px;
-  color: #aebfd4;
-  background: rgba(13,37,75,.46);
+  color: #c8d7e9;
+  background: rgba(13,37,75,.56);
   font: inherit;
-  font-size: .72rem;
   font-weight: 800;
   white-space: nowrap;
   cursor: pointer;
@@ -3722,11 +3711,21 @@ body::before {
 .builder-reset-button:hover {
   color: #e8f3ff;
   border-color: rgba(82,215,255,.5);
-  background: rgba(20,63,116,.62);
+  background: rgba(20,63,116,.72);
 }
 
-@media (max-width: 400px) {
-  .builder-export-footer {
-    grid-template-columns: minmax(0, 1fr) minmax(130px, .9fr);
+.builder-background-note {
+  width: 100%;
+  margin: 10px 0 0;
+}
+
+@media (max-width: 360px) {
+  .builder-background-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .builder-background-actions #downloadConfig {
+    grid-column: auto;
   }
 }
+

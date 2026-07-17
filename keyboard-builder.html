@@ -145,12 +145,10 @@
             <input id="backgroundUpload" type="file" accept="image/png,image/jpeg,image/webp" hidden>
             <div class="builder-background-actions">
               <button class="builder-secondary-button" id="removeBackground" type="button">移除背景圖片</button>
+              <button class="builder-reset-button" id="resetBuilder" type="button">恢復預設值</button>
               <button class="builder-primary-button" id="downloadConfig" type="button">下載設定 JSON</button>
             </div>
-            <div class="builder-export-footer">
-              <p class="builder-field-note">上傳的背景圖片會以 Base64 方式嵌入 JSON，桌面程式不需要額外圖片檔。</p>
-              <button class="builder-reset-button" id="resetBuilder" type="button">恢復預設值</button>
-            </div>
+            <p class="builder-field-note builder-background-note">上傳的背景圖片會以 Base64 方式嵌入 JSON，桌面程式不需要額外圖片檔。</p>
           </div>
           <p class="builder-save-status" id="builderStatus" aria-live="polite"></p>
         </aside>
