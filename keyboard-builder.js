@@ -44,6 +44,16 @@
     textColor: "#ffffff",
     borderColor: "#2c98ff",
     backgroundImage: "",
+    backgroundImageName: "",
+    backgroundImageType: "",
+    coordinateSystem: {
+      canvasWidth: 640,
+      canvasHeight: 360,
+      customAreaX: 0,
+      customAreaY: 60,
+      customAreaWidth: 640,
+      customAreaHeight: 240
+    },
     positions: JSON.parse(JSON.stringify(defaultPositions)),
     bindings: Object.fromEntries(keyDefinitions.map((key) => [key.id, key.code]))
   });
@@ -233,12 +243,26 @@
       return;
     }
     const reader = new FileReader();
-    reader.onload = () => { config.backgroundImage = String(reader.result || ""); applyConfig(); setStatus("背景圖片已套用。") };
+    reader.onload = () => {
+      config.backgroundImage = String(reader.result || "");
+      config.backgroundImageName = file.name || "background";
+      config.backgroundImageType = file.type || "";
+      applyConfig();
+      setStatus("背景圖片已嵌入設定，可隨 JSON 一起下載。");
+    };
+    reader.onerror = () => {
+      config.backgroundImage = "";
+      config.backgroundImageName = "";
+      config.backgroundImageType = "";
+      setStatus("背景圖片讀取失敗，請重新選擇圖片。");
+    };
     reader.readAsDataURL(file);
   });
 
   document.getElementById("removeBackground")?.addEventListener("click", () => {
     config.backgroundImage = "";
+    config.backgroundImageName = "";
+    config.backgroundImageType = "";
     const upload = document.getElementById("backgroundUpload");
     if (upload) upload.value = "";
     applyConfig();
@@ -289,8 +313,30 @@
   });
 
   document.getElementById("downloadConfig")?.addEventListener("click", () => {
-    const exportConfig = { ...config, exportedAt: new Date().toISOString() };
-    const blob = new Blob([JSON.stringify(exportConfig, null, 2)], { type: "application/json" });
+    const exportConfig = {
+      ...config,
+      coordinateSystem: {
+        canvasWidth: 640,
+        canvasHeight: 360,
+        customAreaX: 0,
+        customAreaY: 60,
+        customAreaWidth: 640,
+        customAreaHeight: 240
+      },
+      exportedAt: new Date().toISOString()
+    };
+
+    // Uploaded images are exported as a data URL (Base64) inside the JSON.
+    // This makes overlay-config.json self-contained for the desktop app.
+    if (config.backgroundImage && !config.backgroundImage.startsWith("data:image/")) {
+      setStatus("背景圖片尚未完成嵌入，請重新選擇圖片後再下載。");
+      return;
+    }
+
+    const blob = new Blob(
+      [JSON.stringify(exportConfig, null, 2)],
+      { type: "application/json;charset=utf-8" }
+    );
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -298,8 +344,12 @@
     document.body.appendChild(link);
     link.click();
     link.remove();
-    URL.revokeObjectURL(url);
-    setStatus("overlay-config.json 已下載。")
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setStatus(
+      config.backgroundImage
+        ? "設定與背景圖片已一起嵌入 JSON。"
+        : "overlay-config.json 已下載。"
+    );
   });
 
   document.getElementById("resetBuilder")?.addEventListener("click", () => {
