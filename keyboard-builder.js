@@ -2,6 +2,7 @@
   const STORAGE_KEY = "ubereats6KeyboardBuilderConfigV1";
   const keyDefinitions = [
     { id: "shift", label: "Shift", display: "SHIFT", code: "ShiftLeft" },
+    { id: "alt", label: "Alt", display: "ALT", code: "AltLeft" },
     { id: "up", label: "上", display: "↑", code: "ArrowUp" },
     { id: "ctrl", label: "Ctrl", display: "CTRL", code: "ControlLeft" },
     { id: "left", label: "左", display: "←", code: "ArrowLeft" },
@@ -20,7 +21,7 @@
   const defaultConfig = () => ({
     version: 1,
     app: "UberEats6-KeyOverlay",
-    layout: "compact",
+    layout: "classic",
     preset: "neon",
     scale: 100,
     radius: 16,
@@ -61,7 +62,7 @@
   };
 
   const codeLabel = (code) => {
-    const aliases = { ArrowUp: "↑", ArrowDown: "↓", ArrowLeft: "←", ArrowRight: "→", ShiftLeft: "左 Shift", ShiftRight: "右 Shift", ControlLeft: "左 Ctrl", ControlRight: "右 Ctrl", Space: "Space" };
+    const aliases = { ArrowUp: "↑", ArrowDown: "↓", ArrowLeft: "←", ArrowRight: "→", ShiftLeft: "左 Shift", ShiftRight: "右 Shift", ControlLeft: "左 Ctrl", ControlRight: "右 Ctrl", AltLeft: "左 Alt", AltRight: "右 Alt", Space: "Space" };
     if (aliases[code]) return aliases[code];
     if (code.startsWith("Key")) return code.slice(3);
     if (code.startsWith("Digit")) return code.slice(5);
@@ -97,12 +98,20 @@
   }
 
   function renderKeys() {
-    keyOverlay.replaceChildren(...keyDefinitions.map((definition) => {
+    const visibleByLayout = {
+      compact: ["shift", "up", "ctrl", "left", "down", "right", "r"],
+      classic: ["shift", "up", "alt", "ctrl", "left", "down", "right", "r"],
+      horizontal: ["shift", "up", "ctrl", "left", "down", "right", "r"]
+    };
+    const visibleIds = new Set(visibleByLayout[config.layout] || visibleByLayout.compact);
+    const visibleDefinitions = keyDefinitions.filter((definition) => visibleIds.has(definition.id));
+
+    keyOverlay.replaceChildren(...visibleDefinitions.map((definition) => {
       const key = document.createElement("div");
       key.className = "overlay-key";
       key.dataset.keyId = definition.id;
       key.dataset.code = config.bindings[definition.id];
-      key.innerHTML = `<span>${definition.display}<small>${codeLabel(config.bindings[definition.id])}</small></span>`;
+      key.textContent = definition.display;
       key.classList.toggle("is-pressed", pressedCodes.has(config.bindings[definition.id]));
       return key;
     }));

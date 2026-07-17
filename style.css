@@ -3476,7 +3476,6 @@ body::before {
 .overlay-background { position: absolute; inset: 0; border-radius: 30px; background-position: center; background-size: cover; opacity: var(--bg-opacity); pointer-events: none; }
 .key-overlay { position: relative; z-index: 1; display: grid; gap: 10px; padding: 22px; border-radius: 24px; background: rgba(0,5,15,.18); }
 .overlay-key { min-width: 76px; min-height: 70px; display: grid; place-items: center; padding: 8px; border: 2px solid var(--key-border); border-radius: var(--key-radius); color: var(--key-text); background: var(--key-color); box-shadow: inset 0 1px rgba(255,255,255,.1), 0 0 calc(var(--key-glow) * .45) color-mix(in srgb, var(--key-border) 60%, transparent); font-weight: 900; font-size: 1.15rem; transition: transform .06s, background .06s, box-shadow .06s; user-select: none; }
-.overlay-key small { display: block; opacity: .65; font-size: .54rem; letter-spacing: .05em; margin-top: 3px; }
 .overlay-key.is-pressed { transform: translateY(4px) scale(.96); background: var(--pressed-color); box-shadow: 0 0 var(--key-glow) var(--pressed-color), inset 0 0 20px rgba(255,255,255,.22); }
 .key-overlay.layout-compact { grid-template-columns: repeat(5, 76px); grid-template-areas: "shift up ctrl . r" "shift left down right r"; }
 .key-overlay.layout-compact [data-key-id="shift"] { grid-area: shift; }
@@ -3486,14 +3485,21 @@ body::before {
 .key-overlay.layout-compact [data-key-id="left"] { grid-area: left; }
 .key-overlay.layout-compact [data-key-id="down"] { grid-area: down; }
 .key-overlay.layout-compact [data-key-id="right"] { grid-area: right; }
-.key-overlay.layout-classic { grid-template-columns: repeat(5, 76px); grid-template-areas: "shift blank up ctrl r" "shift left down right r"; }
+.key-overlay.layout-classic {
+  grid-template-columns: repeat(5, 76px);
+  grid-template-rows: repeat(2, 70px);
+  grid-template-areas:
+    "shift . up . alt"
+    "ctrl left down right r";
+}
 .key-overlay.layout-classic [data-key-id="shift"] { grid-area: shift; }
 .key-overlay.layout-classic [data-key-id="up"] { grid-area: up; }
+.key-overlay.layout-classic [data-key-id="alt"] { grid-area: alt; }
 .key-overlay.layout-classic [data-key-id="ctrl"] { grid-area: ctrl; }
-.key-overlay.layout-classic [data-key-id="r"] { grid-area: r; }
 .key-overlay.layout-classic [data-key-id="left"] { grid-area: left; }
 .key-overlay.layout-classic [data-key-id="down"] { grid-area: down; }
 .key-overlay.layout-classic [data-key-id="right"] { grid-area: right; }
+.key-overlay.layout-classic [data-key-id="r"] { grid-area: r; }
 .key-overlay.layout-horizontal { grid-template-columns: repeat(7, 76px); }
 .preview-hint { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); padding: 8px 12px; border-radius: 999px; color: #b9cce2; background: rgba(0,7,19,.72); font-size: .7rem; white-space: nowrap; }
 .builder-info-card { margin-top: 16px; padding: 16px 18px; border: 1px solid rgba(102,171,255,.15); border-radius: 14px; background: rgba(7,24,53,.48); }
