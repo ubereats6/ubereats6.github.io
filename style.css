@@ -3547,3 +3547,28 @@ body::before {
 }
 .key-overlay.layout-custom .overlay-key:hover { outline: 1px dashed rgba(255,255,255,.42); outline-offset: 3px; }
 .key-overlay.layout-custom .overlay-key.is-dragging { cursor: grabbing; z-index: 10; transform: scale(1.03); }
+
+
+/* Keyboard builder share note */
+.builder-share-note {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-top: 14px;
+  padding: 14px 17px;
+  border: 1px solid rgba(82, 215, 255, .22);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(24, 112, 213, .12), rgba(30, 210, 255, .055));
+  color: #dcecff;
+}
+.builder-share-note span {
+  flex: 0 0 auto;
+  color: var(--cyan);
+  font-size: 1rem;
+  filter: drop-shadow(0 0 8px rgba(82, 215, 255, .5));
+}
+.builder-share-note p {
+  margin: 0;
+  line-height: 1.65;
+  font-size: .84rem;
+}
