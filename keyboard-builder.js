@@ -1,13 +1,13 @@
 (() => {
   const STORAGE_KEY = "ubereats6KeyboardBuilderConfigV2";
   const keyDefinitions = [
-    { id: "shift", label: "Shift", display: "SHIFT", code: "ShiftLeft" },
-    { id: "alt", label: "Alt", display: "ALT", code: "AltLeft" },
     { id: "up", label: "上", display: "↑", code: "ArrowUp" },
-    { id: "ctrl", label: "Ctrl", display: "CTRL", code: "ControlLeft" },
-    { id: "left", label: "左", display: "←", code: "ArrowLeft" },
     { id: "down", label: "下", display: "↓", code: "ArrowDown" },
+    { id: "left", label: "左", display: "←", code: "ArrowLeft" },
     { id: "right", label: "右", display: "→", code: "ArrowRight" },
+    { id: "shift", label: "Shift", display: "SHIFT", code: "ShiftLeft" },
+    { id: "ctrl", label: "Ctrl", display: "CTRL", code: "ControlLeft" },
+    { id: "alt", label: "Alt", display: "ALT", code: "AltLeft" },
     { id: "r", label: "R／重置", display: "R", code: "KeyR" }
   ];
 
