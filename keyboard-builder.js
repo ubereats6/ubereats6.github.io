@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = "ubereats6KeyboardBuilderConfigV1";
+  const STORAGE_KEY = "ubereats6KeyboardBuilderConfigV2";
   const keyDefinitions = [
     { id: "shift", label: "Shift", display: "SHIFT", code: "ShiftLeft" },
     { id: "alt", label: "Alt", display: "ALT", code: "AltLeft" },
@@ -18,8 +18,19 @@
     minimal: { keyColor: "#202631", pressedColor: "#ffffff", textColor: "#ffffff", borderColor: "#9aa8ba", radius: 10, glow: 0, backgroundOpacity: 0 }
   };
 
+  const defaultPositions = {
+    shift: { x: 34, y: 32, w: 162, h: 70 },
+    up:    { x: 282, y: 32, w: 76, h: 70 },
+    alt:   { x: 444, y: 32, w: 162, h: 70 },
+    ctrl:  { x: 34, y: 114, w: 76, h: 70 },
+    left:  { x: 120, y: 114, w: 76, h: 70 },
+    down:  { x: 206, y: 114, w: 76, h: 70 },
+    right: { x: 292, y: 114, w: 76, h: 70 },
+    r:     { x: 378, y: 114, w: 76, h: 70 }
+  };
+
   const defaultConfig = () => ({
-    version: 1,
+    version: 2,
     app: "UberEats6-KeyOverlay",
     layout: "classic",
     preset: "neon",
@@ -27,16 +38,19 @@
     radius: 16,
     glow: 18,
     backgroundOpacity: 35,
+    backgroundSize: 100,
     keyColor: "#0b2d59",
     pressedColor: "#52d7ff",
     textColor: "#ffffff",
     borderColor: "#2c98ff",
     backgroundImage: "",
+    positions: JSON.parse(JSON.stringify(defaultPositions)),
     bindings: Object.fromEntries(keyDefinitions.map((key) => [key.id, key.code]))
   });
 
   let config = defaultConfig();
   let listeningFor = null;
+  let dragState = null;
   const pressedCodes = new Set();
 
   const bindingList = document.getElementById("bindingList");
@@ -58,7 +72,8 @@
     scale: document.getElementById("scaleRange"),
     radius: document.getElementById("radiusRange"),
     glow: document.getElementById("glowRange"),
-    backgroundOpacity: document.getElementById("backgroundOpacityRange")
+    backgroundOpacity: document.getElementById("backgroundOpacityRange"),
+    backgroundSize: document.getElementById("backgroundSizeRange")
   };
 
   const codeLabel = (code) => {
@@ -97,22 +112,64 @@
     }));
   }
 
-  function renderKeys() {
-    const visibleByLayout = {
-      compact: ["shift", "up", "ctrl", "left", "down", "right", "r"],
-      classic: ["shift", "up", "alt", "ctrl", "left", "down", "right", "r"],
-      horizontal: ["shift", "up", "ctrl", "left", "down", "right", "r"]
+  function startDrag(event, keyId) {
+    if (config.layout !== "custom") return;
+    event.preventDefault();
+    const position = config.positions[keyId];
+    const rect = keyOverlay.getBoundingClientRect();
+    const scaleX = keyOverlay.offsetWidth / rect.width;
+    const scaleY = keyOverlay.offsetHeight / rect.height;
+    dragState = {
+      keyId,
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: position.x,
+      originY: position.y,
+      scaleX,
+      scaleY
     };
-    const visibleIds = new Set(visibleByLayout[config.layout] || visibleByLayout.compact);
-    const visibleDefinitions = keyDefinitions.filter((definition) => visibleIds.has(definition.id));
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+    event.currentTarget.classList.add("is-dragging");
+  }
 
-    keyOverlay.replaceChildren(...visibleDefinitions.map((definition) => {
+  function moveDrag(event) {
+    if (!dragState) return;
+    const pos = config.positions[dragState.keyId];
+    const dx = (event.clientX - dragState.startX) * dragState.scaleX;
+    const dy = (event.clientY - dragState.startY) * dragState.scaleY;
+    pos.x = Math.max(0, Math.min(640 - pos.w, dragState.originX + dx));
+    pos.y = Math.max(0, Math.min(240 - pos.h, dragState.originY + dy));
+    const key = keyOverlay.querySelector(`[data-key-id="${dragState.keyId}"]`);
+    if (key) {
+      key.style.left = `${pos.x}px`;
+      key.style.top = `${pos.y}px`;
+    }
+  }
+
+  function endDrag() {
+    if (!dragState) return;
+    keyOverlay.querySelector(`[data-key-id="${dragState.keyId}"]`)?.classList.remove("is-dragging");
+    dragState = null;
+    setStatus("自訂位置已更新。")
+  }
+
+  function renderKeys() {
+    keyOverlay.replaceChildren(...keyDefinitions.map((definition) => {
       const key = document.createElement("div");
       key.className = "overlay-key";
       key.dataset.keyId = definition.id;
       key.dataset.code = config.bindings[definition.id];
       key.textContent = definition.display;
       key.classList.toggle("is-pressed", pressedCodes.has(config.bindings[definition.id]));
+
+      if (config.layout === "custom") {
+        const pos = config.positions[definition.id] || defaultPositions[definition.id];
+        key.style.left = `${pos.x}px`;
+        key.style.top = `${pos.y}px`;
+        key.style.width = `${pos.w}px`;
+        key.style.height = `${pos.h}px`;
+        key.addEventListener("pointerdown", (event) => startDrag(event, definition.id));
+      }
       return key;
     }));
   }
@@ -127,6 +184,7 @@
     overlayCanvas.style.setProperty("--key-glow", `${config.glow}px`);
     overlayCanvas.style.setProperty("--overlay-scale", String(config.scale / 100));
     overlayCanvas.style.setProperty("--bg-opacity", String(config.backgroundOpacity / 100));
+    overlayCanvas.style.setProperty("--bg-size", `${config.backgroundSize}%`);
     overlayBackground.style.backgroundImage = config.backgroundImage ? `url(${JSON.stringify(config.backgroundImage)})` : "none";
 
     controls.layout.value = config.layout;
@@ -139,23 +197,30 @@
     controls.radius.value = config.radius;
     controls.glow.value = config.glow;
     controls.backgroundOpacity.value = config.backgroundOpacity;
+    controls.backgroundSize.value = config.backgroundSize;
     document.getElementById("scaleValue").textContent = `${config.scale}%`;
     document.getElementById("radiusValue").textContent = `${config.radius}px`;
     document.getElementById("glowValue").textContent = `${config.glow}px`;
     document.getElementById("backgroundOpacityValue").textContent = `${config.backgroundOpacity}%`;
+    document.getElementById("backgroundSizeValue").textContent = `${config.backgroundSize}%`;
+    document.getElementById("customLayoutHint")?.classList.toggle("is-active", config.layout === "custom");
     renderBindings();
     renderKeys();
   }
 
-  controls.layout.addEventListener("change", (event) => { config.layout = event.target.value; applyConfig(); });
+  controls.layout.addEventListener("change", (event) => {
+    config.layout = event.target.value;
+    if (config.layout === "custom" && !config.positions) config.positions = JSON.parse(JSON.stringify(defaultPositions));
+    applyConfig();
+  });
   controls.preset.addEventListener("change", (event) => {
     config = { ...config, ...presets[event.target.value], preset: event.target.value };
     applyConfig();
   });
   ["keyColor", "pressedColor", "textColor", "borderColor"].forEach((name) => {
-    controls[name].addEventListener("input", (event) => { config[name] = event.target.value; config.preset = "neon"; applyConfig(); });
+    controls[name].addEventListener("input", (event) => { config[name] = event.target.value; applyConfig(); });
   });
-  [["scale", "scale"], ["radius", "radius"], ["glow", "glow"], ["backgroundOpacity", "backgroundOpacity"]].forEach(([controlName, configName]) => {
+  [["scale", "scale"], ["radius", "radius"], ["glow", "glow"], ["backgroundOpacity", "backgroundOpacity"], ["backgroundSize", "backgroundSize"]].forEach(([controlName, configName]) => {
     controls[controlName].addEventListener("input", (event) => { config[configName] = Number(event.target.value); applyConfig(); });
   });
 
@@ -187,6 +252,10 @@
       previewStage.className = `keyboard-preview-stage preview-${button.dataset.previewBg}`;
     });
   });
+
+  window.addEventListener("pointermove", moveDrag);
+  window.addEventListener("pointerup", endDrag);
+  window.addEventListener("pointercancel", endDrag);
 
   function handleKeyDown(event) {
     if (listeningFor) {
@@ -242,7 +311,14 @@
 
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-    if (saved && saved.version === 1) config = { ...defaultConfig(), ...saved, bindings: { ...defaultConfig().bindings, ...(saved.bindings || {}) } };
+    if (saved && saved.version === 2) {
+      config = {
+        ...defaultConfig(),
+        ...saved,
+        bindings: { ...defaultConfig().bindings, ...(saved.bindings || {}) },
+        positions: { ...JSON.parse(JSON.stringify(defaultPositions)), ...(saved.positions || {}) }
+      };
+    }
   } catch {}
 
   applyConfig();

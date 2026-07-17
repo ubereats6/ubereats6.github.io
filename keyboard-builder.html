@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=34" />
+  <link rel="stylesheet" href="style.css?v=35" />
   <script>
     (() => {
       const savedTheme = localStorage.getItem("ubereats6Theme") || "blue";
@@ -85,10 +85,10 @@
             <label class="builder-field">
               <span>排列樣式</span>
               <select id="layoutSelect">
-                <option value="compact">緊湊競速</option>
                 <option value="classic" selected>經典方向鍵</option>
-                <option value="horizontal">橫向精簡</option>
+                <option value="custom">自訂位置</option>
               </select>
+              <small class="builder-field-note" id="customLayoutHint">選擇「自訂位置」後，可直接拖曳預覽中的 8 顆按鍵。</small>
             </label>
             <label class="builder-field">
               <span>預設主題</span>
@@ -120,6 +120,10 @@
             <label class="builder-range-field">
               <span>背景透明度 <strong id="backgroundOpacityValue">35%</strong></span>
               <input type="range" id="backgroundOpacityRange" min="0" max="100" value="35">
+            </label>
+            <label class="builder-range-field">
+              <span>背景圖片大小 <strong id="backgroundSizeValue">100%</strong></span>
+              <input type="range" id="backgroundSizeRange" min="30" max="220" value="100">
             </label>
           </div>
 
@@ -157,7 +161,7 @@
           <div class="keyboard-preview-stage preview-dark" id="previewStage" tabindex="0" aria-label="鍵盤即時預覽，點擊後可測試按鍵">
             <div class="overlay-canvas" id="overlayCanvas">
               <div class="overlay-background" id="overlayBackground"></div>
-              <div class="key-overlay layout-compact" id="keyOverlay"></div>
+              <div class="key-overlay layout-classic" id="keyOverlay"></div>
             </div>
             <div class="preview-hint" id="previewHint">點擊預覽區後，按下鍵盤測試亮鍵效果</div>
           </div>
@@ -214,6 +218,6 @@
   </div>
 
   <script src="tools.js?v=1"></script>
-  <script src="keyboard-builder.js?v=4"></script>
+  <script src="keyboard-builder.js?v=5"></script>
 </body>
 </html>
