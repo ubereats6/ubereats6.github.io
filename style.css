@@ -3690,21 +3690,24 @@ body::before {
 
 .builder-export-footer {
   display: flex;
-  align-items: flex-end;
+  align-items: stretch;
   justify-content: space-between;
-  gap: 14px;
-  margin-top: 12px;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .builder-export-footer .builder-field-note {
+  display: flex;
   flex: 1;
+  align-items: center;
   margin: 0;
 }
 
 .builder-reset-button {
   flex: 0 0 auto;
-  min-height: 34px;
-  padding: 0 12px;
+  min-width: 112px;
+  min-height: 100%;
+  padding: 10px 16px;
   border: 1px solid rgba(78,171,255,.24);
   border-radius: 9px;
   color: #aebfd4;
@@ -3723,7 +3726,7 @@ body::before {
   background: rgba(20,63,116,.62);
 }
 
-@media (max-width: 520px) {
+@media (max-width: 400px) {
   .builder-export-footer {
     align-items: flex-start;
     flex-direction: column;
