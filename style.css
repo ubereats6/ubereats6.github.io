@@ -3629,3 +3629,48 @@ body::before {
     justify-content: center;
   }
 }
+
+
+/* Keyboard Builder export actions */
+.builder-full-width {
+  width: 100%;
+  grid-column: 1 / -1;
+}
+
+.builder-field-note {
+  margin: 10px 0 12px;
+  line-height: 1.65;
+  color: rgba(214, 231, 255, 0.72);
+  font-size: 0.88rem;
+}
+
+#downloadConfig {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .builder-full-width,
+  #downloadConfig {
+    width: 100%;
+  }
+}
+
+
+/* Compact reset button below JSON export */
+#resetConfig.builder-full-width {
+  width: auto;
+  min-width: 150px;
+  max-width: 190px;
+  min-height: 44px;
+  padding: 10px 22px;
+  justify-self: end;
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 560px) {
+  #resetConfig.builder-full-width {
+    width: 100%;
+    max-width: none;
+    justify-self: stretch;
+  }
+}
