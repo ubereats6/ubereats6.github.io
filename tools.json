@@ -1,0 +1,42 @@
+[
+  {
+    "id": "01",
+    "category": "STREAMING TOOL",
+    "title": "直播指法鍵盤產生器",
+    "description": "自訂鍵位、排列、顏色與背景，打造專屬的跑跑卡丁車直播指法鍵盤。",
+    "buttonText": "OPEN TOOL",
+    "url": "keyboard-builder.html",
+    "status": "available",
+    "newTab": false
+  },
+  {
+    "id": "02",
+    "category": "FUTURE TOOL",
+    "title": "新工具開發中",
+    "description": "更多適合跑跑卡丁車玩家與實況主的功能將陸續加入。",
+    "buttonText": "COMING SOON",
+    "url": "",
+    "status": "coming-soon",
+    "newTab": false
+  },
+  {
+    "id": "03",
+    "category": "FUTURE TOOL",
+    "title": "工具欄位預留",
+    "description": "保留給之後新增的直播、賽事或社群輔助工具。",
+    "buttonText": "COMING SOON",
+    "url": "",
+    "status": "coming-soon",
+    "newTab": false
+  },
+  {
+    "id": "04",
+    "category": "FUTURE TOOL",
+    "title": "工具欄位預留",
+    "description": "未來可直接擴充，不需要重新調整網站導覽架構。",
+    "buttonText": "COMING SOON",
+    "url": "",
+    "status": "coming-soon",
+    "newTab": false
+  }
+]

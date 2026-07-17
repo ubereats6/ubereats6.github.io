@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#020814" />
   <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png?v=1" />
-  <title>Links｜UberEats⁶</title>
-  <meta name="description" content="UberEats⁶ 整理的實用網站與跑跑卡丁車相關資源。" />
+  <title>直播指法鍵盤產生器｜UberEats⁶</title>
+  <meta name="description" content="UberEats⁶ 提供的跑跑卡丁車與直播實用工具。" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
     })();
   </script>
 </head>
-<body class="links-page">
+<body class="links-page tools-page">
   <div class="site-loader" id="siteLoader" role="status" aria-live="polite" aria-label="網站載入中">
     <div class="loader-particles" id="loaderParticles" aria-hidden="true"></div>
     <div class="garage-loader" id="garageLoader">
@@ -55,28 +55,29 @@
       <a href="index.html#community">COMMUNITY</a>
       <a href="index.html#content">CONTENT</a>
       <a href="index.html#people">CONNECTIONS</a>
-      <a href="links.html" aria-current="page">LINKS</a>
-      <a href="tools.html">TOOLS</a>
+      <a href="links.html">LINKS</a>
+      <a href="tools.html" aria-current="page">TOOLS</a>
     </nav>
   </header>
 
   <main class="links-main">
-    <section class="links-hero">
-      <p class="section-kicker">EXPLORE</p>
-      <h1>Useful Links</h1>
-      <p>收錄跑跑卡丁車相關網站、資料整理與其他值得分享的頁面。</p>
+    <section class="links-hero tool-builder-hero">
+      <p class="section-kicker">TOOL 01</p>
+      <h1>直播指法鍵盤產生器</h1>
+      <p>自訂鍵位與外觀，製作適合 OBS 使用的跑跑卡丁車指法鍵盤。</p>
     </section>
 
-    <section class="links-section" aria-labelledby="useful-links-title">
-      <div class="links-section-heading">
-        <div>
-          <span class="section-kicker">MORE PAGES</span>
-          <h2 id="useful-links-title">相關網站與連結</h2>
+    <section class="links-section builder-placeholder" aria-labelledby="builder-title">
+      <div class="builder-placeholder-card">
+        <span class="builder-status">PAGE READY · FUNCTION NEXT</span>
+        <h2 id="builder-title">鍵盤產生器頁面已建立</h2>
+        <p>下一階段會在這裡加入鍵位設定、樣式編輯、即時預覽，以及客製化 ZIP 匯出功能。</p>
+        <div class="builder-key-preview" aria-hidden="true">
+          <span>SHIFT</span><span>↑</span><span>CTRL</span>
+          <span>←</span><span>↓</span><span>→</span>
+          <span class="wide">R</span>
         </div>
-      </div>
-
-      <div class="useful-links-list" id="usefulLinksList" aria-live="polite">
-        <div class="links-loading">Loading links…</div>
+        <a class="useful-link-button builder-back-button" href="tools.html">BACK TO TOOLS</a>
       </div>
     </section>
   </main>
@@ -122,6 +123,6 @@
     </button>
   </div>
 
-  <script src="links.js?v=19"></script>
+  <script src="tools.js?v=1"></script>
 </body>
 </html>
