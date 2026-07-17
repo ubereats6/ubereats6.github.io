@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=37" />
+  <link rel="stylesheet" href="style.css?v=38" />
   <script>
     (() => {
       const savedTheme = localStorage.getItem("ubereats6Theme") || "blue";
@@ -174,9 +174,26 @@
             <div class="preview-hint" id="previewHint">點擊預覽區後，按下鍵盤測試亮鍵效果</div>
           </div>
 
-          <div class="builder-info-card">
-            <strong>目前版本可以做什麼？</strong>
-            <p>這個頁面已能完成鍵位與外觀設定，並輸出之後給 Windows 指法程式讀取的 JSON。下一階段會把通用 EXE 和這份設定自動包成下載 ZIP。</p>
+          <div class="builder-download-card">
+            <div class="builder-download-copy">
+              <span class="builder-download-kicker">WINDOWS APP</span>
+              <strong>下載 KartRider KeyDisplay</strong>
+              <p>先下載 Windows 顯示程式，再把本頁輸出的 <code>overlay-config.json</code> 載入程式，即可在 OBS 中顯示按鍵。</p>
+            </div>
+            <a
+              class="builder-app-download"
+              href="https://github.com/ubereats6/ubereats6.github.io/releases/latest/download/KartRider-KeyDisplay.zip"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span>下載 Windows 程式</span>
+              <small>KartRider-KeyDisplay.zip</small>
+            </a>
+            <ol class="builder-download-steps">
+              <li>下載並解壓縮 KartRider-KeyDisplay.zip</li>
+              <li>在左側完成設定並下載 JSON</li>
+              <li>開啟 EXE，載入 overlay-config.json</li>
+            </ol>
           </div>
           <div class="builder-share-note" role="note">
             <span aria-hidden="true">✦</span>
