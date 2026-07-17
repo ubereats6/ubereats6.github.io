@@ -3489,7 +3489,7 @@ body::before {
   grid-template-columns: repeat(5, 76px);
   grid-template-rows: repeat(2, 70px);
   grid-template-areas:
-    "shift . up . alt"
+    "shift shift up alt alt"
     "ctrl left down right r";
 }
 .key-overlay.layout-classic [data-key-id="shift"] { grid-area: shift; }
