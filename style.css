@@ -5216,3 +5216,15 @@ main > .people.section {
     padding-bottom: 30px !important;
   }
 }
+
+/* ===== Hero scroll cue overlap fix ===== */
+/* Keep the scroll hint inside the hero so it never overlaps the Twitch card. */
+.scroll-cue {
+  bottom: 18px;
+}
+
+@media (max-height: 760px) and (min-width: 761px) {
+  .scroll-cue {
+    bottom: 10px;
+  }
+}
