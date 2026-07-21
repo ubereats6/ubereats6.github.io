@@ -5193,3 +5193,26 @@ main > .people.section {
     padding-bottom: 48px !important;
   }
 }
+
+/* 2026-07-21: compact, consistent homepage section spacing */
+body.home-page main > .section,
+main > .stream-status.section,
+main > .updates.section,
+main > .community.section,
+main > .content-showcase.section,
+main > .people.section {
+  padding-top: 42px !important;
+  padding-bottom: 42px !important;
+}
+
+@media (max-width: 760px) {
+  body.home-page main > .section,
+  main > .stream-status.section,
+  main > .updates.section,
+  main > .community.section,
+  main > .content-showcase.section,
+  main > .people.section {
+    padding-top: 30px !important;
+    padding-bottom: 30px !important;
+  }
+}
