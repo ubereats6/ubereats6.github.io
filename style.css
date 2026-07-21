@@ -4192,7 +4192,7 @@ body::before {
   grid-row: 1 / span 2;
   min-height: 256px;
   padding: 28px 30px;
-  align-content: end;
+  align-content: center;
   background:
     radial-gradient(circle at 88% 12%, rgba(41, 169, 255, .20), transparent 34%),
     radial-gradient(circle at 10% 100%, rgba(28, 89, 192, .15), transparent 38%),
@@ -4270,4 +4270,17 @@ body::before {
   .update-card:first-child h3 {
     font-size: 1.15rem;
   }
+}
+
+/* Homepage order refinement: Twitch first, updates second */
+.stream-status.section {
+  padding-bottom: 18px;
+}
+
+.stream-status.section + .updates.section {
+  padding-top: 28px;
+}
+
+.update-card:first-child .update-meta {
+  margin-top: 0;
 }
