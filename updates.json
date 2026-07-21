@@ -1,0 +1,23 @@
+[
+  {
+    "date": "2026-07-21",
+    "type": "news",
+    "title": "跑跑卡丁車開發日誌 第2篇",
+    "description": "賽道平衡調整目標與方向說明",
+    "link": "https://tw.nexon.com/kart/zh/news/3504883"
+  },
+  {
+    "date": "2026-07-17",
+    "type": "release",
+    "title": "KartRider 指法鍵盤更新",
+    "description": "新增綠幕、自訂背景與透明度設定",
+    "link": "https://ubereats6.github.io/keyboard-builder.html"
+  },
+  {
+    "date": "2026-07-16",
+    "type": "partner",
+    "title": "新增合作夥伴 Lia 網站連結",
+    "description": "牙刷網站",
+    "link": "https://www.khi-bin-a.com/"
+  }
+]
