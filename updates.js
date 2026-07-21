@@ -20,7 +20,7 @@
   const render = (items) => {
     list.replaceChildren();
 
-    items.slice(0, 1).forEach((item) => {
+    items.slice(0, 3).forEach((item) => {
       const link = document.createElement("a");
       link.className = "update-card";
       link.href = item.link || "#";
