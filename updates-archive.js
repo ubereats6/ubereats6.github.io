@@ -7,7 +7,7 @@
   const summary = document.getElementById("archiveSummary");
   if (!list || !yearFilter || !loadMore) return;
 
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 3;
   const typeLabels = {
     news: "最新消息",
     release: "工具更新",
