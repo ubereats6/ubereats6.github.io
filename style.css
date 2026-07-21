@@ -4284,3 +4284,132 @@ body::before {
 .update-card:first-child .update-meta {
   margin-top: 0;
 }
+
+/* Updates archive page */
+.updates-all-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  border: 1px solid rgba(89, 166, 255, .22);
+  border-radius: 999px;
+  color: rgba(210, 231, 255, .82);
+  background: rgba(7, 27, 59, .48);
+  font-size: .75rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: border-color .2s ease, color .2s ease, transform .2s ease, background .2s ease;
+}
+.updates-all-link:hover {
+  color: #fff;
+  border-color: rgba(82, 215, 255, .48);
+  background: rgba(20, 86, 151, .28);
+  transform: translateY(-2px);
+}
+.updates-all-link span { color: var(--cyan); }
+
+.updates-archive-main { min-height: 100vh; padding-top: 118px; }
+.updates-archive-hero { padding-top: 72px; padding-bottom: 34px; }
+.updates-archive-hero h1 {
+  margin: 10px 0 12px;
+  color: #f3f8ff;
+  font-size: clamp(2.25rem, 5vw, 4.4rem);
+  line-height: 1.05;
+  letter-spacing: -.04em;
+}
+.updates-archive-hero > p { max-width: 680px; margin: 0; color: var(--muted); line-height: 1.8; }
+.archive-back {
+  display: inline-flex;
+  margin-bottom: 28px;
+  color: rgba(181, 211, 242, .72);
+  font-size: .78rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.archive-back:hover { color: var(--cyan); }
+.updates-archive { padding-top: 18px; padding-bottom: 110px; }
+.archive-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 24px;
+}
+.archive-toolbar h2 { margin: 0 0 7px; font-size: clamp(1.45rem, 2.4vw, 2rem); }
+.archive-toolbar p { margin: 0; color: var(--muted); font-size: .82rem; }
+.year-filter { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.year-filter-button {
+  min-width: 66px;
+  padding: 9px 14px;
+  border: 1px solid rgba(89, 166, 255, .20);
+  border-radius: 999px;
+  color: rgba(196, 220, 246, .72);
+  background: rgba(5, 21, 47, .70);
+  font: 800 .74rem/1 Inter, "Noto Sans TC", sans-serif;
+  cursor: pointer;
+  transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease;
+}
+.year-filter-button:hover { color: #fff; border-color: rgba(82, 215, 255, .42); transform: translateY(-1px); }
+.year-filter-button[aria-pressed="true"] {
+  color: #03111f;
+  border-color: var(--cyan);
+  background: linear-gradient(135deg, #66e7ff, #2a9cff);
+  box-shadow: 0 8px 24px rgba(33, 158, 255, .18);
+}
+.archive-list {
+  overflow: hidden;
+  border: 1px solid rgba(89, 166, 255, .20);
+  border-radius: 22px;
+  background: linear-gradient(145deg, rgba(7, 27, 59, .80), rgba(4, 15, 34, .93));
+  box-shadow: 0 18px 45px rgba(0, 25, 65, .15), inset 0 1px rgba(255, 255, 255, .03);
+}
+.archive-update-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: 24px;
+  min-height: 118px;
+  padding: 22px 24px;
+  color: inherit;
+  text-decoration: none;
+  transition: background .2s ease;
+}
+.archive-update-card + .archive-update-card { border-top: 1px solid rgba(89, 166, 255, .11); }
+.archive-update-card:hover { background: linear-gradient(90deg, rgba(34, 139, 220, .11), rgba(34, 139, 220, .02)); }
+.archive-update-card .update-meta { margin: 0; flex-direction: column; align-items: flex-start; gap: 8px; }
+.archive-update-content h3 { margin: 0 0 8px; color: #f1f7ff; font-size: 1rem; line-height: 1.45; }
+.archive-update-content p { margin: 0; color: var(--muted); font-size: .82rem; line-height: 1.65; }
+.archive-update-card .update-arrow { position: static; justify-self: end; align-self: center; }
+.archive-load-more-wrap { display: flex; justify-content: center; min-height: 70px; padding-top: 24px; }
+.archive-load-more {
+  min-width: 180px;
+  padding: 13px 22px;
+  border: 1px solid rgba(82, 215, 255, .30);
+  border-radius: 12px;
+  color: #e8f6ff;
+  background: linear-gradient(135deg, rgba(18, 91, 164, .45), rgba(24, 63, 125, .48));
+  font: 800 .82rem/1 Inter, "Noto Sans TC", sans-serif;
+  cursor: pointer;
+}
+.archive-load-more:hover { border-color: rgba(82, 215, 255, .62); background: linear-gradient(135deg, rgba(25, 125, 214, .58), rgba(37, 82, 158, .58)); }
+.archive-complete { margin: 12px 0 0; color: rgba(166, 194, 224, .56); font-size: .76rem; }
+
+@media (max-width: 760px) {
+  .updates-heading { align-items: flex-start; }
+  .updates-all-link { padding: 9px 12px; }
+  .updates-archive-main { padding-top: 88px; }
+  .updates-archive-hero { padding-top: 46px; }
+  .archive-toolbar { align-items: flex-start; flex-direction: column; }
+  .year-filter { justify-content: flex-start; }
+  .archive-update-card {
+    grid-template-columns: minmax(0, 1fr) 28px;
+    gap: 12px;
+    padding: 19px;
+  }
+  .archive-update-card .update-meta,
+  .archive-update-content { grid-column: 1; }
+  .archive-update-card .update-meta { flex-direction: row; align-items: center; }
+  .archive-update-card .update-arrow { grid-column: 2; grid-row: 1 / span 2; }
+}

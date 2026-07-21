@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#020814" />
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon.png?v=1" />
+  <title>更新紀錄｜UberEats⁶</title>
+  <meta name="description" content="UberEats⁶ 網站、工具與合作夥伴的歷史更新紀錄。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    (() => {
+      document.documentElement.dataset.theme = localStorage.getItem("ubereats6Theme") || "blue";
+    })();
+  </script>
+</head>
+<body class="updates-page">
+  <div class="noise" aria-hidden="true"></div>
+  <div class="speed-lines speed-lines-a" aria-hidden="true"></div>
+  <div class="speed-lines speed-lines-b" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand brand-lockup" href="index.html" aria-label="回到首頁">
+      <img class="brand-logo" src="assets/ubereats6-twitch-logo.webp" alt="UberEats⁶ Twitch Logo" />
+      <span class="brand-copy"><strong>UberEats<sup>6</sup></strong><small>SPEED · FOCUS · WIN</small></span>
+    </a>
+    <button class="menu-button" aria-label="開啟選單" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav class="nav">
+      <a href="index.html">HOME</a>
+      <a href="updates.html" aria-current="page">UPDATES</a>
+      <a href="index.html#people">CONNECTIONS</a>
+      <a href="tools.html">TOOLS</a>
+      <a href="links.html">LINKS</a>
+    </nav>
+  </header>
+
+  <main class="updates-archive-main">
+    <section class="updates-archive-hero section">
+      <a class="archive-back" href="index.html#updates">← 返回首頁</a>
+      <div class="section-kicker">UPDATE ARCHIVE</div>
+      <h1>更新紀錄</h1>
+      <p>網站、工具、公告與合作夥伴的歷史資訊都會保留在這裡。</p>
+    </section>
+
+    <section class="updates-archive section" aria-labelledby="archiveTitle">
+      <div class="archive-toolbar">
+        <div>
+          <h2 id="archiveTitle">所有更新</h2>
+          <p id="archiveSummary">正在讀取更新資料…</p>
+        </div>
+        <div class="year-filter" id="yearFilter" aria-label="依年份篩選"></div>
+      </div>
+
+      <div class="archive-list" id="archiveList" aria-live="polite">
+        <p class="updates-status" id="archiveStatus">正在載入更新紀錄…</p>
+      </div>
+
+      <div class="archive-load-more-wrap">
+        <button class="archive-load-more" id="archiveLoadMore" type="button" hidden>載入更多</button>
+        <p class="archive-complete" id="archiveComplete" hidden>已顯示全部更新</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-brand"><span>UberEats</span><sup>6</sup></div>
+    <p>Racing・Gaming・Streaming</p>
+    <div class="footer-links">
+      <a href="https://twitch.tv/ubereatssssss" target="_blank" rel="noopener noreferrer">Twitch</a>
+      <a href="https://discord.gg/AFacNEgEcK" target="_blank" rel="noopener noreferrer">Discord</a>
+      <a href="https://www.youtube.com/channel/UCqZ-qg_lfVAfo7oZ4I3O1yA" target="_blank" rel="noopener noreferrer">YouTube</a>
+      <a href="https://www.tiktok.com/@taxi_kartrider?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">TikTok</a>
+    </div>
+    <small>© 2026 UberEats⁶. All rights reserved.</small>
+  </footer>
+
+  <div class="utility-controls" aria-label="網站工具">
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="切換網站主題" title="切換網站主題"><span class="theme-toggle-icon" aria-hidden="true">◐</span><span class="theme-toggle-text">BLUE</span></button>
+    <button class="back-to-top" id="backToTop" type="button" aria-label="回到頁面頂端" title="回到頂端"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5.5 5.5 12l1.8 1.8 3.45-3.45V20h2.5v-9.65l3.45 3.45 1.8-1.8L12 5.5Z"/></svg><span>TOP</span></button>
+  </div>
+
+  <script src="script.js?v=3"></script>
+  <script src="updates-archive.js?v=1"></script>
+</body>
+</html>
