@@ -4563,3 +4563,208 @@ body::before {
   .archive-update-content h3 { font-size: 1.08rem; }
   .archive-update-content p { font-size: .88rem; }
 }
+
+/* 2026-07-21: embed latest update under Twitch + tool-style archive cards */
+.stream-status.section {
+  padding-bottom: 12px;
+}
+
+.stream-status.section + .updates.section,
+.updates.section {
+  padding-top: 0;
+  padding-bottom: 48px;
+}
+
+.updates-heading {
+  margin-bottom: 10px;
+  padding: 0 4px;
+}
+
+.updates-heading > div {
+  gap: 10px;
+}
+
+.updates-heading .section-kicker {
+  font-size: .64rem;
+}
+
+.updates-heading h2 {
+  font-size: .92rem;
+  color: rgba(225, 239, 255, .9);
+}
+
+.updates-all-link {
+  padding: 8px 12px;
+  font-size: .7rem;
+}
+
+.updates-list .update-card {
+  grid-template-columns: auto minmax(210px, .9fr) minmax(260px, 1.3fr) 28px;
+  min-height: 78px;
+  padding: 15px 20px;
+  border-radius: 18px;
+  background:
+    linear-gradient(90deg, rgba(13, 48, 91, .82), rgba(6, 25, 53, .76)),
+    radial-gradient(circle at 14% 50%, rgba(39, 164, 255, .12), transparent 36%);
+}
+
+.updates-list .update-card h3 {
+  font-size: 1.02rem;
+}
+
+.updates-list .update-card > p {
+  font-size: .84rem;
+}
+
+/* Archive: separate cards like the Tools page */
+.archive-list {
+  display: grid;
+  gap: 16px;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.archive-update-card {
+  grid-template-columns: 150px minmax(0, 1fr) 118px;
+  gap: 24px;
+  min-height: 116px;
+  padding: 24px 26px;
+  border: 1px solid rgba(89, 166, 255, .20);
+  border-radius: 20px;
+  background:
+    linear-gradient(145deg, rgba(8, 31, 66, .84), rgba(4, 17, 38, .92));
+  box-shadow:
+    0 16px 38px rgba(0, 18, 48, .18),
+    inset 0 1px rgba(255, 255, 255, .03);
+  transition: transform .22s ease, border-color .22s ease, background .22s ease, box-shadow .22s ease;
+}
+
+.archive-update-card + .archive-update-card {
+  border-top: 1px solid rgba(89, 166, 255, .20);
+}
+
+.archive-update-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(82, 215, 255, .48);
+  background:
+    linear-gradient(145deg, rgba(12, 46, 91, .92), rgba(5, 22, 48, .96));
+  box-shadow:
+    0 22px 46px rgba(0, 25, 70, .25),
+    0 0 0 1px rgba(75, 190, 255, .05) inset;
+}
+
+.archive-update-card .update-meta {
+  align-self: center;
+  padding-right: 18px;
+  border-right: 1px solid rgba(89, 166, 255, .13);
+}
+
+.archive-update-content h3 {
+  font-size: clamp(1.12rem, 1.6vw, 1.32rem);
+}
+
+.archive-update-content p {
+  font-size: .94rem;
+}
+
+.archive-update-card .update-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: end;
+  width: 104px;
+  min-height: 44px;
+  border: 1px solid rgba(82, 215, 255, .24);
+  border-radius: 12px;
+  color: #dff7ff;
+  background: rgba(20, 91, 158, .20);
+  font-size: 0;
+}
+
+.archive-update-card .update-arrow::before {
+  content: "查看詳情";
+  font-size: .72rem;
+  font-weight: 850;
+  letter-spacing: .04em;
+}
+
+.archive-update-card .update-arrow::after {
+  content: "→";
+  margin-left: 8px;
+  color: var(--cyan);
+  font-size: 1rem;
+}
+
+@media (max-width: 900px) {
+  .updates-list .update-card {
+    grid-template-columns: auto minmax(0, 1fr) 24px;
+  }
+
+  .archive-update-card {
+    grid-template-columns: 132px minmax(0, 1fr) 96px;
+    gap: 18px;
+    padding: 22px;
+  }
+
+  .archive-update-card .update-arrow {
+    width: 92px;
+  }
+}
+
+@media (max-width: 760px) {
+  .stream-status.section {
+    padding-bottom: 10px;
+  }
+
+  .updates.section {
+    padding-bottom: 38px;
+  }
+
+  .updates-heading {
+    margin-bottom: 9px;
+  }
+
+  .archive-list {
+    gap: 12px;
+  }
+
+  .archive-update-card {
+    grid-template-columns: minmax(0, 1fr) 28px;
+    gap: 12px;
+    padding: 20px 18px;
+    border-radius: 18px;
+  }
+
+  .archive-update-card .update-meta {
+    grid-column: 1;
+    flex-direction: row;
+    align-items: center;
+    padding-right: 0;
+    border-right: 0;
+  }
+
+  .archive-update-content {
+    grid-column: 1;
+  }
+
+  .archive-update-card .update-arrow {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    width: auto;
+    min-height: 0;
+    border: 0;
+    background: none;
+  }
+
+  .archive-update-card .update-arrow::before {
+    display: none;
+  }
+
+  .archive-update-card .update-arrow::after {
+    margin: 0;
+    font-size: 1.15rem;
+  }
+}
