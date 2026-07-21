@@ -5046,3 +5046,127 @@ body::before {
     grid-row: 1 / span 2;
   }
 }
+
+/* 2026-07-21: remove update text truncation and prevent action/meta overlap */
+.updates-list .update-card {
+  grid-template-columns: minmax(0, 1fr) 44px !important;
+  grid-template-rows: auto auto auto !important;
+  column-gap: 18px !important;
+  row-gap: 9px !important;
+  align-content: center;
+}
+
+.updates-list .update-meta {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  position: static !important;
+  z-index: 1;
+  flex-wrap: wrap;
+  padding-right: 0 !important;
+}
+
+.updates-list .update-card h3 {
+  grid-column: 1 !important;
+  grid-row: 2 !important;
+  max-width: none !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  overflow-wrap: anywhere;
+}
+
+.updates-list .update-card > p {
+  grid-column: 1 !important;
+  grid-row: 3 !important;
+  max-width: none !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  overflow-wrap: anywhere;
+}
+
+.updates-list .update-arrow {
+  grid-column: 2 !important;
+  grid-row: 1 / span 3 !important;
+  position: static !important;
+  align-self: center !important;
+  justify-self: end !important;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(82, 215, 255, .22);
+  border-radius: 11px;
+  background: rgba(19, 89, 151, .16);
+}
+
+/* Archive cards: full text, independent columns, no overlap */
+.archive-update-card {
+  grid-template-columns: 160px minmax(0, 1fr) 118px !important;
+  grid-template-rows: auto !important;
+  align-items: center !important;
+  min-height: 0 !important;
+}
+
+.archive-update-card .update-meta,
+.archive-update-content,
+.archive-update-card .update-arrow {
+  position: static !important;
+}
+
+.archive-update-content h3,
+.archive-update-content p {
+  max-width: none !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  overflow-wrap: anywhere;
+}
+
+.archive-update-card .update-arrow {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: end !important;
+}
+
+@media (min-width: 761px) {
+  .updates-list .update-card:first-child {
+    padding-right: 24px !important;
+  }
+
+  .updates-list .update-card:first-child h3,
+  .updates-list .update-card:first-child > p {
+    max-width: calc(100% - 4px) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .updates-list .update-card,
+  .updates-list .update-card:first-child,
+  .updates-list .update-card:nth-child(2),
+  .updates-list .update-card:nth-child(3) {
+    grid-template-columns: minmax(0, 1fr) 36px !important;
+  }
+
+  .archive-update-card {
+    grid-template-columns: minmax(0, 1fr) 30px !important;
+    grid-template-rows: auto auto !important;
+  }
+
+  .archive-update-card .update-meta {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  .archive-update-content {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+  }
+
+  .archive-update-card .update-arrow {
+    grid-column: 2 !important;
+    grid-row: 1 / span 2 !important;
+  }
+}
