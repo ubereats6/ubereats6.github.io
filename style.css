@@ -5228,3 +5228,157 @@ main > .people.section {
     bottom: 10px;
   }
 }
+
+/* 2026-07-22: updates archive layout cleanup */
+body.updates-page .updates-archive-hero {
+  padding-bottom: 46px;
+}
+
+body.updates-page .updates-archive {
+  padding-top: 0;
+}
+
+body.updates-page .archive-toolbar {
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+body.updates-page .archive-list {
+  display: grid;
+  gap: 14px;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body.updates-page .archive-update-card {
+  display: grid !important;
+  grid-template-columns: 160px minmax(0, 1fr) 118px !important;
+  grid-template-areas: "meta content action" !important;
+  grid-template-rows: auto !important;
+  align-items: center !important;
+  gap: 26px !important;
+  min-height: 112px !important;
+  padding: 22px 26px !important;
+  border: 1px solid rgba(89, 166, 255, .20) !important;
+  border-radius: 18px !important;
+  background: linear-gradient(145deg, rgba(8, 31, 66, .84), rgba(4, 17, 38, .92)) !important;
+  box-shadow: 0 14px 34px rgba(0, 18, 48, .16), inset 0 1px rgba(255, 255, 255, .03) !important;
+}
+
+body.updates-page .archive-update-card + .archive-update-card {
+  border-top: 1px solid rgba(89, 166, 255, .20) !important;
+}
+
+body.updates-page .archive-update-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(82, 215, 255, .46) !important;
+}
+
+body.updates-page .archive-update-card .update-meta {
+  grid-area: meta !important;
+  position: static !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  align-self: stretch !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 22px 0 0 !important;
+  border-right: 1px solid rgba(89, 166, 255, .16) !important;
+}
+
+body.updates-page .archive-update-content {
+  grid-area: content !important;
+  min-width: 0;
+}
+
+body.updates-page .archive-update-content h3 {
+  margin: 0 0 7px !important;
+  font-size: clamp(1.08rem, 1.45vw, 1.28rem) !important;
+  line-height: 1.4 !important;
+}
+
+body.updates-page .archive-update-content p {
+  margin: 0 !important;
+  font-size: .9rem !important;
+  line-height: 1.6 !important;
+}
+
+body.updates-page .archive-update-content h3,
+body.updates-page .archive-update-content p {
+  max-width: none !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  overflow-wrap: anywhere;
+}
+
+body.updates-page .archive-update-card .update-arrow {
+  grid-area: action !important;
+  position: static !important;
+  align-self: center !important;
+  justify-self: end !important;
+  width: 104px !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+}
+
+@media (max-width: 900px) {
+  body.updates-page .archive-update-card {
+    grid-template-columns: 136px minmax(0, 1fr) 104px !important;
+    gap: 20px !important;
+    padding: 20px 22px !important;
+  }
+
+  body.updates-page .archive-update-card .update-meta {
+    padding-right: 18px !important;
+  }
+
+  body.updates-page .archive-update-card .update-arrow {
+    width: 94px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  body.updates-page .updates-archive-hero {
+    padding-bottom: 34px;
+  }
+
+  body.updates-page .archive-toolbar {
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  body.updates-page .archive-update-card {
+    grid-template-columns: minmax(0, 1fr) 28px !important;
+    grid-template-areas:
+      "meta action"
+      "content action" !important;
+    grid-template-rows: auto auto !important;
+    gap: 11px 12px !important;
+    min-height: 0 !important;
+    padding: 18px !important;
+  }
+
+  body.updates-page .archive-update-card .update-meta {
+    flex-direction: row !important;
+    align-items: center !important;
+    align-self: auto !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap;
+    padding: 0 !important;
+    border-right: 0 !important;
+  }
+
+  body.updates-page .archive-update-card .update-arrow {
+    width: auto !important;
+    min-height: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+}
