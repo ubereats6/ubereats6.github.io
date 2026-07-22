@@ -5382,3 +5382,52 @@ body.updates-page .archive-update-card .update-arrow {
     background: transparent !important;
   }
 }
+
+/* 2026-07-22: make the Updates hero match the other subpages */
+body.updates-page .updates-archive-main {
+  min-height: 100vh;
+  padding-top: 150px;
+}
+
+body.updates-page .updates-archive-hero {
+  width: 100%;
+  margin: 0;
+  padding: 76px clamp(26px, 6vw, 78px);
+}
+
+body.updates-page .updates-archive-hero h1 {
+  position: relative;
+  z-index: 1;
+  margin: 10px 0 14px;
+  font-size: clamp(3rem, 8vw, 6rem);
+  line-height: .95;
+  letter-spacing: -.065em;
+  font-style: italic;
+}
+
+body.updates-page .updates-archive-hero > p {
+  position: relative;
+  z-index: 1;
+  max-width: 650px;
+  margin: 0;
+}
+
+body.updates-page .updates-archive {
+  width: 100%;
+  margin: 0;
+  padding: 72px 0 110px;
+}
+
+@media (max-width: 640px) {
+  body.updates-page .updates-archive-main {
+    padding-top: 122px;
+  }
+
+  body.updates-page .updates-archive-hero {
+    padding: 54px 24px;
+  }
+
+  body.updates-page .updates-archive {
+    padding-top: 42px;
+  }
+}
