@@ -26,5 +26,12 @@
     "title": "更新網頁Logo",
     "description": "Logo更新",
     "link": ""
+  },
+  {
+    "date": "2026-06-23",
+    "type": "news",
+    "title": "跑跑卡丁車開發日誌 第1篇",
+    "description": "大廳改版與主程式環境改善說明",
+    "link": "https://tw.nexon.com/kart/zh/news/3481390?listPage=1"
   }
 ]
