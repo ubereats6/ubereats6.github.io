@@ -2414,7 +2414,6 @@ h1 {
   padding: 150px 0 90px;
 }
 
-/* Shared top hero for Updates, Tools, and Links. Keep page-specific CSS away from this block. */
 .links-hero {
   position: relative;
   padding: 76px clamp(26px, 6vw, 78px);
@@ -4310,6 +4309,16 @@ body::before {
 }
 .updates-all-link span { color: var(--cyan); }
 
+.updates-archive-main { min-height: 100vh; padding-top: 118px; }
+.updates-archive-hero { padding-top: 72px; padding-bottom: 34px; }
+.updates-archive-hero h1 {
+  margin: 10px 0 12px;
+  color: #f3f8ff;
+  font-size: clamp(2.25rem, 5vw, 4.4rem);
+  line-height: 1.05;
+  letter-spacing: -.04em;
+}
+.updates-archive-hero > p { max-width: 680px; margin: 0; color: var(--muted); line-height: 1.8; }
 .archive-back {
   display: inline-flex;
   margin-bottom: 28px;
@@ -4390,6 +4399,8 @@ body::before {
 @media (max-width: 760px) {
   .updates-heading { align-items: flex-start; }
   .updates-all-link { padding: 9px 12px; }
+  .updates-archive-main { padding-top: 88px; }
+  .updates-archive-hero { padding-top: 46px; }
   .archive-toolbar { align-items: flex-start; flex-direction: column; }
   .year-filter { justify-content: flex-start; }
   .archive-update-card {
@@ -5218,6 +5229,11 @@ main > .people.section {
   }
 }
 
+/* 2026-07-22: updates archive layout cleanup */
+body.updates-page .updates-archive-hero {
+  padding-bottom: 46px;
+}
+
 body.updates-page .updates-archive {
   padding-top: 0;
 }
@@ -5329,6 +5345,10 @@ body.updates-page .archive-update-card .update-arrow {
 }
 
 @media (max-width: 760px) {
+  body.updates-page .updates-archive-hero {
+    padding-bottom: 34px;
+  }
+
   body.updates-page .archive-toolbar {
     align-items: flex-start;
     gap: 18px;
@@ -5363,7 +5383,35 @@ body.updates-page .archive-update-card .update-arrow {
   }
 }
 
-/* Updates content spacing only. The top hero inherits the shared .links-main and .links-hero rules. */
+/* 2026-07-22: make the Updates hero match the other subpages */
+body.updates-page .updates-archive-main {
+  min-height: 100vh;
+  padding-top: 150px;
+}
+
+body.updates-page .updates-archive-hero {
+  width: 100%;
+  margin: 0;
+  padding: 76px clamp(26px, 6vw, 78px);
+}
+
+body.updates-page .updates-archive-hero h1 {
+  position: relative;
+  z-index: 1;
+  margin: 10px 0 14px;
+  font-size: clamp(3rem, 8vw, 6rem);
+  line-height: .95;
+  letter-spacing: -.065em;
+  font-style: italic;
+}
+
+body.updates-page .updates-archive-hero > p {
+  position: relative;
+  z-index: 1;
+  max-width: 650px;
+  margin: 0;
+}
+
 body.updates-page .updates-archive {
   width: 100%;
   margin: 0;
@@ -5371,6 +5419,14 @@ body.updates-page .updates-archive {
 }
 
 @media (max-width: 640px) {
+  body.updates-page .updates-archive-main {
+    padding-top: 122px;
+  }
+
+  body.updates-page .updates-archive-hero {
+    padding: 54px 24px;
+  }
+
   body.updates-page .updates-archive {
     padding-top: 42px;
   }
@@ -5508,5 +5564,102 @@ body.updates-page .updates-archive {
   .home-scroll-cue {
     margin-top: 16px;
     margin-bottom: 16px;
+  }
+}
+
+/* 2026-07-22: place homepage scroll cue in its own centered row between hero and Twitch */
+.hero {
+  padding-bottom: 48px;
+}
+
+.scroll-cue-row {
+  width: min(1240px, calc(100% - 40px));
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  padding: 20px 0 24px;
+}
+
+.scroll-cue-row .scroll-cue {
+  position: static;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  z-index: 4;
+  gap: 7px;
+}
+
+.stream-status.section {
+  padding-top: 0;
+}
+
+@media (max-width: 980px) {
+  .hero {
+    padding-bottom: 42px;
+  }
+
+  .scroll-cue-row {
+    width: calc(100% - 28px);
+    padding: 18px 0 22px;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero {
+    padding-bottom: 34px;
+  }
+
+  .scroll-cue-row {
+    width: calc(100% - 24px);
+    padding: 14px 0 18px;
+  }
+}
+
+/* 2026-07-22: final homepage scroll cue centering fix */
+.hero {
+  padding-bottom: 40px;
+}
+
+.scroll-cue-row {
+  width: min(1240px, calc(100% - 40px));
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 18px 0 22px;
+}
+
+.scroll-cue-row .home-scroll-cue {
+  position: static;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  width: max-content;
+  margin: 0 auto;
+}
+
+.stream-status.section {
+  padding-top: 0;
+}
+
+@media (max-width: 980px) {
+  .hero {
+    padding-bottom: 34px;
+  }
+
+  .scroll-cue-row {
+    width: calc(100% - 28px);
+    padding: 16px 0 20px;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero {
+    padding-bottom: 28px;
+  }
+
+  .scroll-cue-row {
+    width: calc(100% - 24px);
+    padding: 12px 0 16px;
   }
 }
