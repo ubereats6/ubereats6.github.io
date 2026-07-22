@@ -5474,3 +5474,20 @@ body.updates-page .updates-archive {
     padding-top: 60px;
   }
 }
+
+/* 2026-07-22: fine-tune homepage scroll cue so it sits centered between the hero and Twitch block */
+.hero > .scroll-cue {
+  bottom: 20px;
+}
+
+@media (max-width: 980px) {
+  .hero > .scroll-cue {
+    bottom: 16px;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero > .scroll-cue {
+    bottom: 14px;
+  }
+}
