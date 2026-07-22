@@ -5431,3 +5431,46 @@ body.updates-page .updates-archive {
     padding-top: 42px;
   }
 }
+
+/* 2026-07-22: restore homepage scroll cue position so it stays above the Twitch card */
+.hero {
+  padding-bottom: 118px;
+}
+
+.hero > .scroll-cue {
+  bottom: 40px;
+  z-index: 4;
+  gap: 7px;
+}
+
+.stream-status.section {
+  padding-top: 84px;
+}
+
+@media (max-width: 980px) {
+  .hero {
+    padding-bottom: 96px;
+  }
+
+  .hero > .scroll-cue {
+    bottom: 28px;
+  }
+
+  .stream-status.section {
+    padding-top: 72px;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero {
+    padding-bottom: 78px;
+  }
+
+  .hero > .scroll-cue {
+    bottom: 22px;
+  }
+
+  .stream-status.section {
+    padding-top: 60px;
+  }
+}
