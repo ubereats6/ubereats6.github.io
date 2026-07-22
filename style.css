@@ -5491,3 +5491,58 @@ body.updates-page .updates-archive {
     bottom: 14px;
   }
 }
+
+/* 2026-07-22: normalize homepage vertical rhythm around the scroll cue */
+.hero {
+  padding-bottom: 54px;
+}
+
+.home-scroll-cue {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  width: max-content;
+  margin: 58px auto 76px;
+  z-index: 4;
+}
+
+.stream-status.section {
+  padding-top: 0;
+  padding-bottom: 82px;
+}
+
+.updates.section {
+  padding-top: 0;
+}
+
+@media (max-width: 980px) {
+  .hero {
+    padding-bottom: 44px;
+  }
+
+  .home-scroll-cue {
+    margin-top: 48px;
+    margin-bottom: 64px;
+  }
+
+  .stream-status.section {
+    padding-top: 0;
+    padding-bottom: 68px;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero {
+    padding-bottom: 34px;
+  }
+
+  .home-scroll-cue {
+    display: none;
+  }
+
+  .stream-status.section {
+    padding-top: 46px;
+    padding-bottom: 54px;
+  }
+}
