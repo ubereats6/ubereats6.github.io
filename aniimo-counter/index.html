@@ -1,16 +1,159 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>伊莫四人對策｜屬性推薦</title><meta name="description" content="逐隻輸入四位對手，依伊莫調查站屬性表推薦攻擊與防守屬性。"><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23112229'/%3E%3Cpath d='M12 42L30 16l11 15 11-9v25H12z' fill='%2366dbc0'/%3E%3C/svg%3E"><style>
-:root{font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif;color:#eaf3f2;background:#101c21}*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{cursor:pointer}.wrap{max-width:1180px;margin:auto;padding:28px 22px 70px}header{display:flex;justify-content:flex-end;flex-wrap:wrap;align-items:baseline;gap:15px;border-bottom:1px solid #355158;padding-bottom:18px}h1{margin-right:auto;font-size:clamp(1.5rem,4vw,2.25rem);margin:0;letter-spacing:.02em}header a,.source a{color:#7de4cf}header a{text-decoration:none}p{line-height:1.6}h2{font-size:1.2rem;margin:0 0 15px}.intro{color:#a6c1c1;margin:16px 0 22px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.slot{background:#1b2c32;border:1px solid #39545b;border-radius:14px;padding:15px;min-width:0}.slot:focus-within{border-color:#72d5c3}.slot label{display:block;font-weight:700;margin-bottom:10px}.mode{display:flex;gap:5px;margin-bottom:11px}.mode button{flex:1;background:#253c43;border:1px solid #45636a;border-radius:8px;color:#c9dcdb;padding:7px}.mode button.active{background:#3c756c;color:white;border-color:#6bcfba}.search{position:relative}.search input,.manual select{width:100%;background:#102126;color:#f0faf7;border:1px solid #567078;border-radius:8px;padding:10px;min-height:44px}.results{position:absolute;z-index:20;top:calc(100% + 4px);width:100%;max-height:270px;overflow:auto;background:#254047;border:1px solid #69968e;border-radius:9px;box-shadow:0 16px 30px #0008}.results button{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid #42616a;background:none;color:white;padding:10px}.results button:hover,.results button:focus{background:#39766b}.results small{display:block;color:#c4d8d4}.chosen{color:#8ce6d1;min-height:28px;margin:10px 0 0;font-size:.88rem}.manual{display:grid;gap:8px}.manual small,.hint{color:#b6cdcc}.output{margin-top:25px}.summary{background:#183b3d;border:1px solid #4b807b;border-radius:12px;padding:14px 18px;margin:0 0 18px}.summary strong{color:#8ce6d1}.section-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.panel{background:#18292f;border:1px solid #38545c;border-radius:14px;padding:18px;min-width:0}.panel>p{color:#adc4c4;margin:0 0 15px}.rank{border-top:1px solid #355159;padding:12px 0}.rank-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.rank strong{font-size:1.1rem}.rank small{color:#afd1c9}.rank p{margin:7px 0 0;color:#c0d2d0;font-size:.9rem}.pill{display:inline-block;border-radius:7px;background:#2a514e;color:#b5f2df;padding:2px 8px;margin-right:4px}.detail{width:100%;border-collapse:collapse;margin-top:20px;min-width:570px}.detail th,.detail td{border-bottom:1px solid #3b555c;text-align:center;padding:10px 7px}.detail th:first-child,.detail td:first-child{text-align:left}.detail th{font-weight:600;color:#aac6c5}.table-wrap{overflow:auto}.good{color:#83e7bb}.bad{color:#efa89a}.neutral{color:#c9d6d3}.source{margin-top:24px;color:#aac5c1;font-size:.88rem}.empty{color:#b9d0cc}.loading{color:#b6d0cd}@media(max-width:950px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.grid,.section-grid{grid-template-columns:1fr}.wrap{padding:20px 14px 50px}header{align-items:flex-start;flex-direction:column}.slot{padding:14px}}
-</style></head><body><main class="wrap"><header><h1>伊莫四人對策</h1><a href="../tools.html">← 返回 TOOLS</a><a href="https://aniimo.lin3.net/tools/type-chart" target="_blank" rel="noopener">查看原始相剋表 ↗</a></header><p class="intro">逐隻輸入對手伊莫，或直接指定屬性。先看適合進攻的屬性，再看較能承受對手攻擊的屬性。</p><section aria-label="對手四隻伊莫"><div class="grid" id="slots"></div></section><section class="output" id="output" aria-live="polite"><p class="loading">正在讀取圖鑑…</p></section><p class="source">資料來源：<a href="https://aniimo.lin3.net/dex" target="_blank" rel="noopener">伊莫調查站圖鑑</a>與<a href="https://aniimo.lin3.net/tools/type-chart" target="_blank" rel="noopener">屬性相剋表</a>（擷取日期 2026-09-23）。推薦僅依屬性相剋；不含技能、強度、速度與實際隊伍配置。雙屬性分開列出倍率，不相乘。</p></main><script>
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#020814"><link rel="icon" type="image/png" sizes="512x512" href="../assets/favicon.png?v=1"><title>伊莫對戰推薦屬性表｜UberEats⁶</title><meta name="description" content="輸入四隻對手伊莫，查看推薦的攻擊與應對屬性。"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="../style.css?v=38"><style>
+.aniimo-page .aniimo-tool { width:100%; }
+.aniimo-page .tool-builder-hero { margin-bottom:24px; }
+.aniimo-page .tool-builder-hero h1 { font-style:italic; }
+.aniimo-tool button,.aniimo-tool input,.aniimo-tool select { font:inherit; }
+.aniimo-tool button { cursor:pointer; }
+.aniimo-tool .grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+.aniimo-tool .slot,.aniimo-tool .panel { background:rgba(4,15,35,.76); border:1px solid var(--line); box-shadow:0 24px 65px rgba(0,0,0,.23),inset 0 1px rgba(255,255,255,.035); backdrop-filter:blur(18px); }
+.aniimo-tool .slot { border-radius:19px; padding:18px; min-width:0; }
+.aniimo-tool .slot:focus-within { border-color:var(--cyan); }
+.aniimo-tool .slot label { display:block; margin:0 0 12px; font-weight:800; color:#e3efff; }
+.aniimo-tool .mode { display:flex; gap:6px; margin-bottom:12px; }
+.aniimo-tool .mode button { flex:1; min-width:0; padding:9px 5px; border:1px solid var(--line); border-radius:9px; background:rgba(13,37,75,.72); color:#d8e6f8; font-size:.83rem; }
+.aniimo-tool .mode button.active { background:linear-gradient(135deg,var(--blue),#3250e8); border-color:var(--blue); color:#fff; font-weight:800; }
+.aniimo-tool .search { position:relative; }
+.aniimo-tool .search input,.aniimo-tool .manual select { width:100%; min-height:44px; padding:10px 12px; border:1px solid rgba(93,164,255,.3); border-radius:10px; color:#fff; background:#07172e; }
+.aniimo-tool .search input:focus,.aniimo-tool .manual select:focus { outline:2px solid var(--cyan); outline-offset:2px; }
+.aniimo-tool .results { position:absolute; z-index:40; top:calc(100% + 5px); width:100%; max-height:290px; overflow:auto; border:1px solid var(--blue); border-radius:10px; background:#0b2244; box-shadow:0 16px 30px #0009; }
+.aniimo-tool .results button { display:block; width:100%; padding:10px; text-align:left; border:0; border-bottom:1px solid var(--line); background:none; color:white; }
+.aniimo-tool .results button:hover,.aniimo-tool .results button:focus { background:rgba(52,134,247,.3); }
+.aniimo-tool .results small { display:block; color:var(--muted); }
+.aniimo-tool .chosen { min-height:27px; margin:10px 0 0; color:var(--cyan); font-size:.88rem; }
+.aniimo-tool .manual { display:grid; gap:8px; }
+.aniimo-tool .manual small { color:var(--muted); }
+.aniimo-tool .output { margin-top:22px; }
+.aniimo-tool .summary { margin:0 0 18px; padding:16px 18px; border:1px solid var(--line); border-radius:14px; background:rgba(13,37,75,.72); line-height:1.6; }
+.aniimo-tool .summary strong { color:var(--cyan); }
+.aniimo-tool .section-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.aniimo-tool .panel { border-radius:22px; padding:22px; min-width:0; }
+.aniimo-tool .panel h2 { margin:0 0 12px; font-size:1.3rem; }
+.aniimo-tool .panel > p { margin:0 0 15px; color:var(--muted); line-height:1.65; }
+.aniimo-tool .rank { padding:12px 0; border-top:1px solid var(--line); }
+.aniimo-tool .rank-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.aniimo-tool .rank-head strong { font-size:1.1rem; }
+.aniimo-tool .rank-head small { color:var(--muted); }
+.aniimo-tool .rank p { margin:7px 0 0; color:#c7d6e9; line-height:1.7; font-size:.9rem; }
+.aniimo-tool .pill { display:inline-block; margin-right:4px; padding:3px 9px; border-radius:8px; color:var(--cyan); background:rgba(58,166,255,.13); }
+.aniimo-tool .table-wrap { overflow:auto; }
+.aniimo-tool .detail { width:100%; min-width:570px; margin-top:12px; border-collapse:collapse; }
+.aniimo-tool .detail th,.aniimo-tool .detail td { padding:11px 8px; border-bottom:1px solid var(--line); text-align:center; }
+.aniimo-tool .detail th:first-child,.aniimo-tool .detail td:first-child { text-align:left; }
+.aniimo-tool .detail th { color:var(--muted); font-weight:700; }
+.aniimo-tool .good { color:#7ee8bb; }.aniimo-tool .bad { color:#ff9da8; }.aniimo-tool .neutral { color:#cbd8e6; }
+.aniimo-tool .source { margin:24px 0 12px; color:var(--muted); line-height:1.7; font-size:.88rem; }
+.aniimo-tool .source a { color:var(--cyan); }.aniimo-tool .loading,.aniimo-tool .empty { color:var(--muted); }
+.aniimo-page .aniimo-back { margin-top:12px; }
+@media(max-width:950px){.aniimo-tool .grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:650px){.aniimo-tool .grid,.aniimo-tool .section-grid{grid-template-columns:1fr;}.aniimo-tool .panel{padding:18px;}.aniimo-tool .rank-head{align-items:flex-start;flex-direction:column;gap:3px;}}
+</style><script>(()=>{const savedTheme=localStorage.getItem("ubereats6Theme")||"blue";document.documentElement.dataset.theme=savedTheme;if(!sessionStorage.getItem("ubereats6IntroShown"))document.documentElement.classList.add("is-loading")})()</script></head><body class="links-page tools-page aniimo-page">
+  <div class="site-loader" id="siteLoader" role="status" aria-live="polite" aria-label="網站載入中">
+    <div class="loader-particles" id="loaderParticles" aria-hidden="true"></div>
+    <div class="garage-loader" id="garageLoader">
+      <span class="garage-kicker">GARAGE IGNITION</span>
+      <h1 class="garage-brand" id="garageBrand">UberEats<sup>6</sup></h1>
+      <p class="garage-status" id="loaderStatus">IGNITION</p>
+      <div class="garage-scanline" aria-hidden="true">
+        <i id="loaderProgressBar"></i>
+      </div>
+    </div>
+  </div>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="speed-lines speed-lines-a" aria-hidden="true"></div>
+  <div class="speed-lines speed-lines-b" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand brand-lockup" href="../index.html" aria-label="回到首頁">
+      <img class="brand-logo" src="../assets/ubereats6-twitch-logo.webp" alt="UberEats⁶ Twitch Logo" />
+      <span class="brand-copy">
+        <strong>UberEats<sup>6</sup></strong>
+        <small>SPEED · FOCUS · WIN</small>
+      </span>
+    </a>
+
+    <button class="menu-button" aria-label="開啟選單" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="nav">
+      <a href="../index.html#home">HOME</a>
+      <a href="../updates.html">UPDATES</a>
+      <a href="../tools.html" aria-current="page">TOOLS</a>
+      <a href="../links.html">LINKS</a>
+    </nav>
+  </header><main class="links-main"><section class="links-hero tool-builder-hero"><p class="section-kicker">TOOL 02</p><h1>伊莫對戰推薦屬性表</h1><p>逐隻輸入對手伊莫，或直接指定屬性。查看適合進攻與應對的屬性。</p></section><section class="aniimo-tool" aria-label="伊莫對戰推薦屬性表"><div class="grid" id="slots" aria-label="對手四隻伊莫"></div><div class="output" id="output" aria-live="polite"><p class="loading">正在讀取圖鑑…</p></div><p class="source">圖鑑優先使用<a href="https://wiki.aniimo.com/tw" target="_blank" rel="noopener">伊莫官方百科</a>即時資料；若連線失敗，改用網站內的圖鑑備份（2026-09-23）。屬性倍率依<a href="https://aniimo.lin3.net/tools/type-chart" target="_blank" rel="noopener">伊莫調查站相剋表</a>。推薦僅依屬性相剋；不含技能、強度、速度與實際隊伍配置。雙屬性分開列出倍率，不相乘。</p><a class="useful-link-button aniimo-back" href="../tools.html">BACK TO TOOLS</a></section></main><footer>
+    <div class="footer-brand"><span>UberEats</span><sup>6</sup></div>
+    <p>Racing・Gaming・Streaming</p>
+    <div class="footer-links">
+      <a href="../index.html">Home</a>
+      <a href="https://twitch.tv/ubereatssssss" target="_blank" rel="noopener noreferrer">Twitch</a>
+      <a href="https://discord.gg/AFacNEgEcK" target="_blank" rel="noopener noreferrer">Discord</a>
+      <a href="https://www.youtube.com/channel/UCqZ-qg_lfVAfo7oZ4I3O1yA" target="_blank" rel="noopener noreferrer">YouTube</a>
+    </div>
+    <small>© 2026 UberEats⁶. All rights reserved.</small>
+  </footer>
+
+  <audio id="bgMusic" preload="metadata" loop>
+    <source src="../assets/kartrider_music.m4a" type="audio/mp4" />
+    <source src="../assets/kartrider_music.mp3" type="audio/mpeg" />
+  </audio>
+
+  <div class="now-playing" id="nowPlaying" aria-live="polite">
+    <span class="now-playing-label">NOW PLAYING</span>
+    <strong class="now-playing-title">KartRider BGM</strong>
+    <span class="now-playing-status" id="nowPlayingStatus">PAUSED</span>
+  </div>
+
+  <button class="music-toggle" id="musicToggle" type="button" aria-label="播放背景音樂" aria-pressed="false">
+    <span class="music-toggle-icon" aria-hidden="true">♪</span>
+    <span class="music-toggle-text">MUSIC OFF</span>
+    <span class="music-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <div class="utility-controls" aria-label="網站工具">
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="切換網站主題" title="切換網站主題">
+      <span class="theme-toggle-icon" aria-hidden="true">◐</span>
+      <span class="theme-toggle-text">BLUE</span>
+    </button>
+
+    <button class="back-to-top" id="backToTop" type="button" aria-label="回到頁面頂端" title="回到頂端">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5.5 5.5 12l1.8 1.8 3.45-3.45V20h2.5v-9.65l3.45 3.45 1.8-1.8L12 5.5Z"/></svg>
+      <span>TOP</span>
+    </button>
+  </div>
+
+<script>
 const TYPES=[['fire','火'],['water','水'],['grass','草'],['electric','電'],['ice','冰'],['rock','土'],['wind','風'],['holy','光'],['dark','暗']];
 const ROWS=[[.625,.625,1.6,1,1.6,.625,1,.625,1],[1.6,.625,.625,1,.625,1.6,1,.625,1],[.625,1.6,.625,1,1,1.6,1,.625,1],[1,1.6,1,.625,.625,.625,1.6,1,1],[.625,1.6,1,1.6,.625,.625,.625,1,1],[1,.625,.625,1.6,1.6,.625,1,1,.625],[1,1,1.6,.625,1,1,.625,1,1.6],[1,1,1,.625,1,1,1.6,.625,1.6],[1.6,.625,1.6,1,1,1,.625,1.6,.625]];
-const keys=TYPES.map(t=>t[0]), names=Object.fromEntries(TYPES), rate=(a,d)=>ROWS[keys.indexOf(a)][keys.indexOf(d)];let dex=[];const slots=Array.from({length:4},()=>({mode:'dex',query:'',item:null,types:[]}));const root=document.getElementById('slots'),out=document.getElementById('output');
+const keys=TYPES.map(t=>t[0]), names=Object.fromEntries(TYPES), rate=(a,d)=>ROWS[keys.indexOf(a)][keys.indexOf(d)];let dex=[];let dexSource='';const slots=Array.from({length:4},()=>({mode:'dex',query:'',item:null,types:[]}));const root=document.getElementById('slots'),out=document.getElementById('output');
 function clean(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function label(item){return item.name+(item.form&&item.form!=='Basic Form'?' · '+item.form:'')+'（'+item.types.map(t=>names[t]).join('／')+'）'}
 function drawSlots(){root.innerHTML=slots.map((s,i)=>`<article class="slot"><label for="q${i}">對手 ${i+1}</label><div class="mode"><button type="button" data-mode="dex" data-i="${i}" class="${s.mode==='dex'?'active':''}" aria-pressed="${s.mode==='dex'}">從圖鑑選</button><button type="button" data-mode="manual" data-i="${i}" class="${s.mode==='manual'?'active':''}" aria-pressed="${s.mode==='manual'}">手動屬性</button></div>${s.mode==='dex'?`<div class="search"><input id="q${i}" data-query="${i}" type="search" autocomplete="off" placeholder="搜尋伊莫名稱" value="${clean(s.query)}" aria-label="搜尋對手 ${i+1} 的伊莫" aria-expanded="false"><div class="results" id="res${i}" hidden></div></div><p class="chosen">${s.item?clean(label(s.item)):'尚未選擇'}</p>`:`<div class="manual"><select aria-label="對手 ${i+1} 第一屬性" data-type="${i}" data-pos="0"><option value="">選第一屬性</option>${TYPES.map(([k,n])=>`<option value="${k}" ${s.types[0]===k?'selected':''}>${n}</option>`).join('')}</select><select aria-label="對手 ${i+1} 第二屬性" data-type="${i}" data-pos="1"><option value="">無第二屬性</option>${TYPES.map(([k,n])=>`<option value="${k}" ${s.types[1]===k?'selected':''}>${n}</option>`).join('')}</select><small>第二屬性可留空</small></div>`}</article>`).join('')}
 function showResults(i){const s=slots[i],box=document.getElementById('res'+i),input=document.getElementById('q'+i);if(!box)return;const q=s.query.trim().toLowerCase();if(!q){box.hidden=true;input.setAttribute('aria-expanded','false');return}const found=dex.filter(x=>(x.name+' '+x.form).toLowerCase().includes(q)).slice(0,12);box.innerHTML=found.length?found.map(x=>`<button type="button" data-pick="${dex.indexOf(x)}" data-i="${i}">${clean(x.name)}<small>${clean(x.form==='Basic Form'?'基礎型態':x.form)} · ${x.types.map(t=>names[t]).join('／')}</small></button>`).join(''):'<button type="button" disabled>找不到，請改用手動屬性</button>';box.hidden=false;input.setAttribute('aria-expanded','true')}
 function badge(n){return `<span class="${n>1?'good':n<1?'bad':'neutral'}">${n}×</span>`}
-function render(){const picked=slots.map((s,i)=>({...s,i,types:s.mode==='dex'?(s.item?.types||[]):s.types.filter(Boolean)})).filter(s=>s.types.length);if(!picked.length){out.innerHTML='<div class="summary empty">先選一隻對手，結果會即時更新；其餘欄位可以留空。</div>';return}const data=keys.map(k=>{let good=0,bad=0,neutral=0,defGood=0,defBad=0;let lines=picked.map(s=>{let attack=s.types.map(d=>rate(k,d));let incoming=s.types.map(a=>rate(a,k));good+=attack.filter(x=>x>1).length;bad+=attack.filter(x=>x<1).length;neutral+=attack.filter(x=>x===1).length;defGood+=incoming.filter(x=>x<1).length;defBad+=incoming.filter(x=>x>1).length;return {i:s.i,attack,incoming}});return {k,good,bad,neutral,defGood,defBad,lines}});
+function render(){const picked=slots.map((s,i)=>({...s,i,types:s.mode==='dex'?(s.item?.types||[]):s.types.filter(Boolean)})).filter(s=>s.types.length);if(!picked.length){out.innerHTML='<div class="summary empty">'+(dexSource?clean(dexSource)+'。':'')+'先選一隻對手，結果會即時更新；其餘欄位可以留空。</div>';return}const data=keys.map(k=>{let good=0,bad=0,neutral=0,defGood=0,defBad=0;let lines=picked.map(s=>{let attack=s.types.map(d=>rate(k,d));let incoming=s.types.map(a=>rate(a,k));good+=attack.filter(x=>x>1).length;bad+=attack.filter(x=>x<1).length;neutral+=attack.filter(x=>x===1).length;defGood+=incoming.filter(x=>x<1).length;defBad+=incoming.filter(x=>x>1).length;return {i:s.i,attack,incoming}});return {k,good,bad,neutral,defGood,defBad,lines}});
 const attack=[...data].sort((a,b)=>(b.good-a.good)||(a.bad-b.bad)||(a.defBad-b.defBad)||(b.defGood-a.defGood));const defense=[...data].sort((a,b)=>(a.defBad-b.defBad)||(b.defGood-a.defGood)||(b.good-a.good)||(a.bad-b.bad));const all=picked.reduce((n,s)=>n+s.types.length,0);
 const cards=(arr,kind)=>arr.slice(0,5).map((r,j)=>`<div class="rank"><div class="rank-head"><strong>${j+1}. <span class="pill">${names[r.k]}</span></strong><small>${kind==='atk'?`${r.good} 格剋制 · ${r.bad} 格受抵抗`:`${r.defGood} 格抵抗 · ${r.defBad} 格弱點`}</small></div><p>${r.lines.map(z=>`對手 ${z.i+1}：${(kind==='atk'?z.attack:z.incoming).map(badge).join('／')}`).join('　')}</p></div>`).join('');
-out.innerHTML=`<div class="summary">已選 <strong>${picked.length} 隻對手</strong>、共 <strong>${all} 個屬性欄位</strong>。每格是對一個屬性的倍率；雙屬性會分開顯示。</div><div class="section-grid"><section class="panel"><h2>推薦攻擊屬性</h2><p>優先涵蓋更多 1.6×，並避開 0.625×。</p>${cards(attack,'atk')}</section><section class="panel"><h2>推薦應對屬性</h2><p>假設對手可能使用自己的任一屬性攻擊；優先減少被 1.6× 剋制的風險。</p>${cards(defense,'def')}</section></div><section class="panel" style="margin-top:18px"><h2>逐隻對照</h2><div class="table-wrap"><table class="detail"><thead><tr><th>我的屬性</th>${picked.map(s=>`<th>${s.item&&s.mode==='dex'?clean(s.item.name):'對手 '+(s.i+1)}<br><small>${s.types.map(t=>names[t]).join('／')}</small></th>`).join('')}</tr></thead><tbody>${data.map(r=>`<tr><td>${names[r.k]}</td>${r.lines.map(z=>`<td><small>攻</small> ${z.attack.map(badge).join('／')}<br><small>承</small> ${z.incoming.map(badge).join('／')}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>`}
-root.addEventListener('click',e=>{const mode=e.target.closest('[data-mode]');if(mode){const i=+mode.dataset.i;slots[i].mode=mode.dataset.mode;drawSlots();render();return}const pick=e.target.closest('[data-pick]');if(pick){const i=+pick.dataset.i;slots[i].item=dex[+pick.dataset.pick];slots[i].query=slots[i].item.name;drawSlots();render()}});root.addEventListener('input',e=>{if(e.target.dataset.query!==undefined){const i=+e.target.dataset.query;slots[i].query=e.target.value;slots[i].item=null;showResults(i);render()}});root.addEventListener('change',e=>{if(e.target.dataset.type!==undefined){let s=slots[+e.target.dataset.type],pos=+e.target.dataset.pos;s.types[pos]=e.target.value;if(s.types[0]&&s.types[0]===s.types[1]){s.types[1]='';drawSlots()}render()}});document.addEventListener('click',e=>{if(!e.target.closest('.search'))document.querySelectorAll('.results').forEach(x=>x.hidden=true)});fetch('./dex.json').then(r=>{if(!r.ok)throw Error('圖鑑載入失敗');return r.json()}).then(d=>{dex=d;drawSlots();render()}).catch(()=>{drawSlots();render();out.insertAdjacentHTML('afterbegin','<p class="bad">圖鑑暫時無法載入。仍可切換「手動屬性」使用相剋推薦。</p>')});
-</script></body></html>
+out.innerHTML=`<div class="summary">${clean(dexSource)} · 已選 <strong>${picked.length} 隻對手</strong>、共 <strong>${all} 個屬性欄位</strong>。每格是對一個屬性的倍率；雙屬性會分開顯示。</div><div class="section-grid"><section class="panel"><h2>推薦攻擊屬性</h2><p>優先涵蓋更多 1.6×，並避開 0.625×。</p>${cards(attack,'atk')}</section><section class="panel"><h2>推薦應對屬性</h2><p>假設對手可能使用自己的任一屬性攻擊；優先減少被 1.6× 剋制的風險。</p>${cards(defense,'def')}</section></div><section class="panel" style="margin-top:18px"><h2>逐隻對照</h2><div class="table-wrap"><table class="detail"><thead><tr><th>我的屬性</th>${picked.map(s=>`<th>${s.item&&s.mode==='dex'?clean(s.item.name):'對手 '+(s.i+1)}<br><small>${s.types.map(t=>names[t]).join('／')}</small></th>`).join('')}</tr></thead><tbody>${data.map(r=>`<tr><td>${names[r.k]}</td>${r.lines.map(z=>`<td><small>攻</small> ${z.attack.map(badge).join('／')}<br><small>承</small> ${z.incoming.map(badge).join('／')}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>`}
+root.addEventListener('click',e=>{const mode=e.target.closest('[data-mode]');if(mode){const i=+mode.dataset.i;slots[i].mode=mode.dataset.mode;drawSlots();render();return}const pick=e.target.closest('[data-pick]');if(pick){const i=+pick.dataset.i;slots[i].item=dex[+pick.dataset.pick];slots[i].query=slots[i].item.name;drawSlots();render()}});root.addEventListener('input',e=>{if(e.target.dataset.query!==undefined){const i=+e.target.dataset.query;slots[i].query=e.target.value;slots[i].item=null;showResults(i);render()}});root.addEventListener('change',e=>{if(e.target.dataset.type!==undefined){let s=slots[+e.target.dataset.type],pos=+e.target.dataset.pos;s.types[pos]=e.target.value;if(s.types[0]&&s.types[0]===s.types[1]){s.types[1]='';drawSlots()}render()}});document.addEventListener('click',e=>{if(!e.target.closest('.search'))document.querySelectorAll('.results').forEach(x=>x.hidden=true)});async function loadDex(){
+ try{
+  const response=await fetch('https://wiki-backend.aniimo.com/entries/getBaseAll',{method:'POST',headers:{'Content-Type':'application/json','X-Lang':'zh-TW'},body:'{}',mode:'cors',credentials:'omit',signal:AbortSignal.timeout(12000)});
+  if(!response.ok)throw Error('官方圖鑑連線失敗');
+  const result=await response.json();
+  if(result.code!==200||!Array.isArray(result.data))throw Error('官方資料格式異常');
+  const live=result.data.filter(x=>x.visible!==false&&x.searchKey?.type==='ANIIMO').map(x=>({
+   name:x.searchKey.name,form:x.searchKey.currentMorphology||'Basic Form',
+   types:(x.searchKey.attributes||[]).map(t=>t.replace(/^attributes-/,'')),
+   image:x.searchKey.imageUrl||'',url:'https://wiki.aniimo.com/tw'
+  })).filter(x=>x.name&&x.types.length&&x.types.every(t=>keys.includes(t)));
+  if(!live.length)throw Error('官方圖鑑內容為空');
+  dex=live;dexSource=`官方圖鑑即時資料（${live.length} 筆）`;
+ }catch(error){
+  try{
+   const response=await fetch('./dex.json');if(!response.ok)throw Error('圖鑑備份讀取失敗');
+   dex=await response.json();dexSource=`官方圖鑑暫時無法連線，使用備份（${dex.length} 筆）`;
+  }catch{dex=[];dexSource='圖鑑暫時無法讀取，可手動輸入屬性'}
+ }
+ drawSlots();render();
+}
+loadDex();
+</script><script src="../tools.js?v=3"></script></body></html>
