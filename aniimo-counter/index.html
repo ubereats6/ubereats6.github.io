@@ -2,8 +2,6 @@
 .aniimo-page .aniimo-tool { width:100%; }
 .aniimo-page .tool-builder-hero { margin-bottom:24px; }
 .aniimo-page .tool-builder-hero h1 { font-style:italic; }
-.aniimo-page .view-counter { display:flex; width:max-content; max-width:100%; gap:8px; align-items:center; margin-top:22px; padding:8px 13px; border:1px solid rgba(93,164,255,.35); border-radius:999px; background:rgba(7,23,46,.75); color:#cfe4ff; font-size:.84rem; }
-.aniimo-page .view-counter strong { color:var(--cyan); font-variant-numeric:tabular-nums; }
 @media (max-width:650px) {
   .aniimo-page .tool-builder-hero h1 {
     font-size:clamp(1.9rem, 8vw, 2.8rem);
@@ -118,7 +116,7 @@
       <a href="../tools.html" aria-current="page">TOOLS</a>
       <a href="../links.html">LINKS</a>
     </nav>
-  </header><main class="links-main"><section class="links-hero tool-builder-hero"><p class="section-kicker">TOOL 02</p><h1>伊莫對戰屬性分析工具</h1><p>逐隻輸入對手伊莫，或直接指定屬性。查看適合進攻與應對的屬性。</p></section><section class="aniimo-tool" aria-label="伊莫對戰屬性分析工具"><div class="grid" id="slots" aria-label="對手四隻伊莫"></div><div class="output" id="output" aria-live="polite"><p class="loading">正在讀取圖鑑…</p></div><p class="source">圖鑑優先使用<a href="https://wiki.aniimo.com/tw" target="_blank" rel="noopener">伊莫官方百科</a>即時資料；若連線失敗，改用網站內的圖鑑備份（2026-09-23）。屬性倍率依<a href="https://aniimo.lin3.net/tools/type-chart" target="_blank" rel="noopener">伊莫調查站相剋表</a>。推薦僅依屬性相剋；不含技能、強度、速度與實際隊伍配置。雙屬性分開列出倍率，不相乘。</p><a class="useful-link-button aniimo-back" href="../tools.html">BACK TO TOOLS</a><div class="view-counter" aria-label="本工具瀏覽次數">瀏覽次數 <strong id="aniimoViewCount">載入中…</strong></div></section></main><footer>
+  </header><main class="links-main"><section class="links-hero tool-builder-hero"><p class="section-kicker">TOOL 02</p><h1>伊莫對戰屬性分析工具</h1><p>逐隻輸入對手伊莫，或直接指定屬性。查看適合進攻與應對的屬性。</p></section><section class="aniimo-tool" aria-label="伊莫對戰屬性分析工具"><div class="grid" id="slots" aria-label="對手四隻伊莫"></div><div class="output" id="output" aria-live="polite"><p class="loading">正在讀取圖鑑…</p></div><p class="source">圖鑑優先使用<a href="https://wiki.aniimo.com/tw" target="_blank" rel="noopener">伊莫官方百科</a>即時資料；若連線失敗，改用網站內的圖鑑備份（2026-09-23）。屬性倍率依<a href="https://aniimo.lin3.net/tools/type-chart" target="_blank" rel="noopener">伊莫調查站相剋表</a>。推薦僅依屬性相剋；不含技能、強度、速度與實際隊伍配置。雙屬性分開列出倍率，不相乘。</p><a class="useful-link-button aniimo-back" href="../tools.html">BACK TO TOOLS</a></section></main><footer>
     <div class="footer-brand"><span>UberEats</span><sup>6</sup></div>
     <p>Racing・Gaming・Streaming</p>
     <div class="footer-links">
@@ -127,6 +125,7 @@
       <a href="https://discord.gg/AFacNEgEcK" target="_blank" rel="noopener noreferrer">Discord</a>
       <a href="https://www.youtube.com/channel/UCqZ-qg_lfVAfo7oZ4I3O1yA" target="_blank" rel="noopener noreferrer">YouTube</a>
     </div>
+    <div class="page-view-counter"><img data-page-counter="aniimo-counter" alt="本頁瀏覽次數" width="96" height="20" /></div>
     <small>© 2026 UberEats⁶. All rights reserved.</small>
   </footer>
 
@@ -230,30 +229,4 @@ async function loadDex(){
  drawSlots();render();
 }
 loadDex();
-</script><script>
-(() => {
- const node=document.getElementById('aniimoViewCount');
- const countedKey='ubereats6AniimoViewsCountedV2';
- const cachedKey='ubereats6AniimoViewsCachedV2';
- const base='https://countapi.mileshilliard.com/api/v1';
- const key='ubereats6-github-io-aniimo-counter-page-views';
- function show(value){if(value==null||value==='')return;const count=Number(value);if(Number.isFinite(count)&&count>=0){node.textContent=count.toLocaleString('zh-TW');try{localStorage.setItem(cachedKey,String(count))}catch{}}}
- function refresh(){
-  try{show(localStorage.getItem(cachedKey))}catch{}
-  let increment=false;
-  try{increment=sessionStorage.getItem(countedKey)!=='1'}catch{increment=true}
-  const controller=new AbortController();
-  const timeout=setTimeout(()=>controller.abort(),6000);
-  fetch(base+'/'+(increment?'hit':'get')+'/'+key,{cache:'no-store',signal:controller.signal})
-   .then(response=>{if(!response.ok)throw Error('Counter unavailable');return response.json()})
-   .then(payload=>{
-    const count=[payload.count,payload.value,payload.data?.count,payload.data?.value,payload.data?.up_count].find(x=>x!=null&&Number.isFinite(Number(x)));
-    if(count==null)throw Error('Counter value missing');
-    show(count);
-    if(increment)try{sessionStorage.setItem(countedKey,'1')}catch{}
-   }).catch(()=>{if(node.textContent==='載入中…')node.textContent='暫時無法取得'}).finally(()=>clearTimeout(timeout));
- }
- refresh();
- window.addEventListener('pageshow',event=>{if(event.persisted)refresh()});
-})();
-</script><script src="../tools.js?v=3"></script></body></html>
+</script><script src="../tools.js?v=3"></script><script src="../visitor-counter.js?v=2"></script></body></html>
