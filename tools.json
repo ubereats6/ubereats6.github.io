@@ -11,12 +11,12 @@
   },
   {
     "id": "02",
-    "category": "FUTURE TOOL",
-    "title": "新工具開發中",
-    "description": "更多適合跑跑卡丁車玩家與實況主的功能將陸續加入。",
-    "buttonText": "COMING SOON",
-    "url": "",
-    "status": "coming-soon",
+    "category": "ANIIMO TOOL",
+    "title": "伊莫四人對策",
+    "description": "分別選擇對手的四隻伊莫，查看推薦的攻擊與應對屬性。",
+    "buttonText": "OPEN TOOL",
+    "url": "aniimo-counter/index.html",
+    "status": "available",
     "newTab": false
   },
   {
