@@ -12,7 +12,7 @@
   {
     "id": "02",
     "category": "ANIIMO TOOL",
-    "title": "伊莫對戰屬性推薦分析",
+    "title": "伊莫對戰屬性分析工具",
     "description": "分別選擇對手的四隻伊莫，查看推薦的攻擊與應對屬性。",
     "buttonText": "OPEN TOOL",
     "url": "aniimo-counter/index.html",
