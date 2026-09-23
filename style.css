@@ -5643,3 +5643,8 @@ body.updates-page .updates-archive {
     padding: 12px 0 16px;
   }
 }
+
+/* Shared page-view counter in the footer */
+.page-view-counter { display:flex; justify-content:center; align-items:center; min-height:26px; margin:8px auto 15px; }
+.page-view-counter img { display:block; width:auto; height:22px; max-width:100%; }
+.page-view-counter img[hidden] { display:none; }
