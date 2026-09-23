@@ -2,6 +2,14 @@
 .aniimo-page .aniimo-tool { width:100%; }
 .aniimo-page .tool-builder-hero { margin-bottom:24px; }
 .aniimo-page .tool-builder-hero h1 { font-style:italic; }
+@media (max-width:650px) {
+  .aniimo-page .tool-builder-hero h1 {
+    font-size:clamp(1.9rem, 8vw, 2.8rem);
+    line-height:1.25;
+    letter-spacing:-.035em;
+    overflow-wrap:anywhere;
+  }
+}
 .aniimo-tool button,.aniimo-tool input,.aniimo-tool select { font:inherit; }
 .aniimo-tool button { cursor:pointer; }
 .aniimo-tool .grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
