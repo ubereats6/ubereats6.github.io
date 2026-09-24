@@ -1,0 +1,52 @@
+{
+  "filename": "AniimoAttributeHUD-Windows-x64-v4.zip",
+  "size": 176196205,
+  "sha256": "fb8a57cc9cff172246408a7db65f42cf383d7270f9bc87f48e80aa72f733571c",
+  "parts": [
+    {
+      "file": "aniimo-hud-v4.part01",
+      "size": 20971520,
+      "sha256": "c7f71024dc2e6555d8a087528f881bb1b8781eb35c360f5fa439ceed6882d884"
+    },
+    {
+      "file": "aniimo-hud-v4.part02",
+      "size": 20971520,
+      "sha256": "2f73ea6504af8ce3175771241cc6eaa5b292036a0778bce04005d50643778fdd"
+    },
+    {
+      "file": "aniimo-hud-v4.part03",
+      "size": 20971520,
+      "sha256": "c04a8013463ab75b7d27f0017740a69596bc8e58004dfd213bad55b7635f83cb"
+    },
+    {
+      "file": "aniimo-hud-v4.part04",
+      "size": 20971520,
+      "sha256": "ba893f532141caf1e891a3d7562ba997b249084a36cf4d2ebc7faa1f36ed3b50"
+    },
+    {
+      "file": "aniimo-hud-v4.part05",
+      "size": 20971520,
+      "sha256": "33dd5029dcaf2bf9b9f566e63243a5b170670c3025ccbb3f253c8199c8b64b01"
+    },
+    {
+      "file": "aniimo-hud-v4.part06",
+      "size": 20971520,
+      "sha256": "fe80ff3d99adc82ea88bf08590a47427f0eb2c59a89a9f9b1495c8160f094c44"
+    },
+    {
+      "file": "aniimo-hud-v4.part07",
+      "size": 20971520,
+      "sha256": "9f43600a277af5c2ad9d5d05d208e9c7f4fa27794569f2eee3679c34c2f260e9"
+    },
+    {
+      "file": "aniimo-hud-v4.part08",
+      "size": 20971520,
+      "sha256": "ee7b56c67904952397f69a16cd22a8b56b0eb5ff310c9c5b6019c04d47b6074d"
+    },
+    {
+      "file": "aniimo-hud-v4.part09",
+      "size": 8424045,
+      "sha256": "eacd11021ca39ec16c2d4cddba3032b7c27cd85e1f4157d809dc319546b4c3cb"
+    }
+  ]
+}
