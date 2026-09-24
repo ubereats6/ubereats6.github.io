@@ -162,3 +162,8 @@
   "online": true
 }
 ```
+
+## 伊莫對戰屬性推薦：Windows HUD 下載
+`aniimo-counter/index.html` 頂端已有 Windows HUD 下載區塊。桌面程式拆成 `downloads/aniimo-hud-v4.part01` 至 `part09`，訪客按「下載 Windows HUD」時，瀏覽器會依序下載並組成一個 ZIP。請將 `downloads/` 的所有檔案與網站一起上傳，不要只上傳 HTML。每段小於 25 MiB，便於透過 GitHub 網頁介面上傳。完整下載量約 168 MiB；建議用 Windows 桌面瀏覽器操作。
+
+若未來更新 EXE，請重新將 Windows ZIP 切成不超過 20 MiB 的分段，並更新 `aniimo-hud-v4-manifest.json` 的檔名、大小和分段列表。網站下載區的檔名與版本文字也需同步更新。
