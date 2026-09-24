@@ -21,12 +21,20 @@ let kartSlides = [];
 let kartDots = [];
 let currentKart = 0;
 let kartTimer = null;
+let kartFadeTimer = null;
 const KART_INTERVAL_MS = 5000;
 
 function showKart(index) {
   if (kartSlides.length === 0) return;
 
+  const previousKart = currentKart;
   currentKart = (index + kartSlides.length) % kartSlides.length;
+  if (kartFadeTimer !== null) window.clearTimeout(kartFadeTimer);
+  kartSlides.forEach((slide) => slide.classList.remove("leaving"));
+  const fadingOut = previousKart !== currentKart &&
+    window.matchMedia("(max-width: 780px)").matches
+      ? kartSlides[previousKart]
+      : null;
 
   kartSlides.forEach((slide, slideIndex) => {
     const active = slideIndex === currentKart;
@@ -36,6 +44,13 @@ function showKart(index) {
     slide.classList.toggle("active", active);
     slide.setAttribute("aria-hidden", String(!active));
   });
+  if (fadingOut) {
+    fadingOut.classList.add("leaving");
+    kartFadeTimer = window.setTimeout(() => {
+      fadingOut.classList.remove("leaving");
+      kartFadeTimer = null;
+    }, 1250);
+  }
 
   kartDots.forEach((dot, dotIndex) => {
     const active = dotIndex === currentKart;

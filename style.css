@@ -3189,7 +3189,7 @@ html[data-theme="purple"] {
   /* Mobile carousel crossfades while keeping the image at a fixed size. */
   .cover-frame .kart-slide {
     transform: scale(1.08);
-    transition: opacity .82s ease;
+    transition: opacity 1.05s ease;
     animation: none;
     will-change: opacity;
   }
@@ -3197,11 +3197,16 @@ html[data-theme="purple"] {
   .cover-frame .kart-slide.active {
     transform: scale(1.08);
   }
+
+  .cover-frame .kart-slide.leaving {
+    z-index: 1;
+    opacity: 0;
+  }
 }
 
 @media (max-width: 780px) and (prefers-reduced-motion: reduce) {
   .cover-frame .kart-slide {
-    transition-duration: .35s;
+    transition-duration: .4s !important;
   }
 }
 
