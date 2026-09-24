@@ -64,6 +64,7 @@ function startKartRotation() {
 
 function createKartCarousel(karts) {
   const dotsContainer = featuredKart.querySelector(".kart-dots");
+  const arrows = featuredKart.querySelectorAll(".kart-arrow");
   featuredKart.querySelectorAll(".kart-slide, .kart-loading, .kart-error").forEach((node) => node.remove());
   dotsContainer.replaceChildren();
 
@@ -74,9 +75,9 @@ function createKartCarousel(karts) {
     image.dataset.name = kart.name;
     image.dataset.src = kart.image;
     image.decoding = "async";
-    image.loading = index === 0 ? "eager" : "lazy";
+    image.loading = "eager";
     image.fetchPriority = index === 0 ? "high" : "low";
-    if (index === 0) image.src = kart.image;
+    image.src = kart.image;
     image.setAttribute("aria-hidden", String(index !== 0));
     featuredKart.insertBefore(image, featuredKart.querySelector(".cover-overlay"));
     return image;
@@ -97,9 +98,19 @@ function createKartCarousel(karts) {
   });
 
   dotsContainer.hidden = karts.length <= 1;
+  arrows.forEach((arrow) => { arrow.hidden = karts.length <= 1; });
   showKart(0);
   startKartRotation();
 }
+
+featuredKart?.querySelector(".kart-arrow-prev")?.addEventListener("click", () => {
+  showKart(currentKart - 1);
+  startKartRotation();
+});
+featuredKart?.querySelector(".kart-arrow-next")?.addEventListener("click", () => {
+  showKart(currentKart + 1);
+  startKartRotation();
+});
 
 async function loadFeaturedKarts() {
   if (!featuredKart) return;
@@ -127,10 +138,19 @@ async function loadFeaturedKarts() {
   }
 }
 
-featuredKart?.addEventListener("mouseenter", stopKartRotation);
-featuredKart?.addEventListener("mouseleave", startKartRotation);
-featuredKart?.addEventListener("focusin", stopKartRotation);
-featuredKart?.addEventListener("focusout", startKartRotation);
+const canHoverKart = () => window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+featuredKart?.addEventListener("mouseenter", () => {
+  if (canHoverKart()) stopKartRotation();
+});
+featuredKart?.addEventListener("mouseleave", () => {
+  if (canHoverKart() && !document.hidden) startKartRotation();
+});
+featuredKart?.addEventListener("focusin", (event) => {
+  if (canHoverKart() && event.target.matches(":focus-visible")) stopKartRotation();
+});
+featuredKart?.addEventListener("focusout", () => {
+  if (!document.hidden) startKartRotation();
+});
 
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) stopKartRotation();

@@ -1508,6 +1508,41 @@ h1 {
   z-index: 2;
 }
 
+.kart-arrow {
+  position: absolute;
+  z-index: 5;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0 0 4px;
+  transform: translateY(-50%);
+  border: 1px solid rgba(145, 204, 255, .45);
+  border-radius: 50%;
+  background: rgba(2, 13, 32, .72);
+  color: #fff;
+  font: 34px/1 Arial, sans-serif;
+  cursor: pointer;
+  touch-action: manipulation;
+  backdrop-filter: blur(8px);
+}
+
+.kart-arrow[hidden] { display: none; }
+.kart-arrow-prev { left: 14px; }
+.kart-arrow-next { right: 14px; }
+.kart-arrow:hover, .kart-arrow:focus-visible {
+  background: rgba(29, 113, 194, .9);
+  outline: 2px solid #a7dcff;
+  outline-offset: 2px;
+}
+
+@media (max-width: 780px) {
+  .kart-arrow { width: 40px; height: 40px; font-size: 30px; }
+  .kart-arrow-prev { left: 8px; }
+  .kart-arrow-next { right: 8px; }
+}
+
 .kart-dots {
   position: absolute;
   z-index: 4;
@@ -3151,29 +3186,23 @@ html[data-theme="purple"] {
     transform: translateY(30px);
   }
 
-  /* Let the active slide's keyframes control transform on touch screens. */
+  /* Mobile carousel crossfades while keeping the image at a fixed size. */
   .cover-frame .kart-slide {
-    transform: scale(1.02);
+    transform: scale(1.08);
     transition: opacity .82s ease;
     animation: none;
-    will-change: opacity, transform;
+    will-change: opacity;
   }
 
   .cover-frame .kart-slide.active {
-    animation: mobileKartSlowZoom 5s ease-out forwards;
+    transform: scale(1.08);
   }
 }
 
 @media (max-width: 780px) and (prefers-reduced-motion: reduce) {
-  .cover-frame .kart-slide.active {
-    animation: none;
-    transform: scale(1.02);
+  .cover-frame .kart-slide {
+    transition-duration: .35s;
   }
-}
-
-@keyframes mobileKartSlowZoom {
-  from { transform: scale(1.02); }
-  to { transform: scale(1.13); }
 }
 
 
