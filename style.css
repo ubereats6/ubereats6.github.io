@@ -3151,17 +3151,23 @@ html[data-theme="purple"] {
     transform: translateY(30px);
   }
 
-  /* Use a keyframe animation so iOS reliably shows the slow zoom. */
+  /* Let the active slide's keyframes control transform on touch screens. */
   .cover-frame .kart-slide {
-    transform: scale(1.02) !important;
-    transition: opacity .82s ease !important;
+    transform: scale(1.02);
+    transition: opacity .82s ease;
     animation: none;
     will-change: opacity, transform;
   }
 
   .cover-frame .kart-slide.active {
-    transform: scale(1.02) !important;
     animation: mobileKartSlowZoom 5s ease-out forwards;
+  }
+}
+
+@media (max-width: 780px) and (prefers-reduced-motion: reduce) {
+  .cover-frame .kart-slide.active {
+    animation: none;
+    transform: scale(1.02);
   }
 }
 
