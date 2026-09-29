@@ -21,12 +21,12 @@
   },
   {
     "id": "03",
-    "category": "FUTURE TOOL",
-    "title": "工具欄位預留",
-    "description": "保留給之後新增的直播、賽事或社群輔助工具。",
-    "buttonText": "COMING SOON",
-    "url": "",
-    "status": "coming-soon",
+    "category": "ANIIMO TOOL · BETA",
+    "title": "伊莫搶蛋地圖",
+    "description": "查詢玩家整理的搶蛋地圖；依樓層與 Boss 篩選，放大查看傳門、蛋與挑戰位置。",
+    "buttonText": "OPEN BETA",
+    "url": "egg-map/index.html",
+    "status": "available",
     "newTab": false
   },
   {

@@ -2,7 +2,7 @@
   const badge = document.querySelector('[data-page-counter]');
   if (!badge) return;
   const page = badge.dataset.pageCounter;
-  const knownPages = new Set(['home', 'tools', 'keyboard-builder', 'links', 'updates', 'aniimo-counter']);
+  const knownPages = new Set(['home', 'tools', 'keyboard-builder', 'links', 'updates', 'aniimo-counter', 'egg-map']);
   if (!knownPages.has(page)) return;
 
   function countVisit() {
