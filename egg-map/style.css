@@ -25,7 +25,7 @@
 .egg-status{min-height:23px;margin:14px 0 0}
 .egg-results{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
 .egg-result{padding:14px;border:1px solid rgba(93,164,255,.4);border-radius:11px;background:rgba(13,37,75,.75);min-width:0}
-.egg-result:first-child{border-color:var(--cyan);background:rgba(25,80,132,.68)}
+.egg-result.is-selected{border-color:var(--cyan);background:rgba(25,80,132,.68);box-shadow:0 0 0 1px rgba(105,217,255,.18) inset}
 .egg-result small{display:block;color:#a9c4df;font-size:.72rem}
 .egg-result strong{display:block;margin:5px 0;color:#f1f9ff;font-size:1.25rem;white-space:nowrap}
 .egg-result span{color:#b3d8f5;font-size:.78rem}
@@ -52,7 +52,7 @@
 .egg-map-viewer{margin-top:20px;padding:16px;border:1px solid rgba(103,193,255,.48);border-radius:14px;background:#081d38;scroll-margin-top:24px}
 .egg-map-viewer[hidden]{display:none}.egg-viewer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.egg-viewer-head h3{margin:3px 0 0;color:#f2f8ff}.egg-viewer-head button{padding:8px 12px;border:1px solid rgba(93,164,255,.4);border-radius:8px;color:#e7f5ff;background:#123966;cursor:pointer}.egg-full-map{max-height:75dvh;overflow:auto;border-radius:10px;background:#030813}.egg-full-map img{display:block;width:100%;height:auto;object-fit:contain}.egg-map-viewer p{color:var(--muted);font-size:.83rem;line-height:1.6}
 .egg-legend-grid img{width:40px;height:40px;object-fit:contain;flex:none;filter:drop-shadow(0 0 9px rgba(63,178,255,.26))}
-.egg-map-canvas{width:75%;margin-inline:auto;line-height:0}
+.egg-map-canvas{width:50%;margin-inline:auto;line-height:0}
 .egg-map-tools{display:flex;align-items:center;justify-content:flex-end;gap:9px;margin:4px 0 10px;color:#b9d7ec;font-size:.85rem}
 .egg-map-tools button{width:34px;height:32px;border:1px solid rgba(113,184,255,.55);border-radius:8px;background:#153b65;color:white;font:700 1.15rem/1 sans-serif;cursor:pointer}
 .egg-map-tools button:disabled{opacity:.45;cursor:default}

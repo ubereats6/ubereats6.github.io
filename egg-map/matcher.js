@@ -18,7 +18,7 @@
   const captureSelectCanvas = document.getElementById('captureSelectCanvas');
   const captureContext = captureSelectCanvas.getContext('2d');
   const worker = new Worker('matcher-worker.js?v=5');
-  let zoom = 100;
+  let zoom = 50;
   function setZoom(next) {
     zoom = Math.max(25, Math.min(300, next));
     mapCanvas.style.width = `${zoom}%`;
@@ -28,12 +28,17 @@
   }
   document.getElementById('zoomOut').addEventListener('click', () => setZoom(zoom - 25));
   document.getElementById('zoomIn').addEventListener('click', () => setZoom(zoom + 25));
-  setZoom(75);
-  function showMap(id) {
+  setZoom(50);
+  function showMap(id, selectedCard) {
+    for (const card of results.querySelectorAll('.egg-result')) {
+      const selected=card===selectedCard;
+      card.classList.toggle('is-selected', selected);
+      card.setAttribute('aria-pressed', String(selected));
+    }
     viewerTitle.textContent = `地圖 ${id}`;
     viewerImage.src = `maps/${id}.jpg`;
     viewerImage.alt = `候選地圖 ${id} 的完整標記地圖`;
-    setZoom(window.matchMedia('(max-width:650px)').matches ? 100 : 75);
+    setZoom(50);
     viewer.hidden = false;
     viewer.scrollIntoView({behavior:'smooth', block:'start'});
   }
@@ -288,11 +293,12 @@
     if(!data.results.length){setStatus('沒有足夠的地圖線索，請換一張截圖。');return;}
     const cards=data.results.map((item,index)=>{
       const card=document.createElement('button');card.type='button';card.className='egg-result';
+      card.setAttribute('aria-pressed','false');
       const rank=document.createElement('small');rank.textContent=`候選 ${index+1}`;
       const title=document.createElement('strong');title.textContent=`地圖 ${item.id}`;
       const score=document.createElement('span');score.textContent=`輪廓分數 ${Math.min(100,Math.max(0,Math.round(item.score*100)))}`;
       card.append(rank,title,score);
-      card.addEventListener('click',()=>showMap(item.id));
+      card.addEventListener('click',()=>showMap(item.id,card));
       return card;
     });
     results.replaceChildren(...cards);
