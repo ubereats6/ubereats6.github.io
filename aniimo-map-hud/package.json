@@ -1,0 +1,34 @@
+{
+  "name": "aniimo-egg-map-hud",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Windows overlay for Aniimo egg-heist maps",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis --x64"
+  },
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "io.github.ubereats6.aniimoeggmaphud",
+    "productName": "Aniimo Egg Map HUD",
+    "files": ["main.js", "preload.js", "overlay.html", "renderer.js", "icon.png", "icon.ico"],
+    "directories": { "output": "dist" },
+    "protocols": [{ "name": "Aniimo Egg Map HUD", "schemes": ["aniimo-egg-map"] }],
+    "win": {
+      "icon": "icon.ico",
+      "target": ["nsis"],
+      "artifactName": "AniimoEggMapHUD-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "runAfterFinish": true,
+      "perMachine": false
+    }
+  }
+}
