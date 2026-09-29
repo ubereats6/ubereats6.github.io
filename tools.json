@@ -23,7 +23,7 @@
     "id": "03",
     "category": "ANIIMO TOOL · BETA",
     "title": "伊莫搶蛋地圖辨識",
-    "description": "截圖辨識 Beta 開發中；了解地圖標記，提供新地圖協助補完資料。",
+    "description": "上傳遊戲地圖截圖，比對目前可能的地圖編號，或提供新地圖。",
     "buttonText": "OPEN BETA",
     "url": "egg-map/index.html",
     "status": "available",
