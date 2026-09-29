@@ -9,6 +9,7 @@
   const viewer = document.getElementById('mapViewer');
   const viewerTitle = document.getElementById('viewerTitle');
   const viewerImage = document.getElementById('viewerImage');
+  const hudLink = document.getElementById('openMapHud');
   const mapCanvas = document.getElementById('mapCanvas');
   const zoomLevel = document.getElementById('zoomLevel');
   const analyze = document.getElementById('analyzeMap');
@@ -38,6 +39,8 @@
     viewerTitle.textContent = `地圖 ${id}`;
     viewerImage.src = `maps/${id}.jpg`;
     viewerImage.alt = `候選地圖 ${id} 的完整標記地圖`;
+    hudLink.href = `aniimo-egg-map://show/${id}`;
+    hudLink.hidden = false;
     setZoom(50);
     viewer.hidden = false;
     viewer.scrollIntoView({behavior:'smooth', block:'start'});
@@ -97,7 +100,7 @@
     canvas.height=Math.max(1,Math.round(next.naturalHeight*scale));
     crop={x:0,y:0,w:canvas.width,h:canvas.height};
     area.hidden=false; name.textContent=label;
-    results.replaceChildren(); viewer.hidden=true; viewerImage.removeAttribute('src'); draw();
+    results.replaceChildren(); viewer.hidden=true; hudLink.hidden=true; viewerImage.removeAttribute('src'); draw();
   }
   function drawCaptureSelection() {
     if (!image) return;
@@ -281,7 +284,7 @@
     if (!image) return;
     try {
       const mask=getMask();
-      analyze.disabled=true;results.replaceChildren();viewer.hidden=true;viewerImage.removeAttribute('src');
+      analyze.disabled=true;results.replaceChildren();viewer.hidden=true;hudLink.hidden=true;viewerImage.removeAttribute('src');
       setStatus('正在比對地圖輪廓，可能需要幾秒鐘…');
       worker.postMessage({type:'match',...mask});
     } catch(error){setStatus(error.message);}
@@ -305,6 +308,6 @@
     setStatus('這是輪廓比對的候選排序，不代表已確定是哪張地圖。');
     results.scrollIntoView({behavior:'smooth',block:'start'});
   };
-  document.getElementById('closeViewer').addEventListener('click',()=>{viewer.hidden=true;viewerImage.removeAttribute('src');});
+  document.getElementById('closeViewer').addEventListener('click',()=>{viewer.hidden=true;hudLink.hidden=true;viewerImage.removeAttribute('src');});
   worker.onerror=()=>{analyze.disabled=false;setStatus('辨識程式暫時無法執行，請重新整理後再試。');};
 })();

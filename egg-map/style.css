@@ -80,3 +80,8 @@
 .egg-capture-stage canvas{display:block;max-width:100%;height:auto;touch-action:none;cursor:crosshair}
 .egg-results{scroll-margin-top:22px}
 @media(max-width:650px){.egg-capture-selection{padding:8px}.egg-capture-dialog{padding:12px}.egg-capture-head h2{font-size:1.1rem}.egg-capture-footer{align-items:stretch;flex-direction:column}.egg-capture-footer button{width:100%}}
+.egg-viewer-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.egg-hud-button{display:inline-flex;align-items:center;padding:9px 13px;border:1px solid #70d4ff;border-radius:8px;color:#f2fbff;background:linear-gradient(110deg,#1466a8,#274d9e);font-size:.85rem;font-weight:800;text-decoration:none}
+.egg-hud-button[hidden]{display:none}
+.egg-hud-button:hover{filter:brightness(1.17)}
+.egg-hud-button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
