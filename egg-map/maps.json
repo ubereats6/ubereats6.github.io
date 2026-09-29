@@ -1,0 +1,250 @@
+[
+  {
+    "id": 1,
+    "chapter": 1,
+    "label": "上分上上",
+    "boss": true,
+    "file": "map-01.jpg",
+    "sourceName": "1(上分上上)boss.jpg"
+  },
+  {
+    "id": 2,
+    "chapter": 1,
+    "label": "上分叉",
+    "boss": true,
+    "file": "map-02.jpg",
+    "sourceName": "1(上分叉)boss.jpg"
+  },
+  {
+    "id": 3,
+    "chapter": 1,
+    "label": "上分叉雙樓梯",
+    "boss": false,
+    "file": "map-03.jpg",
+    "sourceName": "1(上分叉雙樓梯)沒boss.jpg"
+  },
+  {
+    "id": 4,
+    "chapter": 1,
+    "label": "上十字路",
+    "boss": true,
+    "file": "map-04.jpg",
+    "sourceName": "1(上十字路)boss.jpg"
+  },
+  {
+    "id": 5,
+    "chapter": 1,
+    "label": "下",
+    "boss": true,
+    "file": "map-05.jpg",
+    "sourceName": "1(下)boss.jpg"
+  },
+  {
+    "id": 6,
+    "chapter": 1,
+    "label": "下分叉",
+    "boss": true,
+    "file": "map-06.jpg",
+    "sourceName": "1(下分叉)boss.jpg"
+  },
+  {
+    "id": 7,
+    "chapter": 1,
+    "label": "下分岔右假樓梯",
+    "boss": true,
+    "file": "map-07.jpg",
+    "sourceName": "1(下分岔右假樓梯)boss.jpg"
+  },
+  {
+    "id": 8,
+    "chapter": 1,
+    "label": "下房間假樓梯",
+    "boss": false,
+    "file": "map-08.jpg",
+    "sourceName": "1(下房間假樓梯)沒boss.jpg"
+  },
+  {
+    "id": 9,
+    "chapter": 1,
+    "label": "下蛇型下出口",
+    "boss": true,
+    "file": "map-09.jpg",
+    "sourceName": "1(下蛇型下出口)boss.jpg"
+  },
+  {
+    "id": 10,
+    "chapter": 1,
+    "label": "下雙蛇型",
+    "boss": true,
+    "file": "map-10.jpg",
+    "sourceName": "1(下雙蛇型)boss.jpg"
+  },
+  {
+    "id": 11,
+    "chapter": 1,
+    "label": "右)下貼牆死路",
+    "boss": true,
+    "file": "map-11.jpg",
+    "sourceName": "1(右)下貼牆死路boss.jpg"
+  },
+  {
+    "id": 12,
+    "chapter": 1,
+    "label": "右假路",
+    "boss": true,
+    "file": "map-12.jpg",
+    "sourceName": "1(右假路)boss.jpg"
+  },
+  {
+    "id": 13,
+    "chapter": 1,
+    "label": "右出",
+    "boss": true,
+    "file": "map-13.jpg",
+    "sourceName": "1(右出)boss.jpg"
+  },
+  {
+    "id": 14,
+    "chapter": 1,
+    "label": "右分叉",
+    "boss": false,
+    "file": "map-14.jpg",
+    "sourceName": "1(右分叉)沒boss.jpg"
+  },
+  {
+    "id": 15,
+    "chapter": 1,
+    "label": "右樓梯沒選擇",
+    "boss": true,
+    "file": "map-15.jpg",
+    "sourceName": "1(右樓梯沒選擇)boss.jpg"
+  },
+  {
+    "id": 16,
+    "chapter": 1,
+    "label": "右牆房",
+    "boss": true,
+    "file": "map-16.jpg",
+    "sourceName": "1(右牆房)boss.jpg"
+  },
+  {
+    "id": 17,
+    "chapter": 1,
+    "label": "右蛇型",
+    "boss": true,
+    "file": "map-17.jpg",
+    "sourceName": "1(右蛇型)boss.jpg"
+  },
+  {
+    "id": 18,
+    "chapter": 1,
+    "label": "左房間)左下角",
+    "boss": true,
+    "file": "map-18.jpg",
+    "sourceName": "1(左房間)boss左下角.jpg"
+  },
+  {
+    "id": 19,
+    "chapter": 1,
+    "label": "左蛇型",
+    "boss": false,
+    "file": "map-19.jpg",
+    "sourceName": "1(左蛇型)沒boss.jpg"
+  },
+  {
+    "id": 20,
+    "chapter": 1,
+    "label": "左雙假路",
+    "boss": true,
+    "file": "map-20.jpg",
+    "sourceName": "1(左雙假路)boss.jpg"
+  },
+  {
+    "id": 21,
+    "chapter": 2,
+    "label": "上下",
+    "boss": false,
+    "file": "map-21.jpg",
+    "sourceName": "2(上下)沒boss.jpg"
+  },
+  {
+    "id": 22,
+    "chapter": 2,
+    "label": "下出右蛋",
+    "boss": true,
+    "file": "map-22.jpg",
+    "sourceName": "2(下出右蛋)boss.jpg"
+  },
+  {
+    "id": 23,
+    "chapter": 2,
+    "label": "右出下蛋",
+    "boss": true,
+    "file": "map-23.jpg",
+    "sourceName": "2(右出下蛋)boss.jpg"
+  },
+  {
+    "id": 24,
+    "chapter": 2,
+    "label": "右梯下",
+    "boss": true,
+    "file": "map-24.jpg",
+    "sourceName": "2(右梯下)boss.jpg"
+  },
+  {
+    "id": 25,
+    "chapter": 2,
+    "label": "左右",
+    "boss": true,
+    "file": "map-25.jpg",
+    "sourceName": "2(左右)boss.jpg"
+  },
+  {
+    "id": 26,
+    "chapter": 3,
+    "label": "上左下",
+    "boss": true,
+    "file": "map-26.jpg",
+    "sourceName": "3(上左下)boss.jpg"
+  },
+  {
+    "id": 27,
+    "chapter": 3,
+    "label": "上左下假路",
+    "boss": true,
+    "file": "map-27.jpg",
+    "sourceName": "3(上左下假路)boss.jpg"
+  },
+  {
+    "id": 28,
+    "chapter": 3,
+    "label": "上房右下",
+    "boss": true,
+    "file": "map-28.jpg",
+    "sourceName": "3(上房右下)boss.jpg"
+  },
+  {
+    "id": 29,
+    "chapter": 3,
+    "label": "右路上下雙蛋房",
+    "boss": false,
+    "file": "map-29.jpg",
+    "sourceName": "3(右路上下雙蛋房)沒boss.jpg"
+  },
+  {
+    "id": 30,
+    "chapter": 3,
+    "label": "左梯下右",
+    "boss": true,
+    "file": "map-30.jpg",
+    "sourceName": "3(左梯下右)boss.jpg"
+  },
+  {
+    "id": 31,
+    "chapter": 4,
+    "label": "通道巨圖",
+    "boss": true,
+    "file": "map-31.jpg",
+    "sourceName": "4通道巨圖boss.jpg"
+  }
+]
