@@ -15,7 +15,7 @@
   "build": {
     "appId": "io.github.ubereats6.aniimoeggmaphud",
     "productName": "Aniimo Egg Map HUD",
-    "files": ["main.js", "preload.js", "overlay.html", "renderer.js", "icon.png", "icon.ico"],
+    "files": ["main.js", "preload.js", "overlay.html", "renderer.js", "matcher.html", "matcher-ui.js", "matcher-worker.js", "features.json", "icon.png", "icon.ico"],
     "directories": { "output": "dist" },
     "protocols": [{ "name": "Aniimo Egg Map HUD", "schemes": ["aniimo-egg-map"] }],
     "win": {

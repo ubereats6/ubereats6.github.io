@@ -47,6 +47,7 @@ opacity.addEventListener('input', () => {
   window.mapHud.setOpacity(Number(opacity.value) / 100);
 });
 document.getElementById('lock').addEventListener('click', () => window.mapHud.setLocked(true));
+document.getElementById('match').addEventListener('click', () => window.mapHud.openMatcher());
 document.getElementById('hide').addEventListener('click', () => window.mapHud.hide());
 const grip = document.getElementById('resizeGrip');
 let lastPoint = null;

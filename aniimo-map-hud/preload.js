@@ -4,5 +4,8 @@ contextBridge.exposeInMainWorld('mapHud', {
   setOpacity: value => ipcRenderer.send('set-opacity',value),
   setLocked: locked => ipcRenderer.send('set-locked',locked),
   resizeBy: delta => ipcRenderer.send('resize-delta',delta),
-  hide: () => ipcRenderer.send('hide-hud')
+  hide: () => ipcRenderer.send('hide-hud'),
+  openMatcher: () => ipcRenderer.send('open-matcher'),
+  captureSources: () => ipcRenderer.invoke('capture-sources'),
+  chooseMatch: id => ipcRenderer.send('choose-match', id)
 });

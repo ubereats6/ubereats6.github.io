@@ -1,11 +1,11 @@
-const {app, BrowserWindow, Menu, Tray, nativeImage, globalShortcut, ipcMain, screen} = require('electron');
+const {app, BrowserWindow, Menu, Tray, nativeImage, globalShortcut, ipcMain, screen, desktopCapturer} = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
 
 const SCHEME = 'aniimo-egg-map';
 const MIN_WIDTH = 240;
 const MIN_HEIGHT = 180;
-let win, tray, settingsPath, saveTimer;
+let win, workWin, tray, settingsPath, saveTimer;
 let state = {mapId: null, opacity: 0.72, locked: false, bounds: null};
 let quitting = false;
 
@@ -113,6 +113,19 @@ function selectMap(id) {
   saveSettings();
   updateTray();
 }
+function openMatcher() {
+  if (workWin && !workWin.isDestroyed()) { workWin.show(); workWin.focus(); return; }
+  workWin = new BrowserWindow({
+    width:1060,height:780,minWidth:620,minHeight:480,
+    title:'伊莫搶蛋地圖辨識',icon:path.join(__dirname,'icon.png'),
+    backgroundColor:'#071426',autoHideMenuBar:true,
+    webPreferences:{preload:path.join(__dirname,'preload.js'),contextIsolation:true,nodeIntegration:false,sandbox:true}
+  });
+  workWin.webContents.setWindowOpenHandler(() => ({action:'deny'}));
+  workWin.webContents.on('will-navigate',event => event.preventDefault());
+  workWin.loadFile(path.join(__dirname,'matcher.html'));
+  workWin.on('closed',() => { workWin=null; });
+}
 function setLocked(value) {
   state.locked = Boolean(value);
   if (win && !win.isDestroyed()) {
@@ -139,7 +152,9 @@ function updateTray() {
   if (!tray) return;
   tray.setToolTip(`伊莫搶蛋地圖 HUD${state.mapId ? ` · 地圖 ${state.mapId}` : ''}`);
   tray.setContextMenu(Menu.buildFromTemplate([
-    {label:state.locked?'調整地圖  F8':'完成・鎖定  F8',click:() => setLocked(!state.locked)},
+    {label:'擷取並辨識地圖',click:openMatcher},
+    {type:'separator'},
+    {label:state.locked?'調整地圖  F8':'鎖定  F8',click:() => setLocked(!state.locked)},
     {label:win?.isVisible()?'隱藏  F9':'顯示  F9',click:toggleVisible},
     {type:'separator'},
     {label:'結束',click:() => app.quit()}
@@ -164,3 +179,28 @@ ipcMain.on('resize-delta', (_event,delta) => {
   win.setSize(Math.max(MIN_WIDTH,width+Math.round(delta.x)),Math.max(MIN_HEIGHT,height+Math.round(delta.y)));
 });
 ipcMain.on('hide-hud', toggleVisible);
+ipcMain.on('open-matcher',event => { if (event.sender===win?.webContents) openMatcher(); });
+ipcMain.handle('capture-sources', async event => {
+  if (event.sender!==workWin?.webContents) return [];
+  // Capture only one thumbnail per source. The HUD is hidden for this frame.
+  const wasVisible=win?.isVisible();
+  const matcherVisible=workWin?.isVisible();
+  if (wasVisible) win.hide();
+  if (matcherVisible) workWin.hide();
+  try {
+    await new Promise(resolve => setTimeout(resolve, 180));
+    const sources=await desktopCapturer.getSources({types:['window','screen'],thumbnailSize:{width:1920,height:1080}});
+    return sources.filter(s => s.name!=='伊莫搶蛋地圖辨識' && s.name!=='伊莫搶蛋地圖 HUD')
+      .filter(s => !s.thumbnail.isEmpty())
+      .map(s => ({name:s.name,shot:s.thumbnail.toDataURL()}));
+  } finally {
+    if (matcherVisible && workWin && !workWin.isDestroyed()) { workWin.show(); workWin.focus(); }
+    if (wasVisible && win && !win.isDestroyed()) win.showInactive();
+  }
+});
+ipcMain.on('choose-match', (event,id) => {
+  if (event.sender!==workWin?.webContents || !Number.isInteger(id) || id<1 || id>9999) return;
+  selectMap(id);
+  if (workWin && !workWin.isDestroyed()) workWin.close();
+  setLocked(false);
+});
