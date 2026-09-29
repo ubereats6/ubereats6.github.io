@@ -1,6 +1,7 @@
 const image = document.getElementById('map');
 const mapArea = document.getElementById('mapArea');
 const mapZoom = document.getElementById('mapZoom');
+const panPad = document.getElementById('panPad');
 const zoomLevel = document.getElementById('zoomLevel');
 const empty = document.getElementById('empty');
 const title = document.getElementById('title');
@@ -19,16 +20,19 @@ function clampPan() {
   if (!image.naturalWidth || !image.naturalHeight) return;
   const width = mapArea.clientWidth, height = mapArea.clientHeight;
   const fit = Math.min(width / image.naturalWidth, height / image.naturalHeight);
-  const maxX = Math.max(0, (image.naturalWidth * fit * zoom / 100 - width) / 2);
-  const maxY = Math.max(0, (image.naturalHeight * fit * zoom / 100 - height) / 2);
+  // A little travel at low zoom makes panning useful even when one axis still fits.
+  const travel = zoom > 100 ? Math.min(width,height) * .18 : 0;
+  const maxX = Math.max(0, (image.naturalWidth * fit * zoom / 100 - width) / 2) + travel;
+  const maxY = Math.max(0, (image.naturalHeight * fit * zoom / 100 - height) / 2) + travel;
   pan.x = Math.max(-maxX, Math.min(maxX, pan.x));
   pan.y = Math.max(-maxY, Math.min(maxY, pan.y));
-  mapArea.classList.toggle('can-pan', maxX > 0 || maxY > 0);
+  mapArea.classList.toggle('can-pan', zoom > 100);
 }
 function renderZoom() {
   clampPan();
   image.style.transform = `translate(${pan.x}px, ${pan.y}px) scale(${zoom / 100})`;
   zoomLevel.value = `${zoom}%`;
+  panPad.hidden = zoom <= 100 || !image.classList.contains('ready');
   document.getElementById('zoomOut').disabled = zoom === 50;
   document.getElementById('zoomIn').disabled = zoom === 400;
 }
@@ -39,26 +43,35 @@ function setZoom(next) {
 document.getElementById('zoomOut').addEventListener('click', () => setZoom(zoom - 25));
 document.getElementById('zoomIn').addEventListener('click', () => setZoom(zoom + 25));
 document.getElementById('zoomReset').addEventListener('click', () => { zoom = 100; pan = {x:0,y:0}; renderZoom(); });
+function panBy(dx,dy) {
+  pan.x += dx;
+  pan.y += dy;
+  renderZoom();
+}
+document.getElementById('panUp').addEventListener('click', () => panBy(0,-48));
+document.getElementById('panDown').addEventListener('click', () => panBy(0,48));
+document.getElementById('panLeft').addEventListener('click', () => panBy(-48,0));
+document.getElementById('panRight').addEventListener('click', () => panBy(48,0));
 mapArea.addEventListener('wheel', event => {
   if (locked || !image.classList.contains('ready')) return;
   event.preventDefault();
   setZoom(zoom + (event.deltaY < 0 ? 25 : -25));
 }, {passive:false});
-mapArea.addEventListener('pointerdown', event => {
-  if (locked || event.button !== 0 || !mapArea.classList.contains('can-pan') || event.target.closest('.map-zoom')) return;
+mapArea.addEventListener('mousedown', event => {
+  if (locked || event.button !== 0 || !mapArea.classList.contains('can-pan') || event.target.closest('.map-zoom, .pan-pad')) return;
+  event.preventDefault();
   panStart = {x:event.clientX,y:event.clientY,panX:pan.x,panY:pan.y};
-  mapArea.setPointerCapture(event.pointerId);
   mapArea.classList.add('panning');
 });
-mapArea.addEventListener('pointermove', event => {
+window.addEventListener('mousemove', event => {
   if (!panStart) return;
   pan.x = panStart.panX + event.clientX - panStart.x;
   pan.y = panStart.panY + event.clientY - panStart.y;
   renderZoom();
 });
 function endPan() { panStart = null; mapArea.classList.remove('panning'); }
-mapArea.addEventListener('pointerup', endPan);
-mapArea.addEventListener('pointercancel', endPan);
+window.addEventListener('mouseup', endPan);
+window.addEventListener('blur', endPan);
 window.addEventListener('resize', renderZoom);
 
 function showMap(id) {
@@ -69,6 +82,7 @@ function showMap(id) {
   pan = {x:0,y:0};
   renderZoom();
   mapZoom.hidden = true;
+  panPad.hidden = true;
   title.textContent = `搶蛋地圖輔助 · ${id}`;
   image.classList.remove('ready');
   empty.style.display = 'block';
@@ -84,6 +98,7 @@ image.addEventListener('load', () => {
 image.addEventListener('error', () => {
   image.classList.remove('ready');
   mapZoom.hidden = true;
+  panPad.hidden = true;
   empty.style.display = 'block';
   empty.textContent = `地圖 ${currentMap} 尚未上傳或無法連線。請確認網頁能開啟此地圖。`;
 });
