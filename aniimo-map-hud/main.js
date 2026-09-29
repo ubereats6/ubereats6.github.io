@@ -139,13 +139,15 @@ function updateTray() {
   if (!tray) return;
   tray.setToolTip(`伊莫搶蛋地圖 HUD${state.mapId ? ` · 地圖 ${state.mapId}` : ''}`);
   tray.setContextMenu(Menu.buildFromTemplate([
-    {label:state.locked?'調整地圖  Ctrl+Shift+M':'完成・鎖定  Ctrl+Shift+M',click:() => setLocked(!state.locked)},
-    {label:win?.isVisible()?'隱藏  Ctrl+Shift+J':'顯示  Ctrl+Shift+J',click:toggleVisible},
+    {label:state.locked?'調整地圖  F8':'完成・鎖定  F8',click:() => setLocked(!state.locked)},
+    {label:win?.isVisible()?'隱藏  F9':'顯示  F9',click:toggleVisible},
     {type:'separator'},
     {label:'結束',click:() => app.quit()}
   ]));
 }
 function registerShortcuts() {
+  globalShortcut.register('F8', () => setLocked(!state.locked));
+  globalShortcut.register('F9', toggleVisible);
   globalShortcut.register('Control+Shift+M', () => setLocked(!state.locked));
   globalShortcut.register('Control+Shift+J', toggleVisible);
 }
