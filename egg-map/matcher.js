@@ -13,6 +13,7 @@
   const zoomLevel = document.getElementById('zoomLevel');
   const analyze = document.getElementById('analyzeMap');
   const reset = document.getElementById('resetCrop');
+  const captureButton = document.getElementById('captureWindow');
   const worker = new Worker('matcher-worker.js?v=5');
   let zoom = 100;
   function setZoom(next) {
@@ -79,6 +80,16 @@
     crop = {x:0,y:0,w:canvas.width,h:canvas.height}; draw();
     setStatus('已重設為整張截圖。');
   });
+  function showImage(next, url, label) {
+    if (imageUrl) URL.revokeObjectURL(imageUrl);
+    imageUrl=url; image=next;
+    const scale=Math.min(1,850/next.naturalWidth,650/next.naturalHeight);
+    canvas.width=Math.max(1,Math.round(next.naturalWidth*scale));
+    canvas.height=Math.max(1,Math.round(next.naturalHeight*scale));
+    crop={x:0,y:0,w:canvas.width,h:canvas.height};
+    area.hidden=false; name.textContent=label;
+    results.replaceChildren(); viewer.hidden=true; viewerImage.removeAttribute('src'); draw();
+  }
   upload.addEventListener('change', () => {
     const file = upload.files?.[0]; if (!file) return;
     if (!/^image\/(png|jpeg|webp)$/.test(file.type) || file.size > 20*1024*1024) {
@@ -87,18 +98,67 @@
     const url = URL.createObjectURL(file);
     const next = new Image();
     next.onload = () => {
-      if (imageUrl) URL.revokeObjectURL(imageUrl);
-      imageUrl=url; image=next;
-      const scale=Math.min(1,850/next.naturalWidth,650/next.naturalHeight);
-      canvas.width=Math.max(1,Math.round(next.naturalWidth*scale));
-      canvas.height=Math.max(1,Math.round(next.naturalHeight*scale));
-      crop={x:0,y:0,w:canvas.width,h:canvas.height};
-      area.hidden=false; name.textContent=file.name;
-      results.replaceChildren(); viewer.hidden=true; viewerImage.removeAttribute('src'); draw();
+      showImage(next,url,file.name);
       setStatus('請框選地圖區域，再開始比對。');
     };
     next.onerror=()=>{URL.revokeObjectURL(url);setStatus('圖片讀取失敗，請換一張截圖。');};
     next.src=url;
+  });
+  if (!navigator.mediaDevices?.getDisplayMedia) {
+    captureButton.disabled=true;
+    captureButton.title='此瀏覽器不支援視窗擷取；請改用選擇截圖。';
+  }
+  function withTimeout(promise, milliseconds) {
+    let timer;
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => { timer=setTimeout(() => reject(new Error('擷取畫面逾時，請重試。')), milliseconds); }),
+    ]).finally(() => clearTimeout(timer));
+  }
+  captureButton.addEventListener('click', async () => {
+    if (!navigator.mediaDevices?.getDisplayMedia) return;
+    captureButton.disabled=true;
+    setStatus('請在瀏覽器視窗中選擇正在顯示地圖的遊戲視窗。');
+    let stream, video;
+    try {
+      // The browser chooser is opened directly by the user's click.
+      stream = await navigator.mediaDevices.getDisplayMedia({video:true,audio:false});
+      video = document.createElement('video');
+      video.muted=true; video.playsInline=true; video.srcObject=stream;
+      await withTimeout(video.play(),8000);
+      await withTimeout(new Promise(resolve => {
+        if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(resolve);
+        else setTimeout(resolve,200);
+      }),8000);
+      if (!video.videoWidth || !video.videoHeight) throw new Error('無法讀取選取視窗的畫面。');
+      const shot=document.createElement('canvas');
+      const scale=Math.min(1,1920/video.videoWidth,1200/video.videoHeight);
+      shot.width=Math.max(1,Math.round(video.videoWidth*scale));
+      shot.height=Math.max(1,Math.round(video.videoHeight*scale));
+      shot.getContext('2d').drawImage(video,0,0,shot.width,shot.height);
+      // The stream is no longer needed after this single frame.
+      stream.getTracks().forEach(track => track.stop());
+      video.srcObject=null;
+      const blob=await new Promise(resolve => shot.toBlob(resolve,'image/png'));
+      if (!blob) throw new Error('畫面擷取失敗，請改用上傳截圖。');
+      const url=URL.createObjectURL(blob);
+      const next=new Image();
+      await new Promise((resolve,reject) => {
+        next.onload=()=>{showImage(next,url,'剛擷取的地圖畫面');resolve();};
+        next.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('擷取圖片讀取失敗。'));};
+        next.src=url;
+      });
+      setStatus('已擷取單張畫面，正在比對地圖輪廓…');
+      startMatching();
+    } catch (error) {
+      if (error.name === 'NotAllowedError' || error.name === 'AbortError')
+        setStatus('已取消擷取。你仍可上傳截圖。');
+      else setStatus(error.message || '擷取失敗，請改用上傳截圖。');
+    } finally {
+      stream?.getTracks().forEach(track => track.stop());
+      if (video) video.srcObject=null;
+      captureButton.disabled=false;
+    }
   });
   function getMask() {
     const target=document.createElement('canvas');
@@ -123,7 +183,7 @@
     for(let y=0;y<h;y++) for(let x=0;x<w;x++) out[y*w+x]=mask[(y+top)*target.width+x+left];
     return {w,h,pixels:out};
   }
-  analyze.addEventListener('click', () => {
+  function startMatching() {
     if (!image) return;
     try {
       const mask=getMask();
@@ -131,7 +191,8 @@
       setStatus('正在比對地圖輪廓，可能需要幾秒鐘…');
       worker.postMessage({type:'match',...mask});
     } catch(error){setStatus(error.message);}
-  });
+  }
+  analyze.addEventListener('click', startMatching);
   worker.onmessage=({data})=>{
     analyze.disabled=false;
     if(data.type==='error'){setStatus(data.message);return;}

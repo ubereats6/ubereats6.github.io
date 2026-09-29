@@ -59,3 +59,9 @@
 .egg-map-tools output{min-width:43px;text-align:center;font-variant-numeric:tabular-nums}
 .egg-map-tools button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 .egg-full-map{overscroll-behavior:contain}
+.egg-capture-button{display:inline-block;padding:11px 16px;border:1px solid rgba(111,217,255,.78);border-radius:10px;color:#e8f8ff;background:#102f55;font:inherit;font-weight:800;cursor:pointer;text-align:center}
+.egg-capture-button:hover:not(:disabled){background:#194674}
+.egg-capture-button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.egg-capture-button:disabled{opacity:.5;cursor:not-allowed}
+.egg-capture-note{margin:9px 2px 0;color:var(--muted);font-size:.8rem;line-height:1.55}
+@media(max-width:650px){.egg-capture-button{width:100%}}
