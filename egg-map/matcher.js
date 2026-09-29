@@ -14,6 +14,9 @@
   const analyze = document.getElementById('analyzeMap');
   const reset = document.getElementById('resetCrop');
   const captureButton = document.getElementById('captureWindow');
+  const captureSelection = document.getElementById('captureSelection');
+  const captureSelectCanvas = document.getElementById('captureSelectCanvas');
+  const captureContext = captureSelectCanvas.getContext('2d');
   const worker = new Worker('matcher-worker.js?v=5');
   let zoom = 100;
   function setZoom(next) {
@@ -35,6 +38,7 @@
     viewer.scrollIntoView({behavior:'smooth', block:'start'});
   }
   let image = null, imageUrl = null, crop = null, start = null;
+  let selectStart = null, selectRect = null, previousOverflow = '';
   const setStatus = message => { status.textContent = message; };
 
   function draw() {
@@ -90,6 +94,84 @@
     area.hidden=false; name.textContent=label;
     results.replaceChildren(); viewer.hidden=true; viewerImage.removeAttribute('src'); draw();
   }
+  function drawCaptureSelection() {
+    if (!image) return;
+    const w=captureSelectCanvas.width, h=captureSelectCanvas.height;
+    captureContext.clearRect(0,0,w,h);
+    captureContext.drawImage(image,0,0,w,h);
+    if (!selectRect) return;
+    const {x,y,w:width,h:height}=selectRect;
+    captureContext.fillStyle='rgba(2,8,20,.53)';
+    captureContext.fillRect(0,0,w,y);
+    captureContext.fillRect(0,y,x,height);
+    captureContext.fillRect(x+width,y,w-x-width,height);
+    captureContext.fillRect(0,y+height,w,h-y-height);
+    captureContext.strokeStyle='#71ddff'; captureContext.lineWidth=3;
+    captureContext.strokeRect(x+1,y+1,Math.max(0,width-2),Math.max(0,height-2));
+  }
+  function selectPoint(event) {
+    const bounds=captureSelectCanvas.getBoundingClientRect();
+    return {x:Math.max(0,Math.min(captureSelectCanvas.width,Math.round((event.clientX-bounds.left)*captureSelectCanvas.width/bounds.width))),
+      y:Math.max(0,Math.min(captureSelectCanvas.height,Math.round((event.clientY-bounds.top)*captureSelectCanvas.height/bounds.height)))};
+  }
+  function openCaptureSelection() {
+    selectRect=null; selectStart=null;
+    const scale=Math.min(1,Math.max(240,window.innerWidth-56)/image.naturalWidth,
+      Math.max(240,window.innerHeight-220)/image.naturalHeight);
+    captureSelectCanvas.width=Math.max(1,Math.round(image.naturalWidth*scale));
+    captureSelectCanvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+    previousOverflow=document.body.style.overflow;
+    document.body.style.overflow='hidden';
+    captureSelection.hidden=false;
+    drawCaptureSelection();
+    window.focus();
+    document.getElementById('captureCancel').focus();
+  }
+  function closeCaptureSelection() {
+    captureSelection.hidden=true;
+    document.body.style.overflow=previousOverflow;
+    selectStart=null; selectRect=null;
+  }
+  function completeCaptureSelection(whole=false) {
+    if (!whole && (!selectRect || selectRect.w<20 || selectRect.h<20)) return;
+    const rect=whole ? {x:0,y:0,w:captureSelectCanvas.width,h:captureSelectCanvas.height} : selectRect;
+    crop={x:Math.round(rect.x*canvas.width/captureSelectCanvas.width),
+      y:Math.round(rect.y*canvas.height/captureSelectCanvas.height),
+      w:Math.max(1,Math.round(rect.w*canvas.width/captureSelectCanvas.width)),
+      h:Math.max(1,Math.round(rect.h*canvas.height/captureSelectCanvas.height))};
+    closeCaptureSelection();
+    draw();
+    startMatching();
+  }
+  captureSelectCanvas.addEventListener('pointerdown', event => {
+    selectStart=selectPoint(event);
+    captureSelectCanvas.setPointerCapture(event.pointerId);
+    selectRect={x:selectStart.x,y:selectStart.y,w:0,h:0};
+    drawCaptureSelection();
+  });
+  captureSelectCanvas.addEventListener('pointermove', event => {
+    if (!selectStart) return;
+    const end=selectPoint(event);
+    selectRect={x:Math.min(selectStart.x,end.x),y:Math.min(selectStart.y,end.y),
+      w:Math.abs(selectStart.x-end.x),h:Math.abs(selectStart.y-end.y)};
+    drawCaptureSelection();
+  });
+  captureSelectCanvas.addEventListener('pointerup', event => {
+    if (!selectStart) return;
+    const end=selectPoint(event);
+    selectRect={x:Math.min(selectStart.x,end.x),y:Math.min(selectStart.y,end.y),
+      w:Math.abs(selectStart.x-end.x),h:Math.abs(selectStart.y-end.y)};
+    selectStart=null;
+    completeCaptureSelection();
+  });
+  captureSelectCanvas.addEventListener('pointercancel', () => { selectStart=null; selectRect=null; drawCaptureSelection(); });
+  document.getElementById('captureFull').addEventListener('click', () => completeCaptureSelection(true));
+  document.getElementById('captureCancel').addEventListener('click', () => { closeCaptureSelection(); setStatus('已取消框選；可以在下方預覽中選取地圖。'); });
+  document.addEventListener('keydown', event => {
+    if (event.key==='Escape' && !captureSelection.hidden) {
+      closeCaptureSelection(); setStatus('已取消框選；可以在下方預覽中選取地圖。');
+    }
+  });
   upload.addEventListener('change', () => {
     const file = upload.files?.[0]; if (!file) return;
     if (!/^image\/(png|jpeg|webp)$/.test(file.type) || file.size > 20*1024*1024) {
@@ -122,7 +204,14 @@
     let stream, video;
     try {
       // The browser chooser is opened directly by the user's click.
-      stream = await navigator.mediaDevices.getDisplayMedia({video:true,audio:false});
+      const options={video:true,audio:false};
+      const controller=typeof CaptureController==='function' ? new CaptureController() : null;
+      if (controller) options.controller=controller;
+      stream = await navigator.mediaDevices.getDisplayMedia(options);
+      // Supported browsers can keep this page visible after the user picks a game window.
+      if (controller && stream.getVideoTracks()[0]?.getSettings?.().displaySurface !== 'monitor') {
+        try { controller.setFocusBehavior('no-focus-change'); } catch (_) { /* Browser handles focus. */ }
+      }
       video = document.createElement('video');
       video.muted=true; video.playsInline=true; video.srcObject=stream;
       await withTimeout(video.play(),8000);
@@ -148,8 +237,8 @@
         next.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('擷取圖片讀取失敗。'));};
         next.src=url;
       });
-      setStatus('已擷取單張畫面，正在比對地圖輪廓…');
-      startMatching();
+      setStatus('已擷取單張畫面；請在擷取畫面上框選地圖，放開後會自動比對。');
+      openCaptureSelection();
     } catch (error) {
       if (error.name === 'NotAllowedError' || error.name === 'AbortError')
         setStatus('已取消擷取。你仍可上傳截圖。');
@@ -208,6 +297,7 @@
     });
     results.replaceChildren(...cards);
     setStatus('這是輪廓比對的候選排序，不代表已確定是哪張地圖。');
+    results.scrollIntoView({behavior:'smooth',block:'start'});
   };
   document.getElementById('closeViewer').addEventListener('click',()=>{viewer.hidden=true;viewerImage.removeAttribute('src');});
   worker.onerror=()=>{analyze.disabled=false;setStatus('辨識程式暫時無法執行，請重新整理後再試。');};
