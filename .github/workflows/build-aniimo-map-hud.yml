@@ -1,0 +1,28 @@
+name: Build Aniimo Egg Map HUD (Windows)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: aniimo-map-hud
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install build dependencies
+        run: npm install --no-audit --no-fund
+      - name: Build installer
+        run: npm run dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AniimoEggMapHUD-Windows-Setup
+          path: aniimo-map-hud/dist/*.exe
+          if-no-files-found: error
