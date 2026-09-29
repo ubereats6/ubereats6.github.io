@@ -6,7 +6,7 @@
 
 1. 將此 `aniimo-map-hud/` 資料夾與 `.github/workflows/build-aniimo-map-hud.yml` 上傳至 `ubereats6.github.io` 儲存庫根目錄。
 2. 到 GitHub **Actions** 手動執行 **Build Aniimo Egg Map HUD (Windows)**。完成後下載 `AniimoEggMapHUD-Windows-Setup` artifact，解壓後執行其中的安裝檔。使用者不必安裝 Node.js。
-3. 首次啟動 HUD，讓 Windows 註冊 `aniimo-egg-map://` 連結。按 **擷取辨識**，選遊戲視窗或螢幕，再框選地圖路徑；放開滑鼠後等待四個候選結果，點選其中一張即可顯示在 HUD。也可以開啟既有截圖檔。系統匣選單亦可打開辨識視窗。
+3. 首次啟動 HUD，讓 Windows 註冊 `aniimo-egg-map://` 連結。按 **擷取辨識**，選遊戲視窗或螢幕，再框選地圖路徑；放開滑鼠後等待四個候選結果，點選其中一張即可顯示在 HUD。四張候選會保留在 HUD 底下，可直接切換；鎖定時先按 F8 解鎖即可操作。也可以開啟既有截圖檔。系統匣選單亦可打開辨識視窗。
 4. 原本的網頁操作保留：在網站比對後點候選地圖，再按 **浮在遊戲上**，允許瀏覽器開啟 HUD。
 5. 拖曳上方標題移動，拖曳右下角調整視窗尺寸，滑桿調透明度；按 **鎖定 F8** 後滑鼠會穿透 HUD。`F8` 調整／鎖定，`F9` 隱藏／顯示。若按鍵與其他軟體衝突，仍可用 `Ctrl+Shift+M`、`Ctrl+Shift+J`，系統匣圖示雙擊也能解除鎖定。
 

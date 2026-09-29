@@ -90,6 +90,7 @@ function match(){
 worker.onmessage=({data})=>{
   if(data.type==='error'){say(data.message);return;}
   if(!data.results?.length){say('找不到候選地圖，請重新框選。');return;}
+  window.mapHud.matchResults(data.results.map(item=>item.id));
   for(const [rank,item] of data.results.entries()){
     const card=document.createElement('button');card.type='button';card.className='candidate';
     const small=document.createElement('small');small.textContent=`候選 ${rank+1}`;

@@ -7,5 +7,7 @@ contextBridge.exposeInMainWorld('mapHud', {
   hide: () => ipcRenderer.send('hide-hud'),
   openMatcher: () => ipcRenderer.send('open-matcher'),
   captureSources: () => ipcRenderer.invoke('capture-sources'),
-  chooseMatch: id => ipcRenderer.send('choose-match', id)
+  matchResults: ids => ipcRenderer.send('match-results', ids),
+  chooseMatch: id => ipcRenderer.send('choose-match', id),
+  selectCandidate: id => ipcRenderer.send('select-candidate', id)
 });

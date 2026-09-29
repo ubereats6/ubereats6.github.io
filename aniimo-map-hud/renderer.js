@@ -1,6 +1,7 @@
 const image = document.getElementById('map');
 const empty = document.getElementById('empty');
 const title = document.getElementById('title');
+const candidateStrip = document.getElementById('candidates');
 const opacity = document.getElementById('opacity');
 const opacityValue = document.getElementById('opacityValue');
 const tip = document.getElementById('lockTip');
@@ -12,7 +13,7 @@ function showMap(id) {
   if (!Number.isInteger(id) || id < 1 || id > 9999) return;
   if (currentMap === id) return;
   currentMap = id;
-  title.textContent = `地圖 ${id} · 搶蛋對照`;
+  title.textContent = `搶蛋地圖輔助 · ${id}`;
   image.classList.remove('ready');
   empty.style.display = 'block';
   empty.textContent = `正在載入地圖 ${id}…`;
@@ -34,6 +35,17 @@ function showTip() {
 }
 window.mapHud.onState(state => {
   showMap(state.mapId);
+  const ids=Array.isArray(state.candidates)?state.candidates:[];
+  candidateStrip.replaceChildren();
+  candidateStrip.hidden=!ids.length;
+  ids.forEach((id,index)=>{
+    const button=document.createElement('button');button.type='button';
+    button.textContent=`${index+1} · 地圖 ${id}`;
+    button.classList.toggle('selected',id===state.mapId);
+    button.setAttribute('aria-pressed',String(id===state.mapId));
+    button.addEventListener('click',()=>window.mapHud.selectCandidate(id));
+    candidateStrip.append(button);
+  });
   opacity.value = String(Math.round(state.opacity * 100));
   opacityValue.value = `${opacity.value}%`;
   const changed = locked !== state.locked;

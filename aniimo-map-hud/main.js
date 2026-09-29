@@ -6,7 +6,7 @@ const SCHEME = 'aniimo-egg-map';
 const MIN_WIDTH = 240;
 const MIN_HEIGHT = 180;
 let win, workWin, tray, settingsPath, saveTimer;
-let state = {mapId: null, opacity: 0.72, locked: false, bounds: null};
+let state = {mapId: null, opacity: 0.72, locked: false, bounds: null, candidates: []};
 let quitting = false;
 
 function mapFromArgs(args) {
@@ -104,11 +104,12 @@ function createWindow() {
 }
 function sendState() {
   if (win && !win.isDestroyed() && !win.webContents.isLoading())
-    win.webContents.send('map-state',{mapId:state.mapId,opacity:state.opacity,locked:state.locked});
+    win.webContents.send('map-state',{mapId:state.mapId,opacity:state.opacity,locked:state.locked,candidates:state.candidates});
 }
-function selectMap(id) {
+function selectMap(id, keepCandidates=false) {
   if (!Number.isInteger(id) || id < 1 || id > 9999) return;
   state.mapId = id;
+  if (!keepCandidates) state.candidates = [];
   if (win && !win.isDestroyed()) { win.showInactive(); sendState(); }
   saveSettings();
   updateTray();
@@ -116,7 +117,7 @@ function selectMap(id) {
 function openMatcher() {
   if (workWin && !workWin.isDestroyed()) { workWin.show(); workWin.focus(); return; }
   workWin = new BrowserWindow({
-    width:1060,height:780,minWidth:620,minHeight:480,
+    width:700,height:560,minWidth:560,minHeight:420,
     title:'伊莫搶蛋地圖辨識',icon:path.join(__dirname,'icon.png'),
     backgroundColor:'#071426',autoHideMenuBar:true,
     webPreferences:{preload:path.join(__dirname,'preload.js'),contextIsolation:true,nodeIntegration:false,sandbox:true}
@@ -200,7 +201,18 @@ ipcMain.handle('capture-sources', async event => {
 });
 ipcMain.on('choose-match', (event,id) => {
   if (event.sender!==workWin?.webContents || !Number.isInteger(id) || id<1 || id>9999) return;
-  selectMap(id);
+  if (!state.candidates.includes(id)) return;
+  selectMap(id,true);
   if (workWin && !workWin.isDestroyed()) workWin.close();
   setLocked(false);
+});
+ipcMain.on('match-results', (event,ids) => {
+  if (event.sender!==workWin?.webContents || !Array.isArray(ids) || ids.length<1 || ids.length>4 ||
+      !ids.every(id=>Number.isInteger(id) && id>=1 && id<=9999) || new Set(ids).size!==ids.length) return;
+  state.candidates=ids;
+  sendState();
+});
+ipcMain.on('select-candidate', (event,id) => {
+  if (event.sender!==win?.webContents || state.locked || !state.candidates.includes(id)) return;
+  selectMap(id,true);
 });
