@@ -1,37 +1,31 @@
-name: 搶蛋地圖投稿／回報問題
-description: 上傳新地圖，或回報地圖名稱、標記及路線問題
-title: "[搶蛋地圖] "
+name: 提供新搶蛋地圖
+description: 上傳尚未收錄的搶蛋地圖，提供線索協助辨識功能開發
+title: "[新地圖] "
 body:
-  - type: dropdown
-    id: kind
+  - type: markdown
     attributes:
-      label: 投稿類型
-      options:
-        - 新地圖
-        - 修正現有地圖
-        - 其他回饋
-    validations:
-      required: true
+      value: |
+        感謝分享新地圖！這是公開的 GitHub Issue，圖片與文字會公開顯示。請先移除不想公開的角色名稱等資訊。
   - type: input
-    id: floor
+    id: identifier
     attributes:
-      label: 樓層／地圖名稱
-      description: 如果不確定，填寫你看得到的線索即可。
-      placeholder: 例如：第 2 層、右側分岔
+      label: 地圖線索或暫定名稱
+      description: 不確定分類或樓層也沒關係，描述你能辨認的線索。
+      placeholder: 例如：起點往右，出口在下方
     validations:
       required: true
   - type: textarea
     id: details
     attributes:
-      label: 地圖線索與說明
-      description: 請指出起點、出口、蛋、Boss 或挑戰位置；回報錯誤請描述哪張地圖、哪裡有誤。
-      placeholder: 例如：起點在左上，出口在右下；目前頁面的第 2 層某張地圖，蛋的位置標錯。
+      label: 地圖說明
+      description: 請描述起點、出口、蛋、Boss 或挑戰等已知位置；若有來源或作者也請註明。
+      placeholder: 例如：金色傳門在左上，藍色傳門在右下；圖片來源／作者為…
     validations:
       required: true
   - type: upload
     id: images
     attributes:
-      label: 上傳地圖圖片／截圖
-      description: 請上傳 PNG 或 JPG。圖片與留言會公開，請先移除角色名稱等不想公開的資訊。
+      label: 上傳新地圖圖片
+      description: 請上傳 PNG 或 JPG 地圖圖片；圖片會公開顯示。
     validations:
-      required: false
+      required: true
