@@ -9,83 +9,27 @@
   const viewer = document.getElementById('mapViewer');
   const viewerTitle = document.getElementById('viewerTitle');
   const viewerImage = document.getElementById('viewerImage');
-  const markerLayer = document.getElementById('markerLayer');
-  const layerControls = document.getElementById('layerControls');
-  const layerOptions = document.getElementById('layerOptions');
-  const layerNotice = document.getElementById('layerNotice');
   const mapCanvas = document.getElementById('mapCanvas');
   const zoomLevel = document.getElementById('zoomLevel');
   const analyze = document.getElementById('analyzeMap');
   const reset = document.getElementById('resetCrop');
   const worker = new Worker('matcher-worker.js?v=5');
-  const layerData = fetch('markers.json?v=1').then(response => {
-    if (!response.ok) throw new Error('標記資料暫時無法載入');
-    return response.json();
-  }).catch(() => null);
-  const categories = [
-    ['entrance', '金色門', true], ['exit', '藍色門', true], ['egg', '蛋', true],
-    ['challenge', '挑戰', true], ['treasure', '高級寶箱', false],
-    ['chest', '其他寶箱', false], ['key_orange', '橘色鑰匙', false],
-    ['key_purple', '紫色鑰匙', false], ['key_blue', '藍色鑰匙', false],
-    ['stellarys_boss', 'Boss 候選', false],
-  ];
-  let selectedMap = null, selectedData = null;
   let zoom = 100;
   function setZoom(next) {
-    zoom = Math.max(100, Math.min(300, next));
+    zoom = Math.max(25, Math.min(300, next));
     mapCanvas.style.width = `${zoom}%`;
     zoomLevel.value = `${zoom}%`;
-    document.getElementById('zoomOut').disabled = zoom === 100;
+    document.getElementById('zoomOut').disabled = zoom === 25;
     document.getElementById('zoomIn').disabled = zoom === 300;
   }
-  document.getElementById('zoomOut').addEventListener('click', () => setZoom(zoom - 50));
-  document.getElementById('zoomIn').addEventListener('click', () => setZoom(zoom + 50));
-  setZoom(100);
-  for (const [key, label, checked] of categories) {
-    const input = document.createElement('input');
-    input.type = 'checkbox'; input.value = key; input.checked = checked;
-    input.addEventListener('change', renderMarkers);
-    const text = document.createElement('span'); text.textContent = label;
-    const option = document.createElement('label'); option.append(input, text);
-    layerOptions.append(option);
-  }
-  function renderMarkers() {
-    markerLayer.replaceChildren();
-    if (!selectedMap || !selectedData?.maps?.[selectedMap]?.clean) return;
-    const map = selectedData.maps[selectedMap];
-    const enabled = new Set([...layerOptions.querySelectorAll('input:checked')].map(input => input.value));
-    const fragment = document.createDocumentFragment();
-    for (const [x, y, category] of map.pins) {
-      if (!enabled.has(category)) continue;
-      const marker = document.createElement('span');
-      marker.className = 'egg-pin' + (category === 'stellarys_boss' ? ' egg-pin-boss' : '');
-      marker.style.left = `${x / 2048 * 100}%`;
-      marker.style.top = `${y / 2048 * 100}%`;
-      if (category === 'stellarys_boss') marker.textContent = 'B';
-      else {
-        const icon = document.createElement('img');
-        icon.src = `map-icons/${selectedData.icons[category]}`;
-        icon.alt = '';
-        marker.append(icon);
-      }
-      fragment.append(marker);
-    }
-    markerLayer.append(fragment);
-  }
-  async function showMap(id) {
-    selectedMap = String(id);
-    selectedData = await layerData;
-    const clean = selectedData?.maps?.[selectedMap]?.clean;
+  document.getElementById('zoomOut').addEventListener('click', () => setZoom(zoom - 25));
+  document.getElementById('zoomIn').addEventListener('click', () => setZoom(zoom + 25));
+  setZoom(75);
+  function showMap(id) {
     viewerTitle.textContent = `地圖 ${id}`;
-    viewerImage.src = clean ? `clean-maps/${id}.webp` : `maps/${id}.jpg`;
-    viewerImage.alt = `候選地圖 ${id} 的完整地圖`;
-    setZoom(window.matchMedia('(max-width:650px)').matches ? 150 : 100);
-    layerControls.hidden = !clean;
-    layerNotice.hidden = !!clean;
-    layerNotice.textContent = selectedData
-      ? '這張仍使用原始標記圖；取得乾淨底圖後才能獨立篩選標記。'
-      : '標記資料暫時無法載入，現顯示原始地圖。';
-    renderMarkers();
+    viewerImage.src = `maps/${id}.jpg`;
+    viewerImage.alt = `候選地圖 ${id} 的完整標記地圖`;
+    setZoom(window.matchMedia('(max-width:650px)').matches ? 100 : 75);
     viewer.hidden = false;
     viewer.scrollIntoView({behavior:'smooth', block:'start'});
   }
@@ -204,6 +148,6 @@
     results.replaceChildren(...cards);
     setStatus('這是輪廓比對的候選排序，不代表已確定是哪張地圖。');
   };
-  document.getElementById('closeViewer').addEventListener('click',()=>{viewer.hidden=true;selectedMap=null;markerLayer.replaceChildren();viewerImage.removeAttribute('src');});
+  document.getElementById('closeViewer').addEventListener('click',()=>{viewer.hidden=true;viewerImage.removeAttribute('src');});
   worker.onerror=()=>{analyze.disabled=false;setStatus('辨識程式暫時無法執行，請重新整理後再試。');};
 })();

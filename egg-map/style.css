@@ -52,19 +52,7 @@
 .egg-map-viewer{margin-top:20px;padding:16px;border:1px solid rgba(103,193,255,.48);border-radius:14px;background:#081d38;scroll-margin-top:24px}
 .egg-map-viewer[hidden]{display:none}.egg-viewer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.egg-viewer-head h3{margin:3px 0 0;color:#f2f8ff}.egg-viewer-head button{padding:8px 12px;border:1px solid rgba(93,164,255,.4);border-radius:8px;color:#e7f5ff;background:#123966;cursor:pointer}.egg-full-map{max-height:75dvh;overflow:auto;border-radius:10px;background:#030813}.egg-full-map img{display:block;width:100%;height:auto;object-fit:contain}.egg-map-viewer p{color:var(--muted);font-size:.83rem;line-height:1.6}
 .egg-legend-grid img{width:40px;height:40px;object-fit:contain;flex:none;filter:drop-shadow(0 0 9px rgba(63,178,255,.26))}
-.egg-layer-controls[hidden],.egg-layer-notice[hidden]{display:none}
-.egg-layer-controls{padding:12px 0 16px;color:#e8f5ff;font-size:.9rem}
-.egg-layer-controls>span{display:block;margin-bottom:10px;font-weight:800}
-.egg-layer-options{display:flex;flex-wrap:wrap;gap:8px}
-.egg-layer-options label{display:flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid rgba(113,184,255,.38);border-radius:9px;background:#102c4f;cursor:pointer}
-.egg-layer-options input{accent-color:#40bcff;width:17px;height:17px;margin:0}
-.egg-layer-controls small{display:block;margin-top:10px;color:#a9c3dd;line-height:1.5}
-.egg-layer-notice{padding:10px 12px;border:1px solid rgba(255,198,110,.4);border-radius:9px;background:rgba(108,65,20,.28)}
-.egg-map-canvas{position:relative;width:100%;line-height:0}
-.egg-marker-layer{position:absolute;inset:0;pointer-events:none}
-.egg-pin{position:absolute;width:clamp(12px,2.5vw,30px);height:clamp(12px,2.5vw,30px);transform:translate(-50%,-50%);filter:drop-shadow(0 1px 3px #000)}
-.egg-pin img{width:100%;height:100%;object-fit:contain}
-.egg-pin-boss{display:flex;align-items:center;justify-content:center;border:1px solid #faacbf;border-radius:50%;background:#5b2248;color:white;font:bold 13px/1 sans-serif}
+.egg-map-canvas{width:75%;margin-inline:auto;line-height:0}
 .egg-map-tools{display:flex;align-items:center;justify-content:flex-end;gap:9px;margin:4px 0 10px;color:#b9d7ec;font-size:.85rem}
 .egg-map-tools button{width:34px;height:32px;border:1px solid rgba(113,184,255,.55);border-radius:8px;background:#153b65;color:white;font:700 1.15rem/1 sans-serif;cursor:pointer}
 .egg-map-tools button:disabled{opacity:.45;cursor:default}
