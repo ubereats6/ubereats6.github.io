@@ -1,0 +1,37 @@
+name: 搶蛋地圖投稿／回報問題
+description: 上傳新地圖，或回報地圖名稱、標記及路線問題
+title: "[搶蛋地圖] "
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 投稿類型
+      options:
+        - 新地圖
+        - 修正現有地圖
+        - 其他回饋
+    validations:
+      required: true
+  - type: input
+    id: floor
+    attributes:
+      label: 樓層／地圖名稱
+      description: 如果不確定，填寫你看得到的線索即可。
+      placeholder: 例如：第 2 層、右側分岔
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: 地圖線索與說明
+      description: 請指出起點、出口、蛋、Boss 或挑戰位置；回報錯誤請描述哪張地圖、哪裡有誤。
+      placeholder: 例如：起點在左上，出口在右下；目前頁面的第 2 層某張地圖，蛋的位置標錯。
+    validations:
+      required: true
+  - type: upload
+    id: images
+    attributes:
+      label: 上傳地圖圖片／截圖
+      description: 請上傳 PNG 或 JPG。圖片與留言會公開，請先移除角色名稱等不想公開的資訊。
+    validations:
+      required: false
