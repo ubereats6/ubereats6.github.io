@@ -22,8 +22,8 @@
   {
     "id": "03",
     "category": "ANIIMO TOOL · BETA",
-    "title": "伊莫搶蛋地圖",
-    "description": "查詢玩家整理的搶蛋地圖；依樓層與 Boss 篩選，放大查看傳門、蛋與挑戰位置。",
+    "title": "伊莫搶蛋地圖辨識",
+    "description": "截圖辨識 Beta 開發中；了解地圖標記，提供新地圖協助補完資料。",
     "buttonText": "OPEN BETA",
     "url": "egg-map/index.html",
     "status": "available",
