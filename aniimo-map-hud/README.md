@@ -1,19 +1,14 @@
-# 伊莫搶蛋地圖 HUD v12（Windows x64）
+# 伊莫搶蛋地圖 HUD v13（Windows x64）
 
-伊莫搶蛋地圖 HUD v12（Windows x64）
+伊莫搶蛋地圖 HUD v13（Windows x64）
 
-• 開啟時自動向 https://ubereats6.github.io/egg-map/ 檢查地圖資料更新。
-• 提供「檢查地圖更新」按鈕；下載驗證成功後才切換，正在辨識時等視窗關閉再套用。
-• 地圖存入本機快取，斷網時沿用快取；快取損壞時使用內建 30 張地圖。
-• 下載項目只有 JSON 與 WebP；不下載程式碼、不自動替換 EXE。
-• 保留小滑鼠操作提示、單一框選指標，以及適度加高的擷取視窗。
+• 移除 APP 自訂指標，恢復原生滑鼠：框選為十字，移動為拖曳游標。
+• 即時預覽改為新影格到達才更新，避免在螢幕每次刷新時重複拷貝同一張畫面。
+• 擷取與預覽上限調整為 1920×1080，目標 24 fps、上限 30 fps；移除不必要的 CPU 畫布讀取設定。
+• 保留線上地圖更新、離線快取、四難度、重新框選、滾輪縮放及右鍵移動。
 
-下載 ZIP 後完整解壓縮，先關閉舊版，再執行 AniimoEggMapHUD-Egg.exe。
-F8 鎖定／解鎖；F9 隱藏／顯示。建議擷取遊戲視窗。
-
-網站必須上傳 egg-map/database-version.json 及其中列出的資料檔。若網站尚未更新版本清單，APP 仍能使用現有地圖。
-新增地圖時同步更新 maps.json、features.json、marker-layers.json 與 WebP，再產生並上傳 database-version.json。
-一般新增地圖不用更新 EXE；新增難度或更改辨識演算法需更新程式。
+先關閉舊版，再完整解壓縮並執行 AniimoEggMapHUD-Egg.exe。
+F8 鎖定／解鎖；F9 隱藏／顯示。網頁與地圖資料不需更新。
 
 ## 地圖線上更新
 
@@ -46,4 +41,4 @@ Windows 的實際桌面擷取、快捷鍵與置頂顯示仍需實機確認；遊
 
 ## 開發
 
-原始碼資料夾為 aniimo-map-hud/，package.json 版本 0.12.0；既有 GitHub Actions 建置工作流可繼續使用。Windows Portable 包使用既有 Electron Windows x64 執行環境，已替換成這一版 app 程式與離線資料。
+原始碼資料夾為 aniimo-map-hud/，package.json 版本 0.13.0；既有 GitHub Actions 建置工作流可繼續使用。Windows Portable 包使用既有 Electron Windows x64 執行環境，已替換成這一版 app 程式與離線資料。

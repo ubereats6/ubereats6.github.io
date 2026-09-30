@@ -1,10 +1,11 @@
 const $=id=>document.getElementById(id);
-const canvas=$('preview'),ctx=canvas.getContext('2d',{willReadFrequently:true}),viewport=$('cropViewport');
-const video=$('captureVideo'),frameCanvas=document.createElement('canvas'),frameContext=frameCanvas.getContext('2d',{willReadFrequently:true});
+const canvas=$('preview'),ctx=canvas.getContext('2d'),viewport=$('cropViewport');
+const video=$('captureVideo'),frameCanvas=document.createElement('canvas'),frameContext=frameCanvas.getContext('2d');
 const worker=new Worker('matcher-worker.js'),modes=[...document.querySelectorAll('[name="difficulty"]')];
 const dialog=$('candidateDialog'),choices=$('candidateChoices'),previewDialog=$('previewDialog');
 let maps=new Map(),difficulty=null,step='mode',image=null,crop=null,start=null,panStart=null;
 let source=null,stream=null,liveGeneration=0,frameLoop=null,requestId=0,matching=false,busy=false;
+let frameCallback=false,lastVideoTime=-1;
 let zoom=100,panMode=false,spaceDown=false,results=[],databaseFeatures=[];
 const say=message=>{$('status').textContent=message;};
 function controls(){
@@ -18,7 +19,6 @@ function controls(){
 function closeDialogs(){if(previewDialog.open)previewDialog.close();if(dialog.open)dialog.close();}
 function clearResults(){requestId++;matching=false;results=[];choices.replaceChildren();closeDialogs();window.mapHud.clearMatches();controls();}
 function showStep(next){
- $('previewPointer').hidden=true;
  if(next!=='crop')stopLive();step=next;
  for(const name of ['mode','source','crop'])$(name+'Step').hidden=next!==name;
  window.mapHud.matcherStep(next);controls();
@@ -46,14 +46,14 @@ $('nextSource').addEventListener('click',loadSources);$('refreshSources').addEve
 $('backMode').addEventListener('click',()=>{clearResults();showStep('mode');});
 $('backSources').addEventListener('click',loadSources);
 function stopLive(){
- liveGeneration++;if(frameLoop!==null){cancelAnimationFrame(frameLoop);frameLoop=null;}
+ liveGeneration++;if(frameLoop!==null){if(frameCallback&&video.cancelVideoFrameCallback)video.cancelVideoFrameCallback(frameLoop);else cancelAnimationFrame(frameLoop);frameLoop=null;}lastVideoTime=-1;
  if(stream){stream.getTracks().forEach(track=>track.stop());stream=null;}
  video.srcObject=null;window.mapHud.stopLiveSource();
  $('liveState').textContent=image?'已凍結畫面':'尚未取得畫面';$('liveState').classList.add('paused');
 }
 function refreshFrame(){
  if(!video.videoWidth||video.readyState<2)return false;
- const scale=Math.min(1,4096/video.videoWidth,2160/video.videoHeight);
+ const scale=Math.min(1,1920/video.videoWidth,1080/video.videoHeight);
  const w=Math.max(1,Math.round(video.videoWidth*scale)),h=Math.max(1,Math.round(video.videoHeight*scale));
  if(frameCanvas.width!==w||frameCanvas.height!==h){frameCanvas.width=w;frameCanvas.height=h;canvas.width=w;canvas.height=h;fitSize();}
  frameContext.drawImage(video,0,0,w,h);frameCanvas.naturalWidth=w;frameCanvas.naturalHeight=h;image=frameCanvas;draw();return true;
@@ -64,17 +64,20 @@ async function startSource(selected){
  const generation=liveGeneration;let nextStream;
  try{
   if(!await window.mapHud.selectLiveSource(selected.id))throw Error('來源已失效，請重新選擇視窗。');
-  nextStream=await navigator.mediaDevices.getDisplayMedia({video:{cursor:"never",frameRate:{ideal:12,max:15}},audio:false});
+  nextStream=await navigator.mediaDevices.getDisplayMedia({video:{cursor:"never",width:{ideal:1920,max:1920},height:{ideal:1080,max:1080},frameRate:{ideal:24,max:30}},audio:false});
   if(generation!==liveGeneration||step!=='crop'){nextStream.getTracks().forEach(t=>t.stop());return;}
   stream=nextStream;
-  const captureTrack=stream.getVideoTracks()[0];
-  if(captureTrack?.applyConstraints){try{await captureTrack.applyConstraints({cursor:"never"});}catch(_){/* Keep capture available if the source cannot exclude the cursor. */}}
-  if(generation!==liveGeneration){nextStream.getTracks().forEach(t=>t.stop());return;}
   video.srcObject=stream;await video.play();
   if(generation!==liveGeneration){nextStream.getTracks().forEach(t=>t.stop());return;}
   stream.getVideoTracks()[0]?.addEventListener('ended',()=>{if(stream===nextStream){stopLive();say('來源已停止；可以更新畫面或重新選擇視窗。');}});
-  function tick(){if(generation!==liveGeneration||!stream||step!=='crop')return;refreshFrame();frameLoop=requestAnimationFrame(tick);}
-  tick();$('liveState').textContent='● 即時更新中';$('liveState').classList.remove('paused');
+  frameCallback=typeof video.requestVideoFrameCallback==='function';
+  function schedule(){frameLoop=frameCallback?video.requestVideoFrameCallback(tick):requestAnimationFrame(tick);}
+  function tick(){
+   frameLoop=null;if(generation!==liveGeneration||!stream||step!=='crop')return;
+   if(frameCallback||video.currentTime!==lastVideoTime){lastVideoTime=video.currentTime;refreshFrame();}
+   schedule();
+  }
+  refreshFrame();lastVideoTime=video.currentTime;schedule();$('liveState').textContent='● 即時更新中';$('liveState').classList.remove('paused');
   say('視窗內容會即時更新。滾輪放大後框選；開始框選就凍結當下畫面。');
  }catch(e){stopLive();say('即時預覽無法開啟：'+(e.message||'請重新選視窗，或使用截圖檔。'));}
  finally{busy=false;controls();}
@@ -183,18 +186,8 @@ worker.onmessage=({data})=>{
   const choose=document.createElement('button');choose.type='button';choose.className='primary';choose.textContent='使用這張';choose.addEventListener('click',()=>{closeDialogs();stopLive();window.mapHud.chooseMatch(item.id);});
   actions.append(enlarge,choose);article.append(preview,rank,title,score,actions);return article;
  }));
- $('previewPointer').hidden=true;controls();dialog.showModal();say('比對完成。可放大預覽或按「重新框選」，不用先選地圖。');
+ controls();dialog.showModal();say('比對完成。可放大預覽或按「重新框選」，不用先選地圖。');
 };
 worker.onerror=()=>{matching=false;controls();say('比對程式發生錯誤，請重新開啟 HUD。');};
 showStep('mode');controls();
 
-// Use one DOM pointer while framing, so a native cursor is not also captured in the source preview.
-const previewPointer=$('previewPointer');
-function movePreviewPointer(event){
- if(step!=='crop'||matching||!image){previewPointer.hidden=true;return;}
- previewPointer.style.left=event.clientX+'px';previewPointer.style.top=event.clientY+'px';previewPointer.hidden=false;
-}
-canvas.addEventListener('pointerenter',movePreviewPointer);
-canvas.addEventListener('pointermove',movePreviewPointer);
-canvas.addEventListener('pointerleave',()=>{previewPointer.hidden=true;});
-window.addEventListener('blur',()=>{previewPointer.hidden=true;});
