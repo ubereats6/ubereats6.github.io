@@ -21,7 +21,7 @@ function clearResults(){requestId++;matching=false;results=[];choices.replaceChi
 function showStep(next){
  if(next!=='crop')stopLive();step=next;
  for(const name of ['mode','door','source','crop'])$(name+'Step').hidden=next!==name;
- $('stepLabel').textContent='找地圖 · '+({mode:'選擇難度',door:'選擇出口方向',source:'選擷取來源',crop:'框選比對'}[next]);window.mapHud.matcherStep(next);controls();
+ $('stepLabel').textContent='找地圖 / '+({mode:'選擇難度',door:'選擇出口方向',source:'選擷取來源',crop:'框選比對'}[next]);window.mapHud.matcherStep(next);controls();
 }
 function chooseMode(value){if(difficulty===value)return;difficulty=value;doorDirection='all';clearResults();modes.forEach(input=>input.checked=input.value===value);say('確認難度後，按「選門找圖」。');}
 modes.forEach(input=>input.addEventListener('change',()=>{window.mapHud.setDifficulty(input.value);chooseMode(input.value);}));
