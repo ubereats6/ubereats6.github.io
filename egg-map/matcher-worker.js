@@ -1,15 +1,15 @@
 let referencePromise;
 function references() {
-  if (!referencePromise) referencePromise = fetch('features.json').then(response => {
+  if (!referencePromise) referencePromise = fetch('features.json?v=13').then(response => {
     if (!response.ok) throw new Error('地圖比對資料載入失敗');
     return response.json();
   }).then(items => items.map(item => {
     const bytes = atob(item.mask);
     const pixels = new Uint8Array(item.w * item.h);
     for (let i = 0; i < pixels.length; i++) pixels[i] = (bytes.charCodeAt(i >> 3) >> (7 - (i & 7))) & 1;
-    return { id: item.id, w: item.w, h: item.h, pixels };
+    return { id: item.id, difficulty: item.difficulty, w: item.w, h: item.h, pixels };
   }));
-  return referencePromise;
+  return referencePromise.catch(error => { referencePromise = null; throw error; });
 }
 function resizeMask(source, width, height) {
   const out = new Uint8Array(width * height);
@@ -45,6 +45,16 @@ function scoreAt(ref, pos, empty, x, y) {
 }
 function matchOne(ref, query) {
   let best = -1;
+  // Complete maps also need a whole-shape score. A tiny room can otherwise
+  // outrank the correct layout because the partial-search score rewards hits.
+  const normalized = resizeMask(query, ref.w, ref.h);
+  let intersection = 0, union = 0;
+  for (let i = 0; i < normalized.length; i++) {
+    intersection += normalized[i] & ref.pixels[i];
+    union += normalized[i] | ref.pixels[i];
+  }
+  const aspectDifference = Math.abs(Math.log((query.w / query.h) / (ref.w / ref.h)));
+  if (union) best = 1.25 * intersection / union - .3 * aspectDifference;
   const scaleSizes = [...new Set([30, 38, 47, 57, 68, 79, 91, 104, 116, Math.max(query.w, query.h)])];
   for (const size of scaleSizes) {
     const w = Math.max(1, Math.round(query.w * size / Math.max(query.w, query.h)));
@@ -69,10 +79,12 @@ function matchOne(ref, query) {
 self.onmessage = async ({data}) => {
   if (data.type !== 'match') return;
   try {
-    const refs = await references();
+    if (!['easy','hard','nightmare','chaos'].includes(data.difficulty)) throw new Error('請先選擇搶蛋地圖難度。');
+    const refs = (await references()).filter(ref => ref.difficulty === data.difficulty);
+    if (!refs.length) throw new Error('此難度尚無地圖資料。');
     const query = {w:data.w,h:data.h,pixels:new Uint8Array(data.pixels)};
     const results = refs.map(ref => ({id:ref.id,score:matchOne(ref,query)}))
       .sort((a,b) => b.score - a.score).slice(0,4);
-    self.postMessage({type:'result',results});
-  } catch (error) { self.postMessage({type:'error',message:error.message||'比對失敗'}); }
+    self.postMessage({type:'result',results,requestId:data.requestId,difficulty:data.difficulty});
+  } catch (error) { self.postMessage({type:'error',requestId:data.requestId,difficulty:data.difficulty,message:error.message||'比對失敗'}); }
 };
