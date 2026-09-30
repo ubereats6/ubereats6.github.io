@@ -128,7 +128,7 @@ canvas.addEventListener('pointerup',e=>{
  if(crop.w<20||crop.h<20){say('範圍太小，請放大後重新框選。');return;}match();
 });
 canvas.addEventListener('pointercancel',()=>{start=null;panStart=null;crop=null;draw();controls();});
-function reframe(){closeDialogs();crop=null;start=null;panStart=null;setPan(false);showStep('crop');draw();controls();say('已保留原畫面與縮放，可直接重新框選；按「更新／恢復即時預覽」可取得新畫面。');}
+function reframe(){closeDialogs();crop=null;start=null;panStart=null;setPan(false);showStep('crop');draw();controls();say('已保留原畫面與縮放，可直接重新框選；按「更新畫面」可取得新畫面。');}
 $('retry').addEventListener('click',reframe);$('reframeCandidates').addEventListener('click',reframe);
 $('matchCrop').addEventListener('click',match);
 $('full').addEventListener('click',()=>{if(stream)refreshFrame();stopLive();crop={x:0,y:0,w:canvas.width,h:canvas.height};draw();match();});
