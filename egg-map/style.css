@@ -125,3 +125,5 @@
 @media(max-width:1000px){.egg-gallery-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:650px){.egg-difficulty-options{grid-template-columns:repeat(2,minmax(0,1fr))}.egg-gallery{padding:16px}.egg-gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.egg-gallery-heading{display:block}.egg-gallery-count{display:inline-block;margin:0 0 15px}.egg-gallery-copy{padding:10px 9px 6px;flex-wrap:wrap}.egg-gallery-copy strong{font-size:.9rem}.egg-gallery-open{padding:0 9px 10px}.egg-gallery-filters{gap:7px}.egg-gallery-filters button{padding:8px 10px}.egg-viewer-head{align-items:flex-start}.egg-map-viewer{padding:12px}}
 @media(prefers-reduced-motion:reduce){.egg-gallery-card,.egg-difficulty-options label>span{transition:none}.egg-gallery-card:hover{transform:none}}
+
+.egg-results:not(:empty)+.egg-map-viewer{margin-top:18px}

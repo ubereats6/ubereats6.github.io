@@ -20,12 +20,23 @@
   const captureContext = captureSelectCanvas.getContext('2d');
   const worker = new Worker('matcher-worker.js?v=13');
   let zoom = 50;
-  function setZoom(next) {
+  function setZoom(next, anchor = null) {
+    const before = anchor ? mapCanvas.getBoundingClientRect() : null;
+    const point = before && before.width && before.height ? {
+      x: (anchor.x - before.left) / before.width,
+      y: (anchor.y - before.top) / before.height
+    } : null;
     zoom = Math.max(25, Math.min(300, next));
     mapCanvas.style.width = `${zoom}%`;
-    zoomLevel.value = `${zoom}%`;
+    zoomLevel.value = `${Math.round(zoom)}%`;
     document.getElementById('zoomOut').disabled = zoom === 25;
     document.getElementById('zoomIn').disabled = zoom === 300;
+    if (point) {
+      const after = mapCanvas.getBoundingClientRect();
+      // Keep the map location beneath the cursor still as its size changes.
+      mapViewport.scrollLeft += after.left + point.x * after.width - anchor.x;
+      mapViewport.scrollTop += after.top + point.y * after.height - anchor.y;
+    }
   }
   document.getElementById('zoomOut').addEventListener('click', () => setZoom(zoom - 25));
   document.getElementById('zoomIn').addEventListener('click', () => setZoom(zoom + 25));
@@ -125,6 +136,18 @@
   }
   viewerImage.addEventListener('error', () => { viewerImage.alt = '地圖圖片載入失敗，請重新選擇或整理頁面。'; });
   const mapViewport = document.querySelector('.egg-full-map');
+  mapViewport.addEventListener('wheel', event => {
+    if (viewer.hidden || !viewerImage.getAttribute('src') || event.ctrlKey || event.metaKey || !event.deltaY) return;
+    const bounds = mapCanvas.getBoundingClientRect();
+    if (!bounds.width || !bounds.height || event.clientX < bounds.left || event.clientX > bounds.right ||
+        event.clientY < bounds.top || event.clientY > bounds.bottom) return;
+    event.preventDefault();
+    const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? mapViewport.clientHeight : 1;
+    const delta = Math.max(-120, Math.min(120, event.deltaY * unit));
+    setZoom(zoom * Math.exp(-delta * .002), {x:event.clientX, y:event.clientY});
+    // Dragging continues from the new scroll position if zoom occurs mid-drag.
+    if (pan) pan = {x:event.clientX, y:event.clientY, left:mapViewport.scrollLeft, top:mapViewport.scrollTop};
+  }, {passive:false});
   let pan = null;
   mapViewport.addEventListener('pointerdown', event => {
     if (event.pointerType !== 'mouse' || event.button !== 0) return;
