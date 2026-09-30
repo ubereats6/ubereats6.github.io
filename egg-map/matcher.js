@@ -29,7 +29,7 @@
   const captureSelection = document.getElementById('captureSelection');
   const captureSelectCanvas = document.getElementById('captureSelectCanvas');
   const captureContext = captureSelectCanvas.getContext('2d');
-  const worker = new Worker('matcher-worker.js?v=13');
+  const worker = new Worker('matcher-worker.js?v=23');
   const mapViewport = document.querySelector('.egg-full-map');
   let zoom = 100;
   function setZoom(next, anchor = null) {
@@ -56,7 +56,7 @@
   document.getElementById('zoomIn').addEventListener('click', () => setZoom(zoom + 25));
   setZoom(100);
   let maps = [], difficulty = '', requestId = 0, matching = false, capturing = false;
-  let selectedMap = null, markerLayers = new Map();
+  let selectedMap = null, markerLayers = new Map(),doorDirection='all',doorLayersReady=false,doorRequestIds=null;
   const markerOverlay = document.getElementById('markerOverlay');
   const markerStatus = document.getElementById('markerStatus');
   const markerControls = [...document.querySelectorAll('[data-marker-toggle]')];
@@ -105,11 +105,11 @@
       const response = await fetch('marker-layers.json?v=15');
       if (!response.ok) throw new Error('標記資料載入失敗');
       const data = await response.json();
-      if (!Array.isArray(data.maps) || data.maps.length !== 30) throw new Error('標記資料不完整');
-      markerLayers = new Map(data.maps.map(map => [map.id,map]));
+      if (!Array.isArray(data.maps) || !data.maps.length) throw new Error('標記資料不完整');
+      markerLayers = new Map(data.maps.map(map => [map.id,map]));doorLayersReady=true;renderDoorChoices();
       if (selectedMap && !viewer.hidden) renderMapLayers(selectedMap);
     } catch (_) {
-      markerStatus.textContent = '標記圖層載入失敗，完整地圖仍可查看。';
+      markerStatus.textContent = '標記圖層載入失敗，完整地圖仍可查看。';doorLayersReady=false;renderDoorChoices();
     }
   }
 
@@ -125,6 +125,8 @@
     analyze.disabled = !ready || !image || matching || capturing;
     document.querySelector('.egg-pick').classList.toggle('is-disabled', upload.disabled);
     for (const radio of radios) radio.disabled = capturing;
+    for(const button of document.querySelectorAll('[data-door-direction]'))button.disabled=capturing||!ready||!doorLayersReady||!window.EggDoors.candidates(maps,markerLayers,difficulty,button.dataset.doorDirection).length;
+    document.getElementById('doorUnknown').disabled=!ready||capturing;document.getElementById('doorRefine').disabled=!ready||!doorPool().length||capturing;
     if (difficulty) {
       const label = radios.find(radio => radio.value === difficulty).nextElementSibling.firstChild.textContent;
       const count = maps.filter(map => map.difficulty === difficulty).length;
@@ -133,6 +135,29 @@
         : '地圖資料尚未載入，請稍候或重新載入。';
     }
   }
+  const doorLabels={N:'上方',NE:'右上',E:'右側',SE:'右下',S:'下方',SW:'左下',W:'左側',NW:'左上'};
+  function doorPool(){return window.EggDoors.candidates(maps,markerLayers,difficulty,doorDirection);}
+  function renderDoorChoices(){
+    const ready=Boolean(difficulty&&maps.length),pool=doorPool();
+    for(const button of document.querySelectorAll('[data-door-direction]')){
+      const dir=button.dataset.doorDirection,count=window.EggDoors.candidates(maps,markerLayers,difficulty,dir).length;
+      button.disabled=!ready||!doorLayersReady||!count||capturing;
+      button.setAttribute('aria-pressed',String(doorDirection===dir));button.querySelector('small').textContent=ready&&doorLayersReady?String(count):'—';
+    }
+    document.getElementById('doorUnknown').disabled=!ready||capturing;document.getElementById('doorUnknown').setAttribute('aria-pressed',String(doorDirection==='all'));
+    document.getElementById('doorRefine').disabled=!ready||!pool.length||capturing;
+    document.getElementById('doorStatus').textContent=!ready?'先選擇上方難度。':!doorLayersReady?'門位置資料尚未載入，可先查看全部地圖或比對截圖。':`出口${doorDirection==='all'?'方向未指定':`在起點的${doorLabels[doorDirection]}`} · ${pool.length} 張候選，可直接挑選或再用截圖比對。`;
+    const container=document.getElementById('doorCandidates');container.replaceChildren(...pool.map(map=>{
+      const button=document.createElement('button');button.type='button';button.className='egg-door-card';button.dataset.mapId=String(map.id);button.setAttribute('aria-pressed','false');
+      const img=document.createElement('img');img.src=map.image;img.alt=`地圖 ${map.id} 候選預覽`;img.loading='lazy';
+      const title=document.createElement('strong');title.textContent=`地圖 ${map.id}`;const hint=document.createElement('span');hint.textContent='查看完整地圖';button.append(img,title,hint);
+      button.addEventListener('click',()=>showMap(map.id,button));return button;
+    }));
+  }
+  function chooseDoor(direction){if(capturing)return;doorDirection=direction;doorRequestIds=null;clearMatch();renderDoorChoices();setStatus('門位置候選已更新，可直接選圖或使用截圖二次比對。');}
+  for(const button of document.querySelectorAll('[data-door-direction]'))button.addEventListener('click',()=>chooseDoor(button.dataset.doorDirection));
+  document.getElementById('doorUnknown').addEventListener('click',()=>chooseDoor('all'));
+  document.getElementById('doorRefine').addEventListener('click',()=>{const section=document.getElementById('doorScreenshot');section.hidden=false;section.scrollIntoView({behavior:'smooth',block:'start'});setStatus(`截圖將只比對目前 ${doorPool().length} 張候選。`);});
   function setOutcomeBusy(value) {
     outcome.classList.toggle('is-matching',value);
     outcome.setAttribute('aria-busy',String(value));
@@ -163,7 +188,7 @@
   function showMap(id, selectedCard) {
     const map = maps.find(item => item.id === id);
     if (!map) { setStatus('這張地圖無法載入，請重新整理再試。'); return; }
-    for (const card of document.querySelectorAll('.egg-result, .egg-gallery-card')) {
+    for (const card of document.querySelectorAll('.egg-result, .egg-gallery-card, .egg-door-card')) {
       const selected = card === selectedCard;
       card.classList.toggle('is-selected', selected);
       card.setAttribute('aria-pressed', String(selected));
@@ -206,7 +231,7 @@
     renderGallery(button.dataset.difficulty);
   });
   for (const radio of radios) radio.addEventListener('change', () => {
-    difficulty = radio.value; clearMatch();
+    difficulty = radio.value;doorDirection='all';doorRequestIds=null;clearMatch();renderDoorChoices();
     setStatus(image ? '難度已切換，請重新開始比對。' : '可以擷取地圖畫面或選擇截圖。');
   });
   async function loadMaps() {
@@ -216,7 +241,7 @@
       const data = await response.json(); maps = data.maps;
       if (!Array.isArray(maps) || maps.length !== 30) throw new Error('地圖資料不完整');
       renderGallery(document.querySelector('#galleryFilters [aria-pressed="true"]').dataset.difficulty);
-      syncControls();
+      syncControls();renderDoorChoices();
     } catch (error) {
       maps = []; syncControls(); galleryStatus.replaceChildren();
       const message = document.createElement('span'); message.textContent = '地圖資料載入失敗，請重試。 ';
@@ -492,20 +517,22 @@
   function startMatching() {
     if (!difficulty) { setStatus('請先選擇搶蛋地圖難度。'); return; }
     if (!image || !maps.length || matching) return;
+    if(!doorPool().length){setStatus('目前方向沒有候選，請改方向或選不知道出口方向。');return;}
     try {
       const mask=getMask();
       requestId++; matching=true; syncControls();
       closeCandidates();candidateChoices.replaceChildren();outcome.classList.remove('has-results');
       setOutcomeBusy(true);resultsHeading.hidden=false;selectedMap=null;
       analyze.disabled=true;results.replaceChildren();viewer.hidden=true;hudLink.hidden=true;viewerImage.removeAttribute('src');
-      setStatus('正在比對地圖輪廓，可能需要幾秒鐘…');
-      worker.postMessage({type:'match',difficulty,requestId,...mask});
+      setStatus(`正在比對門位置篩出的 ${doorPool().length} 張候選…`);
+      doorRequestIds=doorPool().map(m=>m.id);worker.postMessage({type:'match',difficulty,candidateIds:doorRequestIds,requestId,...mask});
     } catch(error){matching=false;setOutcomeBusy(false);syncControls();setStatus(error.message);}
   }
   analyze.addEventListener('click', startMatching);
   worker.onmessage=({data})=>{
     if (data.requestId !== requestId || data.difficulty !== difficulty) return;
     matching=false; setOutcomeBusy(false); syncControls();
+    if(data.type==='result'&&doorRequestIds)data.results=data.results.filter(item=>doorRequestIds.includes(item.id));
     if(data.type==='error'){setStatus(data.message);return;}
     if(!data.results.length){setStatus('沒有足夠的地圖線索，請換一張截圖。');return;}
     function makeCard(item,index,inDialog=false) {
@@ -535,7 +562,7 @@
     candidateChoices.replaceChildren(...data.results.map((item,index)=>makeCard(item,index,true)));
     document.getElementById('candidateDialogTitle').textContent=`找到 ${cards.length} 張候選地圖`;
     results.replaceChildren(...cards); outcome.classList.add('has-results');
-    setStatus('這是輪廓比對的候選排序，不代表已確定是哪張地圖。');
+    setStatus(`已在門位置候選內完成二次比對，以下 ${cards.length} 張依輪廓排序，仍需自行確認。`);
     revealCandidates(data.requestId);
   };
   document.getElementById('closeViewer').addEventListener('click',()=>{selectedMap=null;viewer.hidden=true;hudLink.hidden=true;viewerImage.removeAttribute('src');});
