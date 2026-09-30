@@ -1,3 +1,7 @@
+const mapContent=document.getElementById('mapContent');
+const markerOverlay=document.getElementById('markerOverlay');
+let mapIndex=new Map(),layerIndex=new Map(),pendingState;
+const markerVisibility={main:true,side:true,challenge:true,chest:true,key:true};
 const image = document.getElementById('map');
 const mapArea = document.getElementById('mapArea');
 const mapZoom = document.getElementById('mapZoom');
@@ -30,7 +34,11 @@ function clampPan() {
 }
 function renderZoom() {
   clampPan();
-  image.style.transform = `translate(${pan.x}px, ${pan.y}px) scale(${zoom / 100})`;
+  if(image.naturalWidth){
+    const fit=Math.min(mapArea.clientWidth/image.naturalWidth,mapArea.clientHeight/image.naturalHeight);
+    mapContent.style.width=`${image.naturalWidth*fit}px`;mapContent.style.height=`${image.naturalHeight*fit}px`;
+  }
+  mapContent.style.transform=`translate(calc(-50% + ${pan.x}px), calc(-50% + ${pan.y}px)) scale(${zoom / 100})`;
   zoomLevel.value = `${zoom}%`;
   panPad.hidden = zoom <= 100 || !image.classList.contains('ready');
   document.getElementById('zoomOut').disabled = zoom === 50;
@@ -75,7 +83,7 @@ window.addEventListener('blur', endPan);
 window.addEventListener('resize', renderZoom);
 
 function showMap(id) {
-  if (!Number.isInteger(id) || id < 1 || id > 9999) return;
+  if (!mapIndex.has(id)) return;
   if (currentMap === id) return;
   currentMap = id;
   zoom = 100;
@@ -83,11 +91,11 @@ function showMap(id) {
   renderZoom();
   mapZoom.hidden = true;
   panPad.hidden = true;
-  title.textContent = `搶蛋地圖輔助 · ${id}`;
+  title.textContent = `搶蛋地圖輔助 · ${mapIndex.get(id).difficultyLabel} · 地圖 ${id}`;title.title=title.textContent;image.alt=title.textContent;
   image.classList.remove('ready');
   empty.style.display = 'block';
   empty.textContent = `正在載入地圖 ${id}…`;
-  image.src = `https://ubereats6.github.io/egg-map/maps/${id}.jpg`;
+  renderMarkers(id);image.src=mapIndex.get(id).cleanImage;
 }
 image.addEventListener('load', () => {
   image.classList.add('ready');
@@ -100,21 +108,23 @@ image.addEventListener('error', () => {
   mapZoom.hidden = true;
   panPad.hidden = true;
   empty.style.display = 'block';
-  empty.textContent = `地圖 ${currentMap} 尚未上傳或無法連線。請確認網頁能開啟此地圖。`;
+  empty.textContent = `地圖 ${currentMap} 無法載入，請完整解壓縮下載包後再執行。`;
 });
 function showTip() {
   clearTimeout(tipTimer);
   tip.classList.add('show');
   tipTimer = setTimeout(() => tip.classList.remove('show'), 6000);
 }
-window.mapHud.onState(state => {
+function applyState(state) {
+  if(!mapIndex.size){pendingState=state;return;}
   showMap(state.mapId);
   const ids=Array.isArray(state.candidates)?state.candidates:[];
   candidateStrip.replaceChildren();
   candidateStrip.hidden=!ids.length;
   ids.forEach((id,index)=>{
     const button=document.createElement('button');button.type='button';
-    button.textContent=`${index+1} · 地圖 ${id}`;
+    const thumb=document.createElement('img');thumb.src=mapIndex.get(id).image;thumb.alt='';
+    const label=document.createElement('span');label.textContent=`${index+1} · 地圖 ${id}`;button.append(thumb,label);
     button.classList.toggle('selected',id===state.mapId);
     button.setAttribute('aria-pressed',String(id===state.mapId));
     button.addEventListener('click',()=>window.mapHud.selectCandidate(id));
@@ -127,7 +137,9 @@ window.mapHud.onState(state => {
   document.body.classList.toggle('locked', locked);
   if (locked && changed) showTip();
   if (!locked) { clearTimeout(tipTimer); tip.classList.remove('show'); }
-});
+  requestAnimationFrame(renderZoom);
+}
+window.mapHud.onState(applyState);
 opacity.addEventListener('input', () => {
   opacityValue.value = `${opacity.value}%`;
   window.mapHud.setOpacity(Number(opacity.value) / 100);
@@ -149,3 +161,27 @@ grip.addEventListener('pointermove', event => {
 });
 grip.addEventListener('pointerup', () => { lastPoint=null; });
 grip.addEventListener('pointercancel', () => { lastPoint=null; });
+
+function renderMarkers(id){
+ markerOverlay.replaceChildren();const layer=layerIndex.get(id);if(!layer)return;
+ markerOverlay.setAttribute('viewBox',`0 0 ${layer.width} ${layer.height}`);
+ for(const group of layer.groups){
+  if(group.type!=='egg'&&markerVisibility[group.type]===false)continue;
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  for(const item of group.elements){
+   if(!['image','title','path','rect','text'].includes(item.tag))continue;
+   const e=document.createElementNS('http://www.w3.org/2000/svg',item.tag);
+   for(const [key,value] of Object.entries(item.attrs||{})){
+    if(/^on/i.test(key)||key==='style')continue;
+    if(key==='href'&&!/^marker-icons\/[a-z]+-[a-f0-9]+\.webp$/.test(value))continue;
+    e.setAttribute(key,value);
+   }
+   e.textContent=item.text||'';g.append(e);
+  }
+  markerOverlay.append(g);
+ }
+}
+for(const input of document.querySelectorAll('[data-marker-toggle]'))input.addEventListener('change',()=>{markerVisibility[input.dataset.markerToggle]=input.checked;renderMarkers(currentMap);});
+Promise.all([fetch('maps.json').then(r=>r.json()),fetch('marker-layers.json').then(r=>r.json())]).then(([manifest,layers])=>{
+ mapIndex=new Map(manifest.maps.map(m=>[m.id,m]));layerIndex=new Map(layers.maps.map(m=>[m.id,m]));if(pendingState)applyState(pendingState);
+}).catch(()=>{empty.textContent='地圖資料無法載入，請完整解壓縮下載包。';});

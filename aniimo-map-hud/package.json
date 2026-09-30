@@ -1,6 +1,6 @@
 {
   "name": "aniimo-egg-map-hud",
-  "version": "0.2.0",
+  "version": "0.7.0",
   "private": true,
   "description": "Windows overlay for Aniimo egg-heist maps",
   "main": "main.js",
@@ -15,12 +15,39 @@
   "build": {
     "appId": "io.github.ubereats6.aniimoeggmaphud",
     "productName": "Aniimo Egg Map HUD",
-    "files": ["main.js", "preload.js", "overlay.html", "renderer.js", "matcher.html", "matcher-ui.js", "matcher-worker.js", "features.json", "icon.png", "icon.ico"],
-    "directories": { "output": "dist" },
-    "protocols": [{ "name": "Aniimo Egg Map HUD", "schemes": ["aniimo-egg-map"] }],
+    "files": [
+      "main.js",
+      "preload.js",
+      "overlay.html",
+      "renderer.js",
+      "matcher.html",
+      "matcher-ui.js",
+      "matcher-worker.js",
+      "features.json",
+      "icon.webp",
+      "icon.ico",
+      "maps.json",
+      "marker-layers.json",
+      "maps/**/*",
+      "clean-maps/**/*",
+      "marker-icons/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "protocols": [
+      {
+        "name": "Aniimo Egg Map HUD",
+        "schemes": [
+          "aniimo-egg-map"
+        ]
+      }
+    ],
     "win": {
       "icon": "icon.ico",
-      "target": ["nsis"],
+      "target": [
+        "nsis"
+      ],
       "artifactName": "AniimoEggMapHUD-Setup-${version}.${ext}"
     },
     "nsis": {

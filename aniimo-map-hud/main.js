@@ -1,18 +1,22 @@
-const {app, BrowserWindow, Menu, Tray, nativeImage, globalShortcut, ipcMain, screen, desktopCapturer} = require('electron');
+const {app, BrowserWindow, Menu, Tray, nativeImage, globalShortcut, ipcMain, screen, desktopCapturer, session} = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
 
+const manifest = require('./maps.json');
+const mapIndex = new Map(manifest.maps.map(m => [m.id,m]));
+const validDifficulty = value => manifest.difficulties.some(d => d.id === value);
 const SCHEME = 'aniimo-egg-map';
-const MIN_WIDTH = 240;
-const MIN_HEIGHT = 180;
+const MIN_WIDTH = 320;
+const MIN_HEIGHT = 300;
 let win, workWin, tray, settingsPath, saveTimer;
-let state = {mapId: null, opacity: 0.72, locked: false, bounds: null, candidates: []};
+let state = {mapId: null, opacity: 0.72, locked: false, bounds: null, candidates: [], difficulty: null};
 let quitting = false;
+let allowedSources=new Map(), pendingCaptureId=null;
 
 function mapFromArgs(args) {
   for (const value of args) {
     const match = /^aniimo-egg-map:\/\/show\/([1-9]\d{0,3})\/?$/i.exec(value);
-    if (match) return Number(match[1]);
+    if (match && mapIndex.has(Number(match[1]))) return Number(match[1]);
   }
   return null;
 }
@@ -38,7 +42,8 @@ if (gotLock) {
   app.whenReady().then(() => {
     settingsPath = path.join(app.getPath('userData'), 'map-hud-settings.json');
     loadSettings();
-    if (firstMap) state.mapId = firstMap;
+    if (firstMap) {state.mapId=firstMap;state.difficulty=mapIndex.get(firstMap).difficulty;}
+    installDisplayCapture();
     createWindow();
     createTray();
     registerShortcuts();
@@ -53,9 +58,11 @@ if (gotLock) {
 function loadSettings() {
   try {
     const saved = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
-    if (Number.isInteger(saved.mapId) && saved.mapId >= 1 && saved.mapId <= 9999 && !state.mapId) state.mapId = saved.mapId;
+    if (Number.isInteger(saved.mapId) && mapIndex.has(saved.mapId) && !state.mapId) state.mapId = saved.mapId;
     if (Number.isFinite(saved.opacity)) state.opacity = Math.min(1, Math.max(0.3, saved.opacity));
-    state.locked = saved.locked === true;
+    state.locked=false;
+    if(validDifficulty(saved.difficulty))state.difficulty=saved.difficulty;
+    else if(state.mapId)state.difficulty=mapIndex.get(state.mapId).difficulty;
     const b = saved.bounds;
     if (b && [b.x,b.y,b.width,b.height].every(Number.isFinite) && b.width >= MIN_WIDTH && b.height >= MIN_HEIGHT)
       state.bounds = b;
@@ -71,7 +78,7 @@ function saveSettings() {
 }
 function initialBounds() {
   const area = screen.getPrimaryDisplay().workArea;
-  const fallback = {x:area.x+Math.max(0,area.width-660),y:area.y+50,width:620,height:440};
+  const fallback = {x:area.x+Math.max(0,area.width-660),y:area.y+50,width:620,height:520};
   if (!state.bounds) return fallback;
   const b = state.bounds;
   const visible = screen.getAllDisplays().some(display => {
@@ -86,7 +93,7 @@ function createWindow() {
     frame:false, transparent:true, backgroundColor:'#00000000', alwaysOnTop:true,
     resizable:true, movable:true, show:false, skipTaskbar:false,
     opacity:state.opacity,
-    icon:path.join(__dirname,'icon.png'),
+    icon:path.join(__dirname,'icon.ico'),
     webPreferences:{preload:path.join(__dirname,'preload.js'),contextIsolation:true,nodeIntegration:false,sandbox:true}
   });
   win.setMenuBarVisibility(false);
@@ -103,29 +110,32 @@ function createWindow() {
   });
 }
 function sendState() {
-  if (win && !win.isDestroyed() && !win.webContents.isLoading())
-    win.webContents.send('map-state',{mapId:state.mapId,opacity:state.opacity,locked:state.locked,candidates:state.candidates});
+  for(const target of [win,workWin])
+    if(target && !target.isDestroyed() && !target.webContents.isLoading())
+      target.webContents.send('map-state',{mapId:state.mapId,opacity:state.opacity,locked:state.locked,candidates:state.candidates,difficulty:state.difficulty});
 }
 function selectMap(id, keepCandidates=false) {
-  if (!Number.isInteger(id) || id < 1 || id > 9999) return;
+  if (!mapIndex.has(id)) return;
   state.mapId = id;
+  state.difficulty=mapIndex.get(id).difficulty;
   if (!keepCandidates) state.candidates = [];
   if (win && !win.isDestroyed()) { win.showInactive(); sendState(); }
   saveSettings();
   updateTray();
 }
 function openMatcher() {
-  if (workWin && !workWin.isDestroyed()) { workWin.show(); workWin.focus(); return; }
+  if (workWin && !workWin.isDestroyed()) { workWin.webContents.send('restart-flow'); workWin.show(); workWin.focus(); return; }
   workWin = new BrowserWindow({
     width:700,height:560,minWidth:560,minHeight:420,
-    title:'伊莫搶蛋地圖辨識',icon:path.join(__dirname,'icon.png'),
+    title:'伊莫搶蛋地圖辨識',icon:path.join(__dirname,'icon.ico'),
     backgroundColor:'#071426',autoHideMenuBar:true,
     webPreferences:{preload:path.join(__dirname,'preload.js'),contextIsolation:true,nodeIntegration:false,sandbox:true}
   });
   workWin.webContents.setWindowOpenHandler(() => ({action:'deny'}));
   workWin.webContents.on('will-navigate',event => event.preventDefault());
+  workWin.webContents.on('did-finish-load',sendState);
   workWin.loadFile(path.join(__dirname,'matcher.html'));
-  workWin.on('closed',() => { workWin=null; });
+  workWin.on('closed',() => { workWin=null;pendingCaptureId=null;allowedSources.clear(); });
 }
 function setLocked(value) {
   state.locked = Boolean(value);
@@ -145,7 +155,7 @@ function toggleVisible() {
   updateTray();
 }
 function createTray() {
-  tray = new Tray(nativeImage.createFromPath(path.join(__dirname,'icon.png')).resize({width:16,height:16}));
+  tray = new Tray(nativeImage.createFromPath(path.join(__dirname,'icon.ico')).resize({width:16,height:16}));
   tray.on('double-click', () => { win.show(); setLocked(false); });
   updateTray();
 }
@@ -181,23 +191,39 @@ ipcMain.on('resize-delta', (_event,delta) => {
 });
 ipcMain.on('hide-hud', toggleVisible);
 ipcMain.on('open-matcher',event => { if (event.sender===win?.webContents) openMatcher(); });
-ipcMain.handle('capture-sources', async event => {
-  if (event.sender!==workWin?.webContents) return [];
-  // Capture only one thumbnail per source. The HUD is hidden for this frame.
-  const wasVisible=win?.isVisible();
-  const matcherVisible=workWin?.isVisible();
-  if (wasVisible) win.hide();
-  if (matcherVisible) workWin.hide();
-  try {
-    await new Promise(resolve => setTimeout(resolve, 180));
-    const sources=await desktopCapturer.getSources({types:['window','screen'],thumbnailSize:{width:1920,height:1080}});
-    return sources.filter(s => s.name!=='伊莫搶蛋地圖辨識' && s.name!=='伊莫搶蛋地圖 HUD')
-      .filter(s => !s.thumbnail.isEmpty())
-      .map(s => ({name:s.name,shot:s.thumbnail.toDataURL()}));
-  } finally {
-    if (matcherVisible && workWin && !workWin.isDestroyed()) { workWin.show(); workWin.focus(); }
-    if (wasVisible && win && !win.isDestroyed()) win.showInactive();
-  }
+function installDisplayCapture(){
+  session.defaultSession.setDisplayMediaRequestHandler(async(request,callback)=>{
+    const frame=workWin?.webContents.mainFrame;
+    if(!frame || !request.frame || request.frame.processId!==frame.processId || request.frame.routingId!==frame.routingId ||
+       !request.videoRequested || request.audioRequested || !pendingCaptureId){callback({});return;}
+    const id=pendingCaptureId;pendingCaptureId=null;
+    try{
+      const sources=await desktopCapturer.getSources({types:['window','screen'],thumbnailSize:{width:0,height:0}});
+      const selected=sources.find(source=>source.id===id);
+      if(!workWin || workWin.isDestroyed() || !selected){callback({});return;}
+      callback({video:selected});
+    }catch(_){callback({});}
+  },{useSystemPicker:false});
+}
+ipcMain.handle('capture-sources',async event=>{
+  if(event.sender!==workWin?.webContents || !validDifficulty(state.difficulty))return [];
+  // Keep the chooser visible. Each source receives a thumbnail, then the user selects one.
+  const sources=await desktopCapturer.getSources({types:['window','screen'],thumbnailSize:{width:640,height:360}});
+  const filtered=sources.filter(s=>s.name!=='伊莫搶蛋地圖辨識' && s.name!=='伊莫搶蛋地圖 HUD')
+    .filter(s=>!s.thumbnail.isEmpty());
+  allowedSources=new Map(filtered.map(s=>[s.id,s]));
+  return filtered.map(s=>({id:s.id,name:s.name,shot:s.thumbnail.toDataURL()}));
+});
+ipcMain.handle('select-live-source',(event,id)=>{
+  if(event.sender!==workWin?.webContents || !allowedSources.has(id))return false;
+  pendingCaptureId=id;return true;
+});
+ipcMain.on('stop-live-source',event=>{if(event.sender===workWin?.webContents)pendingCaptureId=null;});
+ipcMain.on('matcher-step',(event,step)=>{
+  if(event.sender!==workWin?.webContents || !['mode','source','crop'].includes(step))return;
+  const area=screen.getDisplayMatching(workWin.getBounds()).workArea;
+  const size=step==='mode'?{w:700,h:560}:step==='source'?{w:820,h:650}:{w:960,h:740};
+  workWin.setSize(Math.min(size.w,area.width-24),Math.min(size.h,area.height-24));workWin.center();
 });
 ipcMain.on('choose-match', (event,id) => {
   if (event.sender!==workWin?.webContents || !Number.isInteger(id) || id<1 || id>9999) return;
@@ -206,9 +232,19 @@ ipcMain.on('choose-match', (event,id) => {
   if (workWin && !workWin.isDestroyed()) workWin.close();
   setLocked(false);
 });
-ipcMain.on('match-results', (event,ids) => {
+ipcMain.on('set-difficulty', (event,difficulty) => {
+  if(event.sender!==workWin?.webContents || !validDifficulty(difficulty) || state.difficulty===difficulty)return;
+  state.difficulty=difficulty;state.candidates=[];sendState();saveSettings();
+});
+ipcMain.on('clear-matches',event=>{
+  if(event.sender!==workWin?.webContents)return;
+  state.candidates=[];sendState();
+});
+ipcMain.on('match-results', (event,payload) => {
+  const {ids,difficulty}=payload||{};
+  if(difficulty!==state.difficulty)return;
   if (event.sender!==workWin?.webContents || !Array.isArray(ids) || ids.length<1 || ids.length>4 ||
-      !ids.every(id=>Number.isInteger(id) && id>=1 && id<=9999) || new Set(ids).size!==ids.length) return;
+      !ids.every(id=>Number.isInteger(id) && mapIndex.has(id) && mapIndex.get(id).difficulty===difficulty) || new Set(ids).size!==ids.length) return;
   state.candidates=ids;
   sendState();
 });

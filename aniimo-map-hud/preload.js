@@ -1,12 +1,18 @@
 const {contextBridge, ipcRenderer} = require('electron');
 contextBridge.exposeInMainWorld('mapHud', {
+  onRestart: callback => ipcRenderer.on('restart-flow',callback),
   onState: callback => ipcRenderer.on('map-state', (_event,state) => callback(state)),
   setOpacity: value => ipcRenderer.send('set-opacity',value),
   setLocked: locked => ipcRenderer.send('set-locked',locked),
   resizeBy: delta => ipcRenderer.send('resize-delta',delta),
   hide: () => ipcRenderer.send('hide-hud'),
   openMatcher: () => ipcRenderer.send('open-matcher'),
+  selectLiveSource: id => ipcRenderer.invoke('select-live-source',id),
+  stopLiveSource: () => ipcRenderer.send('stop-live-source'),
+  matcherStep: step => ipcRenderer.send('matcher-step',step),
   captureSources: () => ipcRenderer.invoke('capture-sources'),
+  setDifficulty: value => ipcRenderer.send('set-difficulty',value),
+  clearMatches: () => ipcRenderer.send('clear-matches'),
   matchResults: ids => ipcRenderer.send('match-results', ids),
   chooseMatch: id => ipcRenderer.send('choose-match', id),
   selectCandidate: id => ipcRenderer.send('select-candidate', id)
