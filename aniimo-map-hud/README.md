@@ -1,14 +1,13 @@
-# 伊莫搶蛋地圖 HUD v9（Windows x64）
+# 伊莫搶蛋地圖 HUD v10（Windows x64）
 
-伊莫搶蛋地圖 HUD v9（Windows x64）
+伊莫搶蛋地圖 HUD v10（Windows x64）
 
-• 移除流程按鈕箭頭及 HUD 地圖方向按鈕，保留滾輪縮放與滑鼠拖曳。
-• 框選畫面預設符合視窗寬度，不用先手動放大；高於顯示區的內容可捲動查看。
-• 蛋圖示減少留白，提高 Windows 圖示內的視覺大小。
-• 保留難度、即時預覽、四個候選、重新框選與圖標開關。
+• 擷取串流設定為不包含游標，避免預覽游標與實際滑鼠形成雙十字；來源支援情況仍需 Windows 實測。
+• 框選工具列加入小滑鼠圖示：左鍵框選、右鍵移動、滾輪縮放。
+• 保留 v9 的寬度適配、即時預覽、候選切換與重新框選。
 
-下載 AniimoEggMapHUD-Windows-x64-v9.zip，完整解壓縮後執行 AniimoEggMapHUD-Egg.exe，不需 Node.js。
-F8 鎖定／解鎖；F9 隱藏／顯示。先關閉舊版。
+下載 ZIP 後完整解壓縮，執行 AniimoEggMapHUD-Egg.exe。先關閉舊版。
+F8 鎖定／解鎖；F9 隱藏／顯示。
 
 ## 使用步驟
 
@@ -35,4 +34,4 @@ Windows 的實際桌面擷取、快捷鍵與置頂顯示仍需實機確認；遊
 
 ## 開發
 
-原始碼資料夾為 aniimo-map-hud/，package.json 版本 0.9.0；既有 GitHub Actions 建置工作流可繼續使用。Windows Portable 包使用既有 Electron Windows x64 執行環境，已替換成這一版 app 程式與離線資料。
+原始碼資料夾為 aniimo-map-hud/，package.json 版本 0.10.0；既有 GitHub Actions 建置工作流可繼續使用。Windows Portable 包使用既有 Electron Windows x64 執行環境，已替換成這一版 app 程式與離線資料。

@@ -63,9 +63,13 @@ async function startSource(selected){
  const generation=liveGeneration;let nextStream;
  try{
   if(!await window.mapHud.selectLiveSource(selected.id))throw Error('來源已失效，請重新選擇視窗。');
-  nextStream=await navigator.mediaDevices.getDisplayMedia({video:{frameRate:{ideal:12,max:15}},audio:false});
+  nextStream=await navigator.mediaDevices.getDisplayMedia({video:{cursor:"never",frameRate:{ideal:12,max:15}},audio:false});
   if(generation!==liveGeneration||step!=='crop'){nextStream.getTracks().forEach(t=>t.stop());return;}
-  stream=nextStream;video.srcObject=stream;await video.play();
+  stream=nextStream;
+  const captureTrack=stream.getVideoTracks()[0];
+  if(captureTrack?.applyConstraints){try{await captureTrack.applyConstraints({cursor:"never"});}catch(_){/* Keep capture available if the source cannot exclude the cursor. */}}
+  if(generation!==liveGeneration){nextStream.getTracks().forEach(t=>t.stop());return;}
+  video.srcObject=stream;await video.play();
   if(generation!==liveGeneration){nextStream.getTracks().forEach(t=>t.stop());return;}
   stream.getVideoTracks()[0]?.addEventListener('ended',()=>{if(stream===nextStream){stopLive();say('來源已停止；可以更新畫面或重新選擇視窗。');}});
   function tick(){if(generation!==liveGeneration||!stream||step!=='crop')return;refreshFrame();frameLoop=requestAnimationFrame(tick);}
