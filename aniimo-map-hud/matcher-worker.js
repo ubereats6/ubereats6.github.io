@@ -1,9 +1,9 @@
 let referencePromise;
-function references() {
-  if (!referencePromise) referencePromise = fetch('features.json').then(response => {
+function references(items) {
+  if (!referencePromise) referencePromise = (items ? Promise.resolve(items) : fetch('features.json').then(response => {
     if (!response.ok) throw new Error('地圖比對資料載入失敗');
     return response.json();
-  }).then(items => items.map(item => {
+  })).then(items => items.map(item => {
     const bytes = atob(item.mask);
     const pixels = new Uint8Array(item.w * item.h);
     for (let i = 0; i < pixels.length; i++) pixels[i] = (bytes.charCodeAt(i >> 3) >> (7 - (i & 7))) & 1;
@@ -80,7 +80,7 @@ self.onmessage = async ({data}) => {
   if (data.type !== 'match') return;
   try {
     if (!['easy','hard','nightmare','chaos'].includes(data.difficulty)) throw new Error('請先選擇搶蛋地圖難度。');
-    const refs = (await references()).filter(ref => ref.difficulty === data.difficulty);
+    const refs = (await references(data.features)).filter(ref => ref.difficulty === data.difficulty);
     if (!refs.length) throw new Error('此難度尚無地圖資料。');
     const query = {w:data.w,h:data.h,pixels:new Uint8Array(data.pixels)};
     const results = refs.map(ref => ({id:ref.id,score:matchOne(ref,query)}))

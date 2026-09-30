@@ -161,7 +161,7 @@ function renderMarkers(id){
    for(const [key,value] of Object.entries(item.attrs||{})){
     if(/^on/i.test(key)||key==='style')continue;
     if(key==='href'&&!/^marker-icons\/[a-z]+-[a-f0-9]+\.webp$/.test(value))continue;
-    e.setAttribute(key,value);
+    e.setAttribute(key,key==='href'?new URL(value,databaseAssets).href:value);
    }
    e.textContent=item.text||'';g.append(e);
   }
@@ -169,6 +169,10 @@ function renderMarkers(id){
  }
 }
 for(const input of document.querySelectorAll('[data-marker-toggle]'))input.addEventListener('change',()=>{markerVisibility[input.dataset.markerToggle]=input.checked;renderMarkers(currentMap);});
-Promise.all([fetch('maps.json').then(r=>r.json()),fetch('marker-layers.json').then(r=>r.json())]).then(([manifest,layers])=>{
- mapIndex=new Map(manifest.maps.map(m=>[m.id,m]));layerIndex=new Map(layers.maps.map(m=>[m.id,m]));if(pendingState)applyState(pendingState);
+let databaseAssets='';
+window.mapHud.onDatabaseStatus(text=>{document.getElementById('databaseStatus').textContent=text;});
+document.getElementById('databaseCheck').addEventListener('click',async()=>{const button=document.getElementById('databaseCheck');button.disabled=true;try{await window.mapHud.checkDatabase();}finally{button.disabled=false;}});
+window.mapHud.getDatabase().then(data=>{
+ databaseAssets=data.assetBase;document.getElementById('databaseStatus').textContent=data.status;
+ mapIndex=new Map(data.manifest.maps.map(m=>[m.id,m]));layerIndex=new Map(data.layers.maps.map(m=>[m.id,m]));if(pendingState)applyState(pendingState);
 }).catch(()=>{empty.textContent='地圖資料無法載入，請完整解壓縮下載包。';});

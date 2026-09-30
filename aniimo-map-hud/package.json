@@ -1,6 +1,6 @@
 {
   "name": "aniimo-egg-map-hud",
-  "version": "0.10.0",
+  "version": "0.12.0",
   "private": true,
   "description": "Windows overlay for Aniimo egg-heist maps",
   "main": "main.js",
@@ -30,7 +30,9 @@
       "marker-layers.json",
       "maps/**/*",
       "clean-maps/**/*",
-      "marker-icons/**/*"
+      "marker-icons/**/*",
+      "database.js",
+      "database-version.json"
     ],
     "directories": {
       "output": "dist"

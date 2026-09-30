@@ -5,7 +5,7 @@ const worker=new Worker('matcher-worker.js'),modes=[...document.querySelectorAll
 const dialog=$('candidateDialog'),choices=$('candidateChoices'),previewDialog=$('previewDialog');
 let maps=new Map(),difficulty=null,step='mode',image=null,crop=null,start=null,panStart=null;
 let source=null,stream=null,liveGeneration=0,frameLoop=null,requestId=0,matching=false,busy=false;
-let zoom=100,panMode=false,spaceDown=false,results=[];
+let zoom=100,panMode=false,spaceDown=false,results=[],databaseFeatures=[];
 const say=message=>{$('status').textContent=message;};
 function controls(){
  $('nextSource').disabled=!difficulty||!maps.size||busy;$('upload').disabled=$('nextSource').disabled;
@@ -18,6 +18,7 @@ function controls(){
 function closeDialogs(){if(previewDialog.open)previewDialog.close();if(dialog.open)dialog.close();}
 function clearResults(){requestId++;matching=false;results=[];choices.replaceChildren();closeDialogs();window.mapHud.clearMatches();controls();}
 function showStep(next){
+ $('previewPointer').hidden=true;
  if(next!=='crop')stopLive();step=next;
  for(const name of ['mode','source','crop'])$(name+'Step').hidden=next!==name;
  window.mapHud.matcherStep(next);controls();
@@ -26,7 +27,7 @@ function chooseMode(value){if(difficulty===value)return;difficulty=value;clearRe
 modes.forEach(input=>input.addEventListener('change',()=>{window.mapHud.setDifficulty(input.value);chooseMode(input.value);}));
 window.mapHud.onRestart(()=>{clearResults();showStep('mode');say('請先確認這次搶蛋難度。');});
 window.mapHud.onState(state=>{if(state.difficulty&&modes.some(input=>input.value===state.difficulty))chooseMode(state.difficulty);});
-fetch('maps.json').then(r=>r.json()).then(data=>{maps=new Map(data.maps.map(m=>[m.id,m]));controls();}).catch(()=>say('地圖資料載入失敗，請完整解壓縮下載包。'));
+window.mapHud.getDatabase().then(data=>{maps=new Map(data.manifest.maps.map(m=>[m.id,m]));databaseFeatures=data.features;for(const input of modes){const label=input.nextElementSibling?.querySelector('small');if(label)label.textContent=maps.size?`${data.manifest.maps.filter(m=>m.difficulty===input.value).length} 張地圖`:'';}controls();}).catch(()=>say('地圖資料載入失敗，請完整解壓縮下載包。'));
 async function loadSources(){
  if(!difficulty||busy)return;clearResults();showStep('source');busy=true;controls();$('sources').replaceChildren();say('正在列出可選視窗…');
  try{
@@ -161,7 +162,7 @@ function maskFromCrop(){
  if(!difficulty||!image||!crop||matching)return;
  try{
   const data=maskFromCrop();clearResults();matching=true;controls();say('正在比對所選難度的地圖輪廓…');
-  worker.postMessage({type:'match',difficulty,requestId:++requestId,...data});
+  worker.postMessage({type:'match',features:databaseFeatures,difficulty,requestId:++requestId,...data});
  }catch(e){matching=false;controls();say(e.message);}
 }
 worker.onmessage=({data})=>{
@@ -182,7 +183,18 @@ worker.onmessage=({data})=>{
   const choose=document.createElement('button');choose.type='button';choose.className='primary';choose.textContent='使用這張';choose.addEventListener('click',()=>{closeDialogs();stopLive();window.mapHud.chooseMatch(item.id);});
   actions.append(enlarge,choose);article.append(preview,rank,title,score,actions);return article;
  }));
- controls();dialog.showModal();say('比對完成。可放大預覽或按「重新框選」，不用先選地圖。');
+ $('previewPointer').hidden=true;controls();dialog.showModal();say('比對完成。可放大預覽或按「重新框選」，不用先選地圖。');
 };
 worker.onerror=()=>{matching=false;controls();say('比對程式發生錯誤，請重新開啟 HUD。');};
 showStep('mode');controls();
+
+// Use one DOM pointer while framing, so a native cursor is not also captured in the source preview.
+const previewPointer=$('previewPointer');
+function movePreviewPointer(event){
+ if(step!=='crop'||matching||!image){previewPointer.hidden=true;return;}
+ previewPointer.style.left=event.clientX+'px';previewPointer.style.top=event.clientY+'px';previewPointer.hidden=false;
+}
+canvas.addEventListener('pointerenter',movePreviewPointer);
+canvas.addEventListener('pointermove',movePreviewPointer);
+canvas.addEventListener('pointerleave',()=>{previewPointer.hidden=true;});
+window.addEventListener('blur',()=>{previewPointer.hidden=true;});

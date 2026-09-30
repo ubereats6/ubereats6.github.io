@@ -1,13 +1,25 @@
-# 伊莫搶蛋地圖 HUD v10（Windows x64）
+# 伊莫搶蛋地圖 HUD v12（Windows x64）
 
-伊莫搶蛋地圖 HUD v10（Windows x64）
+伊莫搶蛋地圖 HUD v12（Windows x64）
 
-• 擷取串流設定為不包含游標，避免預覽游標與實際滑鼠形成雙十字；來源支援情況仍需 Windows 實測。
-• 框選工具列加入小滑鼠圖示：左鍵框選、右鍵移動、滾輪縮放。
-• 保留 v9 的寬度適配、即時預覽、候選切換與重新框選。
+• 開啟時自動向 https://ubereats6.github.io/egg-map/ 檢查地圖資料更新。
+• 提供「檢查地圖更新」按鈕；下載驗證成功後才切換，正在辨識時等視窗關閉再套用。
+• 地圖存入本機快取，斷網時沿用快取；快取損壞時使用內建 30 張地圖。
+• 下載項目只有 JSON 與 WebP；不下載程式碼、不自動替換 EXE。
+• 保留小滑鼠操作提示、單一框選指標，以及適度加高的擷取視窗。
 
-下載 ZIP 後完整解壓縮，執行 AniimoEggMapHUD-Egg.exe。先關閉舊版。
-F8 鎖定／解鎖；F9 隱藏／顯示。
+下載 ZIP 後完整解壓縮，先關閉舊版，再執行 AniimoEggMapHUD-Egg.exe。
+F8 鎖定／解鎖；F9 隱藏／顯示。建議擷取遊戲視窗。
+
+網站必須上傳 egg-map/database-version.json 及其中列出的資料檔。若網站尚未更新版本清單，APP 仍能使用現有地圖。
+新增地圖時同步更新 maps.json、features.json、marker-layers.json 與 WebP，再產生並上傳 database-version.json。
+一般新增地圖不用更新 EXE；新增難度或更改辨識演算法需更新程式。
+
+## 地圖線上更新
+
+APP 開啟後會在背景檢查網站 database-version.json。資料下載並通過雜湊與格式檢查後才套用；有辨識視窗開啟時延後至關閉該視窗，避免混用資料。解鎖時 HUD 底部可按「檢查地圖更新」。地圖存在使用者資料夾 map-database/，離線仍能用；不會下載 EXE 或其他程式碼。
+
+維護網站時，先更新 egg-map/ 中的 maps.json、features.json、marker-layers.json 與 WebP，再雙擊儲存庫 aniimo-map-hud/update-map-database.cmd 產生版本清單。這個工具使用 Windows 內建 PowerShell，不需 Python 或 Node.js。產生的 egg-map/database-version.json 必須與新資料一起上傳 GitHub。若有 Python，也可執行 build-database-version.py。工具必須放在儲存庫的 aniimo-map-hud/，相鄰資料夾是 egg-map/。
 
 ## 使用步驟
 
@@ -25,13 +37,13 @@ F8 鎖定／解鎖；F9 隱藏／顯示。
 
 簡單 8 張、困難 6 張、噩夢 7 張、渾沌 9 張，沿用資料的編號 31–60。只使用最新版地圖，不再讀取舊版遠端 JPG。
 所選視窗僅在框選頁即時預覽，開始框選就凍結，離開框選頁或關閉辨識視窗會停止；不錄影，不寫入地圖池。使用者可開啟 PNG/JPG/WebP 截圖，但安裝資料內沒有 .png 圖片檔。
-新增地圖需一起更新 maps.json、features.json、marker-layers.json 及相關 WebP，再重新打包；不會自動下載未知地圖。
+新增地圖需更新網站 maps.json、features.json、marker-layers.json、相關 WebP 與 database-version.json，不需重新打包 EXE；四種難度與相容資料格式以外的功能變更才需程式更新。
 
 ## 驗證範圍
 
-已通過語法、分步流程、來源限制、即時預覽更新與停止、縮放／拖曳／框選坐標、候選預覽與重新框選的模擬測試。地圖、比對核心和 HUD 圖層與使用者確認可用的 v7 相同，逐檔確認未變。這些結果不表示局部黑霧截圖必定正確。
+已通過語法、分步流程、來源限制、即時預覽更新與停止、縮放／拖曳／框選坐標、候選預覽與重新框選的模擬測試。內建地圖與 HUD 圖層沿用既有資料。新版已測試新增地圖、重開快取、離線、雜湊錯誤回退、路徑限制及四難度比對。這些結果不表示局部黑霧截圖必定正確。
 Windows 的實際桌面擷取、快捷鍵與置頂顯示仍需實機確認；遊戲獨佔全螢幕若蓋過 HUD，可改用無邊框視窗。
 
 ## 開發
 
-原始碼資料夾為 aniimo-map-hud/，package.json 版本 0.10.0；既有 GitHub Actions 建置工作流可繼續使用。Windows Portable 包使用既有 Electron Windows x64 執行環境，已替換成這一版 app 程式與離線資料。
+原始碼資料夾為 aniimo-map-hud/，package.json 版本 0.12.0；既有 GitHub Actions 建置工作流可繼續使用。Windows Portable 包使用既有 Electron Windows x64 執行環境，已替換成這一版 app 程式與離線資料。

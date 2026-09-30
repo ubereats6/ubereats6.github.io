@@ -1,5 +1,8 @@
 const {contextBridge, ipcRenderer} = require('electron');
 contextBridge.exposeInMainWorld('mapHud', {
+  getDatabase: () => ipcRenderer.invoke('get-database'),
+  checkDatabase: () => ipcRenderer.invoke('check-database'),
+  onDatabaseStatus: callback => ipcRenderer.on('database-status',(_event,text)=>callback(text)),
   onRestart: callback => ipcRenderer.on('restart-flow',callback),
   onState: callback => ipcRenderer.on('map-state', (_event,state) => callback(state)),
   setOpacity: value => ipcRenderer.send('set-opacity',value),

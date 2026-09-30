@@ -2,7 +2,9 @@ const {app, BrowserWindow, Menu, Tray, nativeImage, globalShortcut, ipcMain, scr
 const fs = require('node:fs');
 const path = require('node:path');
 
-const manifest = require('./maps.json');
+let manifest = require('./maps.json');
+const {Database}=require('./database');
+let database,activeDatabase,pendingDatabase,databaseStatus='使用內建地圖';
 const mapIndex = new Map(manifest.maps.map(m => [m.id,m]));
 const validDifficulty = value => manifest.difficulties.some(d => d.id === value);
 const SCHEME = 'aniimo-egg-map';
@@ -41,12 +43,15 @@ if (gotLock) {
 
   app.whenReady().then(() => {
     settingsPath = path.join(app.getPath('userData'), 'map-hud-settings.json');
+    database=new Database(__dirname,path.join(app.getPath('userData'),'map-database'));
+    activeDatabase=database.current;refreshManifest(activeDatabase);
     loadSettings();
-    if (firstMap) {state.mapId=firstMap;state.difficulty=mapIndex.get(firstMap).difficulty;}
+    const launchMap=mapFromArgs(process.argv);if (launchMap) {state.mapId=launchMap;state.difficulty=mapIndex.get(launchMap).difficulty;}
     installDisplayCapture();
     createWindow();
     createTray();
     registerShortcuts();
+    checkDatabase();
   });
 
   app.on('activate', () => { if (win && !win.isDestroyed()) { win.show(); setLocked(false); } });
@@ -135,7 +140,7 @@ function openMatcher() {
   workWin.webContents.on('will-navigate',event => event.preventDefault());
   workWin.webContents.on('did-finish-load',sendState);
   workWin.loadFile(path.join(__dirname,'matcher.html'));
-  workWin.on('closed',() => { workWin=null;pendingCaptureId=null;allowedSources.clear(); });
+  workWin.on('closed',() => { workWin=null;pendingCaptureId=null;allowedSources.clear();if(pendingDatabase)activateDatabase(pendingDatabase); });
 }
 function setLocked(value) {
   state.locked = Boolean(value);
@@ -222,7 +227,7 @@ ipcMain.on('stop-live-source',event=>{if(event.sender===workWin?.webContents)pen
 ipcMain.on('matcher-step',(event,step)=>{
   if(event.sender!==workWin?.webContents || !['mode','source','crop'].includes(step))return;
   const area=screen.getDisplayMatching(workWin.getBounds()).workArea;
-  const size=step==='mode'?{w:700,h:560}:step==='source'?{w:820,h:650}:{w:960,h:740};
+  const size=step==='mode'?{w:700,h:560}:step==='source'?{w:820,h:650}:{w:960,h:820};
   workWin.setSize(Math.min(size.w,area.width-24),Math.min(size.h,area.height-24));workWin.center();
 });
 ipcMain.on('choose-match', (event,id) => {
@@ -252,3 +257,20 @@ ipcMain.on('select-candidate', (event,id) => {
   if (event.sender!==win?.webContents || state.locked || !state.candidates.includes(id)) return;
   selectMap(id,true);
 });
+
+function refreshManifest(data){manifest=data.manifest;mapIndex.clear();for(const m of manifest.maps)mapIndex.set(m.id,m);}
+function broadcastDatabase(text){databaseStatus=text;for(const target of [win,workWin])if(target&&!target.isDestroyed())target.webContents.send('database-status',text);}
+function activateDatabase(data){
+ pendingDatabase=null;activeDatabase=data;refreshManifest(data);
+ if(state.mapId&&!mapIndex.has(state.mapId))state.mapId=null;
+ state.candidates=state.candidates.filter(id=>mapIndex.has(id));
+ saveSettings();if(win&&!win.isDestroyed())win.webContents.reload();
+ broadcastDatabase(`地圖已更新 · ${manifest.maps.length} 張`);
+}
+async function checkDatabase(){
+ if(!database)return;
+ try{const result=await database.check(broadcastDatabase);if(!result.changed&&pendingDatabase){broadcastDatabase('地圖下載完成，關閉辨識視窗後套用');return;}if(result.changed&&result.data.version!==activeDatabase.version){if(workWin&&!workWin.isDestroyed()){pendingDatabase=result.data;broadcastDatabase('地圖下載完成，關閉辨識視窗後套用');}else activateDatabase(result.data);}else broadcastDatabase(`地圖已是最新 · ${manifest.maps.length} 張`);}
+ catch(_){broadcastDatabase(`未能連線更新，沿用目前 ${manifest.maps.length} 張地圖`);}
+}
+ipcMain.handle('get-database',event=>{if(event.sender!==win?.webContents&&event.sender!==workWin?.webContents)throw Error('來源無效');return {...activeDatabase,status:databaseStatus};});
+ipcMain.handle('check-database',async event=>{if(event.sender!==win?.webContents&&event.sender!==workWin?.webContents)return;await checkDatabase();return databaseStatus;});
