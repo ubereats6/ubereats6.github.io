@@ -80,7 +80,8 @@ self.onmessage = async ({data}) => {
   if (data.type !== 'match') return;
   try {
     if (!['easy','hard','nightmare','chaos'].includes(data.difficulty)) throw new Error('請先選擇搶蛋地圖難度。');
-    const refs = (await references(data.features)).filter(ref => ref.difficulty === data.difficulty);
+    const allowed=Array.isArray(data.candidateIds)?new Set(data.candidateIds):null;
+    const refs = (await references(data.features)).filter(ref => ref.difficulty === data.difficulty&&(!allowed||allowed.has(ref.id)));
     if (!refs.length) throw new Error('此難度尚無地圖資料。');
     const query = {w:data.w,h:data.h,pixels:new Uint8Array(data.pixels)};
     const results = refs.map(ref => ({id:ref.id,score:matchOne(ref,query)}))

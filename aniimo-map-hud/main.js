@@ -225,9 +225,9 @@ ipcMain.handle('select-live-source',(event,id)=>{
 });
 ipcMain.on('stop-live-source',event=>{if(event.sender===workWin?.webContents)pendingCaptureId=null;});
 ipcMain.on('matcher-step',(event,step)=>{
-  if(event.sender!==workWin?.webContents || !['mode','source','crop'].includes(step))return;
+  if(event.sender!==workWin?.webContents || !['mode','door','source','crop'].includes(step))return;
   const area=screen.getDisplayMatching(workWin.getBounds()).workArea;
-  const size=step==='mode'?{w:700,h:560}:step==='source'?{w:820,h:650}:{w:960,h:820};
+  const size=step==='mode'?{w:700,h:560}:step==='door'?{w:820,h:760}:step==='source'?{w:820,h:650}:{w:960,h:820};
   workWin.setSize(Math.min(size.w,area.width-24),Math.min(size.h,area.height-24));workWin.center();
 });
 ipcMain.on('choose-match', (event,id) => {
@@ -248,7 +248,7 @@ ipcMain.on('clear-matches',event=>{
 ipcMain.on('match-results', (event,payload) => {
   const {ids,difficulty}=payload||{};
   if(difficulty!==state.difficulty)return;
-  if (event.sender!==workWin?.webContents || !Array.isArray(ids) || ids.length<1 || ids.length>4 ||
+  if (event.sender!==workWin?.webContents || !Array.isArray(ids) || ids.length<1 || ids.length>5000 ||
       !ids.every(id=>Number.isInteger(id) && mapIndex.has(id) && mapIndex.get(id).difficulty===difficulty) || new Set(ids).size!==ids.length) return;
   state.candidates=ids;
   sendState();

@@ -1,6 +1,6 @@
 {
   "name": "aniimo-egg-map-hud",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "private": true,
   "description": "Windows overlay for Aniimo egg-heist maps",
   "main": "main.js",
@@ -32,7 +32,8 @@
       "clean-maps/**/*",
       "marker-icons/**/*",
       "database.js",
-      "database-version.json"
+      "database-version.json",
+      "door-finder.js"
     ],
     "directories": {
       "output": "dist"
@@ -48,6 +49,7 @@
     "win": {
       "icon": "icon.ico",
       "target": [
+        "portable",
         "nsis"
       ],
       "artifactName": "AniimoEggMapHUD-Setup-${version}.${ext}"
@@ -58,6 +60,9 @@
       "createDesktopShortcut": true,
       "runAfterFinish": true,
       "perMachine": false
+    },
+    "portable": {
+      "artifactName": "AniimoEggMapHUD-Portable-v${version}.exe"
     }
   }
 }

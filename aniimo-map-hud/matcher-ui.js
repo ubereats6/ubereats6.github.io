@@ -6,7 +6,7 @@ const dialog=$('candidateDialog'),choices=$('candidateChoices'),previewDialog=$(
 let maps=new Map(),difficulty=null,step='mode',image=null,crop=null,start=null,panStart=null;
 let source=null,stream=null,liveGeneration=0,frameLoop=null,requestId=0,matching=false,busy=false;
 let frameCallback=false,lastVideoTime=-1;
-let zoom=100,panMode=false,spaceDown=false,results=[],databaseFeatures=[];
+let zoom=100,panMode=false,spaceDown=false,results=[],databaseFeatures=[],doorDirection='all',doorLayers=new Map(),matchCandidateIds=null;
 const say=message=>{$('status').textContent=message;};
 function controls(){
  $('nextSource').disabled=!difficulty||!maps.size||busy;$('upload').disabled=$('nextSource').disabled;
@@ -20,14 +20,32 @@ function closeDialogs(){if(previewDialog.open)previewDialog.close();if(dialog.op
 function clearResults(){requestId++;matching=false;results=[];choices.replaceChildren();closeDialogs();window.mapHud.clearMatches();controls();}
 function showStep(next){
  if(next!=='crop')stopLive();step=next;
- for(const name of ['mode','source','crop'])$(name+'Step').hidden=next!==name;
+ for(const name of ['mode','door','source','crop'])$(name+'Step').hidden=next!==name;
  window.mapHud.matcherStep(next);controls();
 }
-function chooseMode(value){if(difficulty===value)return;difficulty=value;clearResults();modes.forEach(input=>input.checked=input.value===value);say('確認難度後，按「下一步」選遊戲視窗。');}
+function chooseMode(value){if(difficulty===value)return;difficulty=value;doorDirection='all';clearResults();modes.forEach(input=>input.checked=input.value===value);say('確認難度後，按「下一步」選遊戲視窗。');}
 modes.forEach(input=>input.addEventListener('change',()=>{window.mapHud.setDifficulty(input.value);chooseMode(input.value);}));
 window.mapHud.onRestart(()=>{clearResults();showStep('mode');say('請先確認這次搶蛋難度。');});
 window.mapHud.onState(state=>{if(state.difficulty&&modes.some(input=>input.value===state.difficulty))chooseMode(state.difficulty);});
-window.mapHud.getDatabase().then(data=>{maps=new Map(data.manifest.maps.map(m=>[m.id,m]));databaseFeatures=data.features;for(const input of modes){const label=input.nextElementSibling?.querySelector('small');if(label)label.textContent=maps.size?`${data.manifest.maps.filter(m=>m.difficulty===input.value).length} 張地圖`:'';}controls();}).catch(()=>say('地圖資料載入失敗，請完整解壓縮下載包。'));
+window.mapHud.getDatabase().then(data=>{doorLayers=new Map(data.layers.maps.map(m=>[m.id,m]));maps=new Map(data.manifest.maps.map(m=>[m.id,m]));databaseFeatures=data.features;for(const input of modes){const label=input.nextElementSibling?.querySelector('small');if(label)label.textContent=maps.size?`${data.manifest.maps.filter(m=>m.difficulty===input.value).length} 張地圖`:'';}controls();}).catch(()=>say('地圖資料載入失敗，請完整解壓縮下載包。'));
+function doorPool(){return window.EggDoors.candidates([...maps.values()],doorLayers,difficulty,doorDirection);}
+function renderDoors(){
+ const pool=doorPool();
+ for(const dir of ['NW','N','NE','W','E','SW','S','SE']){const button=$('door'+dir),count=window.EggDoors.candidates([...maps.values()],doorLayers,difficulty,dir).length;button.disabled=!count||busy;button.setAttribute('aria-pressed',String(doorDirection===dir));$('doorCount'+dir).textContent=String(count);}
+ $('doorUnknown').setAttribute('aria-pressed',String(doorDirection==='all'));$('doorCapture').disabled=!pool.length||busy;
+ $('doorStatus').textContent=`目前 ${pool.length} 張候選 · 可直接選圖或再用截圖比對`;
+ $('doorChoices').replaceChildren(...pool.map(map=>{
+  const article=document.createElement('article');article.className='door-choice';
+  const preview=document.createElement('button');preview.type='button';preview.setAttribute('aria-label',`放大預覽地圖 ${map.id}`);const img=document.createElement('img');img.src=map.image;img.alt=`地圖 ${map.id}`;preview.append(img);
+  function enlarge(){$('previewTitle').textContent=`地圖 ${map.id}`;$('largeMap').src=map.image;previewDialog.showModal();}preview.addEventListener('click',enlarge);
+  const title=document.createElement('strong');title.textContent=`地圖 ${map.id}`;const actions=document.createElement('div');actions.className='actions';const view=document.createElement('button');view.type='button';view.textContent='放大預覽';view.addEventListener('click',enlarge);
+  const choose=document.createElement('button');choose.type='button';choose.className='primary';choose.textContent='使用這張';choose.addEventListener('click',()=>{window.mapHud.matchResults({difficulty,ids:pool.map(m=>m.id)});closeDialogs();stopLive();window.mapHud.chooseMatch(map.id);});
+  actions.append(view,choose);article.append(preview,title,actions);return article;
+ }));
+}
+function chooseDoor(dir){doorDirection=dir;matchCandidateIds=null;clearResults();renderDoors();}
+for(const dir of ['NW','N','NE','W','E','SW','S','SE'])$('door'+dir).addEventListener('click',()=>chooseDoor(dir));
+$('doorUnknown').addEventListener('click',()=>chooseDoor('all'));$('doorBack').addEventListener('click',()=>{clearResults();showStep('mode');});$('doorCapture').addEventListener('click',loadSources);
 async function loadSources(){
  if(!difficulty||busy)return;clearResults();showStep('source');busy=true;controls();$('sources').replaceChildren();say('正在列出可選視窗…');
  try{
@@ -42,8 +60,8 @@ async function loadSources(){
   say('直接點選遊戲視窗，下一步會顯示即時畫面。');
  }catch(e){say(e.message||'取得視窗失敗，請重試。');}finally{busy=false;controls();}
 }
-$('nextSource').addEventListener('click',loadSources);$('refreshSources').addEventListener('click',loadSources);
-$('backMode').addEventListener('click',()=>{clearResults();showStep('mode');});
+$('nextSource').addEventListener('click',()=>{renderDoors();showStep('door');say('可以直接選地圖，或選門後擷取二次比對。');});$('refreshSources').addEventListener('click',loadSources);
+$('backMode').addEventListener('click',()=>{clearResults();renderDoors();showStep('door');});
 $('backSources').addEventListener('click',loadSources);
 function stopLive(){
  liveGeneration++;if(frameLoop!==null){if(frameCallback&&video.cancelVideoFrameCallback)video.cancelVideoFrameCallback(frameLoop);else cancelAnimationFrame(frameLoop);frameLoop=null;}lastVideoTime=-1;
@@ -164,14 +182,14 @@ function maskFromCrop(){
 }function match(){
  if(!difficulty||!image||!crop||matching)return;
  try{
-  const data=maskFromCrop();clearResults();matching=true;controls();say('正在比對所選難度的地圖輪廓…');
-  worker.postMessage({type:'match',features:databaseFeatures,difficulty,requestId:++requestId,...data});
+  const data=maskFromCrop();clearResults();matching=true;controls();say(`正在比對目前 ${doorPool().length} 張門位置候選…`);
+  matchCandidateIds=doorPool().map(m=>m.id);if(!matchCandidateIds.length){matching=false;controls();say('此方向沒有候選，請回選門或選不知道出口方向。');return;}worker.postMessage({type:'match',candidateIds:matchCandidateIds,features:databaseFeatures,difficulty,requestId:++requestId,...data});
  }catch(e){matching=false;controls();say(e.message);}
 }
 worker.onmessage=({data})=>{
  if(data.requestId!==requestId||data.difficulty!==difficulty)return;matching=false;controls();
  if(data.type==='error'){say(data.message);return;}
- results=(data.results||[]).filter(item=>maps.get(item.id)?.difficulty===difficulty).slice(0,4);
+ results=(data.results||[]).filter(item=>maps.get(item.id)?.difficulty===difficulty&&(!matchCandidateIds||matchCandidateIds.includes(item.id))).slice(0,4);
  if(!results.length){say('沒有足夠線索，請重新框選。');return;}
  window.mapHud.matchResults({difficulty,ids:results.map(item=>item.id)});
  choices.replaceChildren(...results.map((item,index)=>{
