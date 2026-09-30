@@ -7,6 +7,15 @@
   const status = document.getElementById('matchStatus');
   const results = document.getElementById('matchResults');
   const outcome = document.getElementById('matchOutcome');
+  const candidateDialog = document.getElementById('candidateDialog');
+  const candidateChoices = document.getElementById('candidateChoices');
+  let candidateOverflow = null;
+  function closeCandidates() { if (candidateDialog.open) candidateDialog.close(); }
+  candidateDialog.addEventListener('close', () => {
+    if (candidateOverflow !== null) document.body.style.overflow = candidateOverflow;
+    candidateOverflow = null;
+  });
+  document.getElementById('closeCandidates').addEventListener('click', closeCandidates);
   const resultsHeading = document.getElementById('resultsHeading');
   const viewer = document.getElementById('mapViewer');
   const viewerTitle = document.getElementById('viewerTitle');
@@ -128,15 +137,17 @@
   function revealCandidates(completedRequest) {
     requestAnimationFrame(() => {
       if (completedRequest !== requestId || !results.children.length) return;
-      // Focus must not trigger its own scroll; resolve coordinates after layout.
-      outcome.focus({preventScroll:true});
-      const header=document.querySelector('.site-header');
-      const headerHeight=header ? header.getBoundingClientRect().height : 0;
-      const top=Math.max(0,window.scrollY+outcome.getBoundingClientRect().top-headerHeight-20);
-      window.scrollTo({top,behavior:'instant'});
+      // A fixed modal presents choices without scrolling the underlying page.
+      if (!candidateDialog.open) {
+        candidateOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        candidateDialog.showModal();
+      }
+      candidateChoices.querySelector('button')?.focus({preventScroll:true});
     });
   }
   function clearMatch() {
+    closeCandidates(); candidateChoices.replaceChildren(); outcome.classList.remove('has-results');
     setOutcomeBusy(false); resultsHeading.hidden=true;
     requestId++; matching = false; selectedMap = null;
     results.replaceChildren(); viewer.hidden = true; hudLink.hidden = true;
@@ -154,6 +165,7 @@
       card.classList.toggle('is-selected', selected);
       card.setAttribute('aria-pressed', String(selected));
     }
+    closeCandidates();
     viewerTitle.textContent = `${map.difficultyLabel} · ${map.name}`;
     selectedMap = map; renderMapLayers(map);
     viewerImage.alt = `${map.difficultyLabel} ${map.name} 的完整標記地圖`;
@@ -161,7 +173,8 @@
     hudLink.hidden = false; hudLink.href = `aniimo-egg-map://show/${id}`;
     setZoom(50); viewer.hidden = false;
     document.querySelector('.egg-full-map').scrollTo(0, 0);
-    viewer.scrollIntoView({behavior:'smooth', block:'start'});
+    if (selectedCard?.classList.contains('egg-result')) outcome.scrollIntoView({behavior:'instant',block:'start'});
+    else viewer.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function renderGallery(filter = 'all') {
     const shown = maps.filter(map => filter === 'all' || map.difficulty === filter);
@@ -478,6 +491,7 @@
     try {
       const mask=getMask();
       requestId++; matching=true; syncControls();
+      closeCandidates();candidateChoices.replaceChildren();outcome.classList.remove('has-results');
       setOutcomeBusy(true);resultsHeading.hidden=false;selectedMap=null;
       analyze.disabled=true;results.replaceChildren();viewer.hidden=true;hudLink.hidden=true;viewerImage.removeAttribute('src');
       setStatus('正在比對地圖輪廓，可能需要幾秒鐘…');
@@ -490,17 +504,33 @@
     matching=false; setOutcomeBusy(false); syncControls();
     if(data.type==='error'){setStatus(data.message);return;}
     if(!data.results.length){setStatus('沒有足夠的地圖線索，請換一張截圖。');return;}
-    const cards=data.results.map((item,index)=>{
+    function makeCard(item,index,inDialog=false) {
       const card=document.createElement('button');card.type='button';card.className='egg-result';
+      card.dataset.mapId=String(item.id);
       card.setAttribute('aria-pressed','false');
-      const rank=document.createElement('small');rank.textContent=`候選 ${index+1}`;
+      const map=maps.find(map=>map.id===item.id);
+      if (map) {
+        const thumb=document.createElement('img');thumb.src=map.image;thumb.alt=`地圖 ${item.id} 縮圖`;
+        thumb.width=map.width;thumb.height=map.height;thumb.decoding='async';
+        card.append(thumb);
+      }
+      const copy=document.createElement('span');copy.className='egg-result-copy';
+      const rank=document.createElement('small');rank.textContent=index===0?'候選 1 · 最相似':`候選 ${index+1}`;
       const title=document.createElement('strong');title.textContent=`地圖 ${item.id}`;
       const score=document.createElement('span');score.textContent=`輪廓分數 ${Math.min(100,Math.max(0,Math.round(item.score*100)))}`;
-      card.append(rank,title,score);
-      card.addEventListener('click',()=>showMap(item.id,card));
+      const action=document.createElement('span');action.className='egg-result-action';action.textContent='查看完整地圖 →';
+      copy.append(rank,title,score,action);card.append(copy);
+      if (index===0) card.classList.add('is-top-match');
+      card.addEventListener('click',()=>{
+        const inlineCard=inDialog ? results.querySelector(`button[data-map-id="${item.id}"]`) : card;
+        showMap(item.id,inlineCard || card);
+      });
       return card;
-    });
-    results.replaceChildren(...cards);
+    }
+    const cards=data.results.map((item,index)=>makeCard(item,index));
+    candidateChoices.replaceChildren(...data.results.map((item,index)=>makeCard(item,index,true)));
+    document.getElementById('candidateDialogTitle').textContent=`找到 ${cards.length} 張候選地圖`;
+    results.replaceChildren(...cards); outcome.classList.add('has-results');
     setStatus('這是輪廓比對的候選排序，不代表已確定是哪張地圖。');
     revealCandidates(data.requestId);
   };

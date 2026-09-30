@@ -157,3 +157,28 @@
 .egg-capture-advice strong{color:#f1d794;font-size:.87rem}
 .egg-capture-advice p{margin:5px 0 0;color:#bdcede;font-size:.8rem;line-height:1.65}
 @media(min-width:651px){.egg-results{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* Candidate choices appear above the current page, without automatic page scrolling. */
+.egg-candidate-dialog{position:fixed;inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:min(1040px,calc(100vw - 32px));max-height:calc(100dvh - 32px);margin:0;padding:24px;overflow:auto;border:1px solid #67d1ff;border-radius:18px;background:#071a33;color:#ecf7ff;box-shadow:0 28px 90px #000a}
+.egg-candidate-dialog::backdrop{background:rgba(1,7,18,.85);backdrop-filter:blur(8px)}
+.egg-candidate-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px}
+.egg-candidate-dialog h2{margin:6px 0;font-size:1.5rem}.egg-candidate-dialog p{color:#b9d2e8;line-height:1.6;font-size:.9rem}
+.egg-candidate-dialog-head button{padding:8px 12px;border:1px solid #497ba3;border-radius:8px;background:#123966;color:#eaf6ff;font:inherit;white-space:nowrap;cursor:pointer}
+.egg-candidate-choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.egg-match-outcome.has-results{margin-top:20px;padding:17px;border:1px solid #67d1ff;border-radius:13px;background:linear-gradient(135deg,#12385b,#0a203a)}
+.egg-match-outcome.has-results h3{margin-top:0;color:#8de2ff}
+.egg-result{overflow:hidden;padding:0;border-color:#46799e;background:#0c2645}
+.egg-result>img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:contain;background:#030b17;padding:7px}
+.egg-result-copy{display:block;padding:12px}.egg-result-copy>.egg-result-action{display:block;margin-top:10px;color:#8de2ff;font-weight:800}
+.egg-result.is-top-match{border-color:#67d1ff;box-shadow:inset 0 0 0 1px rgba(103,209,255,.2)}
+.egg-candidate-reminder{margin-bottom:0}.egg-candidate-dialog button:focus-visible{outline:2px solid #8de2ff;outline-offset:3px}
+@media(max-width:700px){.egg-candidate-choices{grid-template-columns:repeat(2,minmax(0,1fr))}.egg-candidate-dialog{padding:16px}.egg-candidate-dialog h2{font-size:1.15rem}.egg-candidate-dialog p{font-size:.8rem}}
+@media(max-height:550px){.egg-candidate-dialog{padding:12px}.egg-candidate-dialog h2{font-size:1.1rem}.egg-candidate-dialog p{margin:5px 0;font-size:.75rem}.egg-candidate-choices{gap:8px}.egg-result-copy{padding:8px}.egg-candidate-choices .egg-result>img{max-height:100px}.egg-result-copy>.egg-result-action{margin-top:5px}}
+
+/* Separate the retained candidate block from the selected full map. */
+.egg-workspace #matchOutcome.has-results{margin-block:24px 0;padding:20px;background:linear-gradient(135deg,#143c60,#0a223e)}
+.egg-workspace #mapViewer{margin-block-start:34px;padding:22px;border-color:rgba(105,181,232,.55);background:#081b30}
+.egg-workspace #mapViewer .egg-viewer-head{padding-bottom:16px;margin-bottom:20px;border-bottom:1px solid rgba(105,181,232,.25)}
+.egg-workspace #matchOutcome.has-results .egg-status{margin-top:8px}
+.egg-workspace #matchOutcome .egg-results{margin-top:16px;gap:14px}
+@media(max-width:650px){.egg-workspace #matchOutcome.has-results{padding:14px;margin-block-start:18px}.egg-workspace #mapViewer{margin-block-start:26px;padding:15px}.egg-workspace #mapViewer .egg-viewer-head{align-items:flex-start;flex-wrap:wrap;padding-bottom:13px;margin-bottom:16px}.egg-workspace #matchOutcome .egg-results{gap:10px}}
