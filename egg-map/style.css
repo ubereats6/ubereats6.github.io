@@ -127,3 +127,22 @@
 @media(prefers-reduced-motion:reduce){.egg-gallery-card,.egg-difficulty-options label>span{transition:none}.egg-gallery-card:hover{transform:none}}
 
 .egg-results:not(:empty)+.egg-map-viewer{margin-top:18px}
+
+.egg-map-canvas{position:relative}
+.egg-marker-overlay{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none}
+.egg-marker-filters{margin:8px 0 16px;padding:12px;border:1px solid rgba(105,217,255,.25);border-radius:12px;background:#091b30}
+.egg-marker-filters legend{padding:0 7px;color:#cfebff;font-size:.85rem;font-weight:700}
+.egg-marker-options{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.egg-marker-options label{position:relative;cursor:pointer}
+.egg-marker-options input{position:absolute;opacity:0;width:1px;height:1px}
+.egg-marker-options label>span,.egg-fixed-marker{display:flex;align-items:center;gap:7px;min-height:48px;padding:8px;border:1px solid #294865;border-radius:8px;background:#0c2035;color:#8faac2;font-size:.78rem;font-weight:700}
+.egg-marker-options img{width:26px;height:26px;flex:none;object-fit:contain}
+.egg-marker-options input:checked+span{border-color:#63c6f5;background:#123656;color:#ecf8ff}
+.egg-marker-options input:not(:checked)+span img{opacity:.4;filter:grayscale(1)}
+.egg-marker-options input:focus-visible+span{outline:2px solid var(--cyan);outline-offset:3px}
+.egg-marker-options input:disabled+span{opacity:.5;cursor:default}
+.egg-fixed-marker{color:#ffdf94;border-color:#72613e}
+.egg-fixed-marker small{display:block;color:#c1ae7d;font-size:.65rem;font-weight:500}
+.egg-marker-filters p{margin:9px 0 0;font-size:.75rem}
+@media(max-width:1000px){.egg-marker-options{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:420px){.egg-marker-options{grid-template-columns:repeat(2,minmax(0,1fr))}}

@@ -42,6 +42,63 @@
   document.getElementById('zoomIn').addEventListener('click', () => setZoom(zoom + 25));
   setZoom(50);
   let maps = [], difficulty = '', requestId = 0, matching = false, capturing = false;
+  let selectedMap = null, markerLayers = new Map();
+  const markerOverlay = document.getElementById('markerOverlay');
+  const markerStatus = document.getElementById('markerStatus');
+  const markerControls = [...document.querySelectorAll('[data-marker-toggle]')];
+  const markerVisibility = {main:true, side:true, challenge:true, chest:true, key:true};
+  function updateMarkerVisibility() {
+    for (const group of markerOverlay.querySelectorAll('[data-marker-type]')) {
+      group.style.display = group.dataset.markerType === 'egg' || markerVisibility[group.dataset.markerType] ? '' : 'none';
+    }
+  }
+  for (const control of markerControls) control.addEventListener('change', () => {
+    markerVisibility[control.dataset.markerToggle] = control.checked;
+    updateMarkerVisibility();
+  });
+  function renderMapLayers(map) {
+    const layers = markerLayers.get(map.id);
+    markerOverlay.replaceChildren();
+    for (const control of markerControls) control.disabled = !layers;
+    viewerImage.src = layers ? map.cleanImage : map.image;
+    if (!layers) {
+      markerStatus.textContent = '標記圖層尚未載入，目前顯示完整地圖。';
+      return;
+    }
+    markerStatus.textContent = '蛋固定顯示；勾選其他標記即可開啟或關閉。';
+    markerOverlay.setAttribute('viewBox', `0 0 ${layers.width} ${layers.height}`);
+    const svgNS = 'http://www.w3.org/2000/svg';
+    for (const layer of layers.groups) {
+      const group = document.createElementNS(svgNS, 'g');
+      group.dataset.markerType = layer.type;
+      for (const item of layer.elements) {
+        if (!['image','title','path','rect','text'].includes(item.tag)) continue;
+        const element = document.createElementNS(svgNS, item.tag);
+        for (const [key,value] of Object.entries(item.attrs)) {
+          if (key.startsWith('on') || key === 'style') continue;
+          if (key === 'href' && !/^marker-icons\/[a-z]+-[a-f0-9]+\.webp$/.test(value)) continue;
+          element.setAttribute(key,value);
+        }
+        if (item.text) element.textContent = item.text;
+        group.append(element);
+      }
+      markerOverlay.append(group);
+    }
+    updateMarkerVisibility();
+  }
+  async function loadMarkerLayers() {
+    try {
+      const response = await fetch('marker-layers.json?v=15');
+      if (!response.ok) throw new Error('標記資料載入失敗');
+      const data = await response.json();
+      if (!Array.isArray(data.maps) || data.maps.length !== 30) throw new Error('標記資料不完整');
+      markerLayers = new Map(data.maps.map(map => [map.id,map]));
+      if (selectedMap && !viewer.hidden) renderMapLayers(selectedMap);
+    } catch (_) {
+      markerStatus.textContent = '標記圖層載入失敗，完整地圖仍可查看。';
+    }
+  }
+
   const radios = [...document.querySelectorAll('input[name="difficulty"]')];
   const gallery = document.getElementById('mapGallery');
   const galleryStatus = document.getElementById('galleryStatus');
@@ -63,7 +120,7 @@
     }
   }
   function clearMatch() {
-    requestId++; matching = false;
+    requestId++; matching = false; selectedMap = null;
     results.replaceChildren(); viewer.hidden = true; hudLink.hidden = true;
     viewerImage.removeAttribute('src');
     for (const card of gallery.querySelectorAll('.is-selected')) {
@@ -80,7 +137,7 @@
       card.setAttribute('aria-pressed', String(selected));
     }
     viewerTitle.textContent = `${map.difficultyLabel} · ${map.name}`;
-    viewerImage.src = map.image;
+    selectedMap = map; renderMapLayers(map);
     viewerImage.alt = `${map.difficultyLabel} ${map.name} 的完整標記地圖`;
     // The released HUD still has the old map pool; do not send it new IDs.
     hudLink.hidden = true; hudLink.removeAttribute('href');
@@ -428,7 +485,7 @@
     setStatus('這是輪廓比對的候選排序，不代表已確定是哪張地圖。');
     results.scrollIntoView({behavior:'smooth',block:'start'});
   };
-  document.getElementById('closeViewer').addEventListener('click',()=>{viewer.hidden=true;hudLink.hidden=true;viewerImage.removeAttribute('src');});
+  document.getElementById('closeViewer').addEventListener('click',()=>{selectedMap=null;viewer.hidden=true;hudLink.hidden=true;viewerImage.removeAttribute('src');});
   worker.onerror=()=>{matching=false;syncControls();setStatus('辨識程式暫時無法執行，請重新整理後再試。');};
-  syncControls(); loadMaps();
+  syncControls(); loadMaps(); loadMarkerLayers();
 })();
