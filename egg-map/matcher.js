@@ -30,7 +30,8 @@
   const captureSelectCanvas = document.getElementById('captureSelectCanvas');
   const captureContext = captureSelectCanvas.getContext('2d');
   const worker = new Worker('matcher-worker.js?v=13');
-  let zoom = 50;
+  const mapViewport = document.querySelector('.egg-full-map');
+  let zoom = 100;
   function setZoom(next, anchor = null) {
     const before = anchor ? mapCanvas.getBoundingClientRect() : null;
     const point = before && before.width && before.height ? {
@@ -38,7 +39,9 @@
       y: (anchor.y - before.top) / before.height
     } : null;
     zoom = Math.max(25, Math.min(300, next));
-    mapCanvas.style.width = `${zoom}%`;
+    const width=mapViewport.clientWidth,height=mapViewport.clientHeight;
+    const base=viewerImage.naturalWidth && width && height ? Math.min(width/viewerImage.naturalWidth,height/viewerImage.naturalHeight)*viewerImage.naturalWidth : width;
+    mapCanvas.style.width=`${Math.max(1,base)*zoom/100}px`;
     zoomLevel.value = `${Math.round(zoom)}%`;
     document.getElementById('zoomOut').disabled = zoom === 25;
     document.getElementById('zoomIn').disabled = zoom === 300;
@@ -51,7 +54,7 @@
   }
   document.getElementById('zoomOut').addEventListener('click', () => setZoom(zoom - 25));
   document.getElementById('zoomIn').addEventListener('click', () => setZoom(zoom + 25));
-  setZoom(50);
+  setZoom(100);
   let maps = [], difficulty = '', requestId = 0, matching = false, capturing = false;
   let selectedMap = null, markerLayers = new Map();
   const markerOverlay = document.getElementById('markerOverlay');
@@ -171,7 +174,7 @@
     viewerImage.alt = `${map.difficultyLabel} ${map.name} 的完整標記地圖`;
     // HUD v5 uses the same current map IDs and difficulty pools.
     hudLink.hidden = false; hudLink.href = `aniimo-egg-map://show/${id}`;
-    setZoom(50); viewer.hidden = false;
+    viewer.hidden = false; setZoom(100);
     document.querySelector('.egg-full-map').scrollTo(0, 0);
     if (selectedCard?.classList.contains('egg-result')) outcome.scrollIntoView({behavior:'instant',block:'start'});
     else viewer.scrollIntoView({behavior:'smooth',block:'start'});
@@ -222,8 +225,9 @@
       setStatus('地圖資料尚未載入，暫時無法比對。');
     }
   }
+  viewerImage.addEventListener('load',()=>{setZoom(zoom);if(zoom===100)mapViewport.scrollTo(0,0);});
+  if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>{if(!viewer.hidden)setZoom(zoom);}).observe(mapViewport);
   viewerImage.addEventListener('error', () => { viewerImage.alt = '地圖圖片載入失敗，請重新選擇或整理頁面。'; });
-  const mapViewport = document.querySelector('.egg-full-map');
   mapViewport.addEventListener('wheel', event => {
     if (viewer.hidden || !viewerImage.getAttribute('src') || event.ctrlKey || event.metaKey || !event.deltaY) return;
     const bounds = mapCanvas.getBoundingClientRect();

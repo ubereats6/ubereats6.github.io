@@ -186,3 +186,7 @@
 /* Keep zoom inside a stable viewport, instead of growing the viewer. */
 .egg-full-map{height:clamp(240px,60dvh,680px);max-height:none;overflow:auto;overscroll-behavior:contain}
 @media(max-width:650px){.egg-full-map{height:clamp(220px,55dvh,520px)}}
+
+/* Center fitted content in a stable viewport, including on first load. */
+.egg-full-map{display:flex;align-items:flex-start}
+.egg-map-canvas{flex:none;margin:auto;line-height:0}
