@@ -146,3 +146,14 @@
 .egg-marker-filters p{margin:9px 0 0;font-size:.75rem}
 @media(max-width:1000px){.egg-marker-options{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:420px){.egg-marker-options{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Keep the completed match and candidate choices in view. */
+.egg-match-outcome{scroll-margin-top:100px;outline:none;overflow-anchor:none}
+.egg-match-outcome h3{margin:20px 0 0;color:#eaf6ff;font-size:1rem}
+.egg-match-outcome h3[hidden]{display:none}
+.egg-match-outcome.is-matching .egg-results{min-height:120px}
+.egg-capture-advice{display:flex;align-items:flex-start;gap:11px;margin:14px 0;padding:13px 15px;border:1px solid rgba(223,186,99,.45);border-radius:11px;background:rgba(94,68,18,.16)}
+.egg-capture-advice>img{width:30px;height:30px;flex:none;object-fit:contain}
+.egg-capture-advice strong{color:#f1d794;font-size:.87rem}
+.egg-capture-advice p{margin:5px 0 0;color:#bdcede;font-size:.8rem;line-height:1.65}
+@media(min-width:651px){.egg-results{grid-template-columns:repeat(4,minmax(0,1fr))}}

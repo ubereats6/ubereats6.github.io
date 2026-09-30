@@ -6,6 +6,8 @@
   const ctx = canvas.getContext('2d');
   const status = document.getElementById('matchStatus');
   const results = document.getElementById('matchResults');
+  const outcome = document.getElementById('matchOutcome');
+  const resultsHeading = document.getElementById('resultsHeading');
   const viewer = document.getElementById('mapViewer');
   const viewerTitle = document.getElementById('viewerTitle');
   const viewerImage = document.getElementById('viewerImage');
@@ -119,7 +121,23 @@
         : '地圖資料尚未載入，請稍候或重新載入。';
     }
   }
+  function setOutcomeBusy(value) {
+    outcome.classList.toggle('is-matching',value);
+    outcome.setAttribute('aria-busy',String(value));
+  }
+  function revealCandidates(completedRequest) {
+    requestAnimationFrame(() => {
+      if (completedRequest !== requestId || !results.children.length) return;
+      // Focus must not trigger its own scroll; resolve coordinates after layout.
+      outcome.focus({preventScroll:true});
+      const header=document.querySelector('.site-header');
+      const headerHeight=header ? header.getBoundingClientRect().height : 0;
+      const top=Math.max(0,window.scrollY+outcome.getBoundingClientRect().top-headerHeight-20);
+      window.scrollTo({top,behavior:'instant'});
+    });
+  }
   function clearMatch() {
+    setOutcomeBusy(false); resultsHeading.hidden=true;
     requestId++; matching = false; selectedMap = null;
     results.replaceChildren(); viewer.hidden = true; hudLink.hidden = true;
     viewerImage.removeAttribute('src');
@@ -139,8 +157,8 @@
     viewerTitle.textContent = `${map.difficultyLabel} · ${map.name}`;
     selectedMap = map; renderMapLayers(map);
     viewerImage.alt = `${map.difficultyLabel} ${map.name} 的完整標記地圖`;
-    // The released HUD still has the old map pool; do not send it new IDs.
-    hudLink.hidden = true; hudLink.removeAttribute('href');
+    // HUD v5 uses the same current map IDs and difficulty pools.
+    hudLink.hidden = false; hudLink.href = `aniimo-egg-map://show/${id}`;
     setZoom(50); viewer.hidden = false;
     document.querySelector('.egg-full-map').scrollTo(0, 0);
     viewer.scrollIntoView({behavior:'smooth', block:'start'});
@@ -460,15 +478,16 @@
     try {
       const mask=getMask();
       requestId++; matching=true; syncControls();
+      setOutcomeBusy(true);resultsHeading.hidden=false;selectedMap=null;
       analyze.disabled=true;results.replaceChildren();viewer.hidden=true;hudLink.hidden=true;viewerImage.removeAttribute('src');
       setStatus('正在比對地圖輪廓，可能需要幾秒鐘…');
       worker.postMessage({type:'match',difficulty,requestId,...mask});
-    } catch(error){matching=false;syncControls();setStatus(error.message);}
+    } catch(error){matching=false;setOutcomeBusy(false);syncControls();setStatus(error.message);}
   }
   analyze.addEventListener('click', startMatching);
   worker.onmessage=({data})=>{
     if (data.requestId !== requestId || data.difficulty !== difficulty) return;
-    matching=false; syncControls();
+    matching=false; setOutcomeBusy(false); syncControls();
     if(data.type==='error'){setStatus(data.message);return;}
     if(!data.results.length){setStatus('沒有足夠的地圖線索，請換一張截圖。');return;}
     const cards=data.results.map((item,index)=>{
@@ -483,9 +502,9 @@
     });
     results.replaceChildren(...cards);
     setStatus('這是輪廓比對的候選排序，不代表已確定是哪張地圖。');
-    results.scrollIntoView({behavior:'smooth',block:'start'});
+    revealCandidates(data.requestId);
   };
   document.getElementById('closeViewer').addEventListener('click',()=>{selectedMap=null;viewer.hidden=true;hudLink.hidden=true;viewerImage.removeAttribute('src');});
-  worker.onerror=()=>{matching=false;syncControls();setStatus('辨識程式暫時無法執行，請重新整理後再試。');};
+  worker.onerror=()=>{matching=false;setOutcomeBusy(false);syncControls();setStatus('辨識程式暫時無法執行，請重新整理後再試。');};
   syncControls(); loadMaps(); loadMarkerLayers();
 })();
