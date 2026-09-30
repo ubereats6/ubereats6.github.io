@@ -131,7 +131,7 @@ function selectMap(id, keepCandidates=false) {
 function openMatcher() {
   if (workWin && !workWin.isDestroyed()) { workWin.webContents.send('restart-flow'); workWin.show(); workWin.focus(); return; }
   workWin = new BrowserWindow({
-    width:700,height:560,minWidth:560,minHeight:420,
+    width:700,height:560,minWidth:560,minHeight:420,frame:false,
     title:'伊莫搶蛋地圖辨識',icon:path.join(__dirname,'icon.ico'),
     backgroundColor:'#071426',autoHideMenuBar:true,
     webPreferences:{preload:path.join(__dirname,'preload.js'),contextIsolation:true,nodeIntegration:false,sandbox:true}
@@ -274,3 +274,6 @@ async function checkDatabase(){
 }
 ipcMain.handle('get-database',event=>{if(event.sender!==win?.webContents&&event.sender!==workWin?.webContents)throw Error('來源無效');return {...activeDatabase,status:databaseStatus};});
 ipcMain.handle('check-database',async event=>{if(event.sender!==win?.webContents&&event.sender!==workWin?.webContents)return;await checkDatabase();return databaseStatus;});
+
+ipcMain.on('matcher-minimize',event=>{if(event.sender===workWin?.webContents)workWin.minimize();});
+ipcMain.on('matcher-close',event=>{if(event.sender===workWin?.webContents)workWin.close();});

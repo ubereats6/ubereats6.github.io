@@ -12,6 +12,8 @@ contextBridge.exposeInMainWorld('mapHud', {
   openMatcher: () => ipcRenderer.send('open-matcher'),
   selectLiveSource: id => ipcRenderer.invoke('select-live-source',id),
   stopLiveSource: () => ipcRenderer.send('stop-live-source'),
+  minimizeMatcher: () => ipcRenderer.send('matcher-minimize'),
+  closeMatcher: () => ipcRenderer.send('matcher-close'),
   matcherStep: step => ipcRenderer.send('matcher-step',step),
   captureSources: () => ipcRenderer.invoke('capture-sources'),
   setDifficulty: value => ipcRenderer.send('set-difficulty',value),
