@@ -182,3 +182,7 @@
 .egg-workspace #matchOutcome.has-results .egg-status{margin-top:8px}
 .egg-workspace #matchOutcome .egg-results{margin-top:16px;gap:14px}
 @media(max-width:650px){.egg-workspace #matchOutcome.has-results{padding:14px;margin-block-start:18px}.egg-workspace #mapViewer{margin-block-start:26px;padding:15px}.egg-workspace #mapViewer .egg-viewer-head{align-items:flex-start;flex-wrap:wrap;padding-bottom:13px;margin-bottom:16px}.egg-workspace #matchOutcome .egg-results{gap:10px}}
+
+/* Keep zoom inside a stable viewport, instead of growing the viewer. */
+.egg-full-map{height:clamp(240px,60dvh,680px);max-height:none;overflow:auto;overscroll-behavior:contain}
+@media(max-width:650px){.egg-full-map{height:clamp(220px,55dvh,520px)}}
