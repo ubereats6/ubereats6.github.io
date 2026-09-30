@@ -5,7 +5,6 @@ const markerVisibility={main:true,side:true,challenge:true,chest:true,key:true};
 const image = document.getElementById('map');
 const mapArea = document.getElementById('mapArea');
 const mapZoom = document.getElementById('mapZoom');
-const panPad = document.getElementById('panPad');
 const zoomLevel = document.getElementById('zoomLevel');
 const empty = document.getElementById('empty');
 const title = document.getElementById('title');
@@ -40,7 +39,6 @@ function renderZoom() {
   }
   mapContent.style.transform=`translate(calc(-50% + ${pan.x}px), calc(-50% + ${pan.y}px)) scale(${zoom / 100})`;
   zoomLevel.value = `${zoom}%`;
-  panPad.hidden = zoom <= 100 || !image.classList.contains('ready');
   document.getElementById('zoomOut').disabled = zoom === 50;
   document.getElementById('zoomIn').disabled = zoom === 400;
 }
@@ -51,22 +49,13 @@ function setZoom(next) {
 document.getElementById('zoomOut').addEventListener('click', () => setZoom(zoom - 25));
 document.getElementById('zoomIn').addEventListener('click', () => setZoom(zoom + 25));
 document.getElementById('zoomReset').addEventListener('click', () => { zoom = 100; pan = {x:0,y:0}; renderZoom(); });
-function panBy(dx,dy) {
-  pan.x += dx;
-  pan.y += dy;
-  renderZoom();
-}
-document.getElementById('panUp').addEventListener('click', () => panBy(0,-48));
-document.getElementById('panDown').addEventListener('click', () => panBy(0,48));
-document.getElementById('panLeft').addEventListener('click', () => panBy(-48,0));
-document.getElementById('panRight').addEventListener('click', () => panBy(48,0));
 mapArea.addEventListener('wheel', event => {
   if (locked || !image.classList.contains('ready')) return;
   event.preventDefault();
   setZoom(zoom + (event.deltaY < 0 ? 25 : -25));
 }, {passive:false});
 mapArea.addEventListener('mousedown', event => {
-  if (locked || event.button !== 0 || !mapArea.classList.contains('can-pan') || event.target.closest('.map-zoom, .pan-pad')) return;
+  if (locked || event.button !== 0 || !mapArea.classList.contains('can-pan') || event.target.closest('.map-zoom')) return;
   event.preventDefault();
   panStart = {x:event.clientX,y:event.clientY,panX:pan.x,panY:pan.y};
   mapArea.classList.add('panning');
@@ -90,7 +79,6 @@ function showMap(id) {
   pan = {x:0,y:0};
   renderZoom();
   mapZoom.hidden = true;
-  panPad.hidden = true;
   title.textContent = `搶蛋地圖輔助 · ${mapIndex.get(id).difficultyLabel} · 地圖 ${id}`;title.title=title.textContent;image.alt=title.textContent;
   image.classList.remove('ready');
   empty.style.display = 'block';
@@ -106,7 +94,6 @@ image.addEventListener('load', () => {
 image.addEventListener('error', () => {
   image.classList.remove('ready');
   mapZoom.hidden = true;
-  panPad.hidden = true;
   empty.style.display = 'block';
   empty.textContent = `地圖 ${currentMap} 無法載入，請完整解壓縮下載包後再執行。`;
 });

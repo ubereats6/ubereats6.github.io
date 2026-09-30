@@ -89,7 +89,7 @@ $('upload').addEventListener('change',()=>{
 });
 function fitSize(){
  if(!canvas.width||!canvas.height)return;
- const fit=Math.min(Math.max(1,viewport.clientWidth)/canvas.width,Math.max(1,viewport.clientHeight)/canvas.height);
+ const fit=Math.max(1,viewport.clientWidth-2)/canvas.width;
  canvas.style.width=Math.max(1,canvas.width*fit*zoom/100)+'px';canvas.style.height=Math.max(1,canvas.height*fit*zoom/100)+'px';
  $('zoomLevel').value=Math.round(zoom)+'%';
 }

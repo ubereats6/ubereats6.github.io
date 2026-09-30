@@ -155,7 +155,7 @@ function toggleVisible() {
   updateTray();
 }
 function createTray() {
-  tray = new Tray(nativeImage.createFromPath(path.join(__dirname,'icon.ico')).resize({width:16,height:16}));
+  tray = new Tray(nativeImage.createFromPath(path.join(__dirname,'icon.ico')).resize({width:32,height:32}));
   tray.on('double-click', () => { win.show(); setLocked(false); });
   updateTray();
 }
