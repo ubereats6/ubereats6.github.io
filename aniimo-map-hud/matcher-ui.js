@@ -23,7 +23,7 @@ function showStep(next){
  for(const name of ['mode','door','source','crop'])$(name+'Step').hidden=next!==name;
  $('stepLabel').textContent='找地圖 / '+({mode:'選擇難度',door:'選擇出口方向',source:'選擷取來源',crop:'框選比對'}[next]);window.mapHud.matcherStep(next);controls();
 }
-function chooseMode(value){if(difficulty===value)return;difficulty=value;doorDirection='all';clearResults();modes.forEach(input=>input.checked=input.value===value);say('確認難度後，按「選門找圖」。');}
+function chooseMode(value){if(difficulty===value)return;difficulty=value;doorDirection='all';clearResults();modes.forEach(input=>input.checked=input.value===value);say('確認難度後，按「下一步」。');}
 modes.forEach(input=>input.addEventListener('change',()=>{window.mapHud.setDifficulty(input.value);chooseMode(input.value);}));
 window.mapHud.onRestart(()=>{clearResults();showStep('mode');say('請先確認這次搶蛋難度。');});
 window.mapHud.onState(state=>{if(state.difficulty&&modes.some(input=>input.value===state.difficulty))chooseMode(state.difficulty);});
