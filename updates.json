@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-10-01",
+    "type": "release",
+    "title": "伊莫搶蛋地圖辨識",
+    "description": "先選擇搶蛋難度，再用截圖找地圖；也可以直接瀏覽下方完整地圖",
+    "link": "https://ubereats6.github.io/egg-map/"
+  },
+  {
     "date": "2026-09-25",
     "type": "release",
     "title": "伊莫對戰屬性推薦",
