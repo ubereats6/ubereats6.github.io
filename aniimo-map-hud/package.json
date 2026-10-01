@@ -1,6 +1,6 @@
 {
   "name": "aniimo-egg-map-hud",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "private": true,
   "description": "Windows overlay for Aniimo egg-heist maps",
   "main": "main.js",

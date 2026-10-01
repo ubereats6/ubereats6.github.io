@@ -131,7 +131,7 @@ function selectMap(id, keepCandidates=false) {
 function openMatcher() {
   if (workWin && !workWin.isDestroyed()) { workWin.webContents.send('restart-flow'); workWin.show(); workWin.focus(); return; }
   workWin = new BrowserWindow({
-    width:700,height:380,minWidth:560,minHeight:340,frame:false,
+    width:620,height:300,minWidth:560,minHeight:280,frame:false,
     title:'伊莫搶蛋地圖辨識',icon:path.join(__dirname,'icon.ico'),
     backgroundColor:'#071426',autoHideMenuBar:true,
     webPreferences:{preload:path.join(__dirname,'preload.js'),contextIsolation:true,nodeIntegration:false,sandbox:true}
@@ -227,8 +227,8 @@ ipcMain.on('stop-live-source',event=>{if(event.sender===workWin?.webContents)pen
 ipcMain.on('matcher-step',(event,step)=>{
   if(event.sender!==workWin?.webContents || !['mode','door','source','crop'].includes(step))return;
   const area=screen.getDisplayMatching(workWin.getBounds()).workArea;
-  const size=step==='mode'?{w:700,h:380}:step==='door'?{w:940,h:890}:step==='source'?{w:820,h:650}:{w:960,h:820};
-  workWin.setMinimumSize(Math.min(step==='door'?900:560,area.width-24),Math.min(340,area.height-24));
+  const size=step==='mode'?{w:620,h:300}:step==='door'?{w:940,h:890}:step==='source'?{w:820,h:650}:{w:960,h:820};
+  workWin.setMinimumSize(Math.min(step==='door'?900:560,area.width-24),Math.min(step==='mode'?280:340,area.height-24));
   workWin.setSize(Math.min(size.w,area.width-24),Math.min(size.h,area.height-24));workWin.center();
 });
 ipcMain.on('choose-match', (event,id) => {

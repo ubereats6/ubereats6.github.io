@@ -4,7 +4,7 @@ Unicode true
  !error "Provide APP_DIR containing the complete Electron Windows app"
 !endif
 !ifndef OUTPUT_EXE
- !define OUTPUT_EXE "AniimoEggMapHUD-v17.exe"
+ !define OUTPUT_EXE "AniimoEggMapHUD-v18.exe"
 !endif
 Name "Aniimo Egg Map HUD"
 OutFile "${OUTPUT_EXE}"
@@ -18,9 +18,9 @@ Var AppPath
 Var Args
 Function .onInit
  SetShellVarContext current
- StrCpy $AppPath "$LOCALAPPDATA\AniimoEggMapHUD\app-v17"
+ StrCpy $AppPath "$LOCALAPPDATA\AniimoEggMapHUD\app-v18"
  ${GetParameters} $Args
- System::Call 'kernel32::CreateMutexW(p 0, i 0, w "Local\AniimoEggMapHUD-v17-Prepare") p .r0 ?e'
+ System::Call 'kernel32::CreateMutexW(p 0, i 0, w "Local\AniimoEggMapHUD-v18-Prepare") p .r0 ?e'
  Pop $1
  StrCmp $1 183 0 +2
  Quit
@@ -30,7 +30,7 @@ Section
  SetOutPath "$AppPath"
  File /r "${APP_DIR}/*"
  FileOpen $0 "$AppPath\ready.txt" w
- FileWrite $0 "v17"
+ FileWrite $0 "v18"
  FileClose $0
 ready:
  SetOutPath "$AppPath"

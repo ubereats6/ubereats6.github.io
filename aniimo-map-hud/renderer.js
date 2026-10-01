@@ -9,6 +9,13 @@ const zoomLevel = document.getElementById('zoomLevel');
 const empty = document.getElementById('empty');
 const title = document.getElementById('title');
 const candidateStrip = document.getElementById('candidates');
+const candidateSelect = document.getElementById('candidateSelect');
+const candidateCount = document.getElementById('candidateCount');
+let candidateIds = [], candidateSignature = '';
+candidateSelect.addEventListener('change', () => {
+  const id = Number(candidateSelect.value);
+  if (!locked && candidateIds.includes(id)) window.mapHud.selectCandidate(id);
+});
 const opacity = document.getElementById('opacity');
 const opacityValue = document.getElementById('opacityValue');
 const tip = document.getElementById('lockTip');
@@ -105,18 +112,22 @@ function showTip() {
 function applyState(state) {
   if(!mapIndex.size){pendingState=state;return;}
   showMap(state.mapId);
-  const ids=Array.isArray(state.candidates)?state.candidates:[];
-  candidateStrip.replaceChildren();
-  candidateStrip.hidden=!ids.length;
-  ids.forEach((id,index)=>{
-    const button=document.createElement('button');button.type='button';
-    const thumb=document.createElement('img');thumb.src=mapIndex.get(id).image;thumb.alt='';
-    const label=document.createElement('span');label.textContent=`${index+1} · 地圖 ${id}`;button.append(thumb,label);
-    button.classList.toggle('selected',id===state.mapId);
-    button.setAttribute('aria-pressed',String(id===state.mapId));
-    button.addEventListener('click',()=>window.mapHud.selectCandidate(id));
-    candidateStrip.append(button);
-  });
+  candidateIds = [...new Set(Array.isArray(state.candidates) ? state.candidates : [])].filter(id => mapIndex.has(id));
+  const signature = candidateIds.join(',');
+  if (signature !== candidateSignature) {
+    candidateSelect.replaceChildren();
+    for (const [index,id] of candidateIds.entries()) {
+      const option = document.createElement('option');
+      option.value = String(id);
+      option.textContent = `${index + 1} · 地圖 ${id}`;
+      candidateSelect.append(option);
+    }
+    candidateSignature = signature;
+  }
+  candidateSelect.value = candidateIds.includes(state.mapId) ? String(state.mapId) : '';
+  candidateSelect.disabled = state.locked || candidateIds.length < 2;
+  candidateStrip.hidden = candidateIds.length < 2;
+  candidateCount.textContent = `${candidateIds.length} 張`;
   opacity.value = String(Math.round(state.opacity * 100));
   opacityValue.value = `${opacity.value}%`;
   const changed = locked !== state.locked;
