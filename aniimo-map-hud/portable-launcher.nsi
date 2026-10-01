@@ -11,16 +11,22 @@ OutFile "${OUTPUT_EXE}"
 Icon "${APP_DIR}/resources/app/icon.ico"
 RequestExecutionLevel user
 SilentInstall silent
-SetCompressor /SOLID lzma
-SetCompressorDictSize 32
+AutoCloseWindow true
+ShowInstDetails nevershow
+Caption "正在啟動搶蛋地圖輔助"
+Page instfiles
+SetCompressor zlib
 SetOverwrite on
 Var AppPath
 Var Args
 Function .onInit
  SetShellVarContext current
- StrCpy $AppPath "$LOCALAPPDATA\AniimoEggMapHUD\app-v18-r2"
+ StrCpy $AppPath "$LOCALAPPDATA\AniimoEggMapHUD\app-v18-r3"
+ IfFileExists "$AppPath\ready.txt" initialized
+ SetSilent normal
+initialized:
  ${GetParameters} $Args
- System::Call 'kernel32::CreateMutexW(p 0, i 0, w "Local\AniimoEggMapHUD-v18-r2-Prepare") p .r0 ?e'
+ System::Call 'kernel32::CreateMutexW(p 0, i 0, w "Local\AniimoEggMapHUD-v18-r3-Prepare") p .r0 ?e'
  Pop $1
  StrCmp $1 183 0 +2
  Quit
@@ -28,9 +34,12 @@ FunctionEnd
 Section
  IfFileExists "$AppPath\ready.txt" ready
  SetOutPath "$AppPath"
+ ClearErrors
+ DetailPrint "首次啟動：正在準備程式，完成後會自動開啟。"
  File /r "${APP_DIR}/*"
+ IfErrors failed
  FileOpen $0 "$AppPath\ready.txt" w
- FileWrite $0 "v18-r2"
+ FileWrite $0 "v18-r3"
  FileClose $0
 ready:
  SetOutPath "$AppPath"
