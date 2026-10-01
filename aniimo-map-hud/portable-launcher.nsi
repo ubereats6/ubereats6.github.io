@@ -18,9 +18,9 @@ Var AppPath
 Var Args
 Function .onInit
  SetShellVarContext current
- StrCpy $AppPath "$LOCALAPPDATA\AniimoEggMapHUD\app-v18"
+ StrCpy $AppPath "$LOCALAPPDATA\AniimoEggMapHUD\app-v18-r2"
  ${GetParameters} $Args
- System::Call 'kernel32::CreateMutexW(p 0, i 0, w "Local\AniimoEggMapHUD-v18-Prepare") p .r0 ?e'
+ System::Call 'kernel32::CreateMutexW(p 0, i 0, w "Local\AniimoEggMapHUD-v18-r2-Prepare") p .r0 ?e'
  Pop $1
  StrCmp $1 183 0 +2
  Quit
@@ -30,7 +30,7 @@ Section
  SetOutPath "$AppPath"
  File /r "${APP_DIR}/*"
  FileOpen $0 "$AppPath\ready.txt" w
- FileWrite $0 "v18"
+ FileWrite $0 "v18-r2"
  FileClose $0
 ready:
  SetOutPath "$AppPath"
