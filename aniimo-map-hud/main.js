@@ -37,7 +37,6 @@ if (gotLock) {
   }
 
   app.on('second-instance', async (_event, commandLine) => {
-    await startupUpdate;
     const id = mapFromArgs(commandLine);
     if (id) selectMap(id);
     else if (win && !win.isDestroyed()) { win.show(); setLocked(false); }
@@ -134,7 +133,6 @@ function selectMap(id, keepCandidates=false) {
   updateTray();
 }
 async function openMatcher() {
-  await startupUpdate;
   if(quitting)return;
   if (workWin && !workWin.isDestroyed()) { workWin.webContents.send('restart-flow'); workWin.show(); workWin.focus(); return; }
   workWin = new BrowserWindow({
@@ -280,7 +278,7 @@ async function checkDatabase(){
  try{const result=await database.check(broadcastDatabase);if(!result.changed&&pendingDatabase){broadcastDatabase('地圖下載完成，關閉辨識視窗後套用');return;}if(result.changed&&result.data.version!==activeDatabase.version){if(workWin&&!workWin.isDestroyed()){pendingDatabase=result.data;broadcastDatabase('地圖下載完成，關閉辨識視窗後套用');}else activateDatabase(result.data);}else broadcastDatabase(`地圖已是最新 · ${manifest.maps.length} 張`);}
  catch(_){broadcastDatabase(`未能連線更新，沿用目前 ${manifest.maps.length} 張地圖`);}
 }
-ipcMain.handle('get-database',async event=>{if(event.sender!==win?.webContents&&event.sender!==workWin?.webContents)throw Error('來源無效');await startupUpdate;return {...activeDatabase,status:databaseStatus};});
+ipcMain.handle('get-database',async event=>{if(event.sender!==win?.webContents&&event.sender!==workWin?.webContents)throw Error('來源無效');return {...activeDatabase,status:databaseStatus};});
 ipcMain.handle('check-database',async event=>{if(event.sender!==win?.webContents&&event.sender!==workWin?.webContents)return;await startupUpdate;await checkDatabase();return databaseStatus;});
 
 ipcMain.on('matcher-minimize',event=>{if(event.sender===workWin?.webContents)workWin.minimize();});

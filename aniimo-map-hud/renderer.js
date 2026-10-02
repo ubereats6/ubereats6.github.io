@@ -189,7 +189,7 @@ function renderMarkers(id){
 for(const input of document.querySelectorAll('[data-marker-toggle]'))input.addEventListener('change',()=>{markerVisibility[input.dataset.markerToggle]=input.checked;renderMarkers(currentMap);});
 let databaseAssets='';
 const findMapButton=document.getElementById('match');
-findMapButton.disabled=true;findMapButton.textContent='更新地圖中…';
+findMapButton.disabled=true;findMapButton.textContent='載入地圖中…';
 document.getElementById('databaseCheck').disabled=true;
 window.mapHud.onDatabaseStatus(text=>{document.getElementById('databaseStatus').textContent=text;});
 document.getElementById('databaseCheck').addEventListener('click',async()=>{const button=document.getElementById('databaseCheck');button.disabled=true;try{await window.mapHud.checkDatabase();}finally{button.disabled=false;}});

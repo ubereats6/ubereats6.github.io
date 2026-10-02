@@ -4,11 +4,11 @@ Unicode true
  !error "Provide APP_DIR containing the complete Electron Windows app"
 !endif
 !ifndef OUTPUT_EXE
- !define OUTPUT_EXE "AniimoEggMapHUD-v18.exe"
+ !define OUTPUT_EXE "AniimoEggMapHUD-v20.exe"
 !endif
 Name "Aniimo Egg Map HUD"
 OutFile "${OUTPUT_EXE}"
-Icon "${APP_DIR}/resources/app/icon.ico"
+Icon "${ICON_FILE}"
 RequestExecutionLevel user
 SilentInstall silent
 AutoCloseWindow true
@@ -21,12 +21,12 @@ Var AppPath
 Var Args
 Function .onInit
  SetShellVarContext current
- StrCpy $AppPath "$LOCALAPPDATA\AniimoEggMapHUD\app-v18-r3"
+ StrCpy $AppPath "$LOCALAPPDATA\AniimoEggMapHUD\app-v20"
  IfFileExists "$AppPath\ready.txt" initialized
  SetSilent normal
 initialized:
  ${GetParameters} $Args
- System::Call 'kernel32::CreateMutexW(p 0, i 0, w "Local\AniimoEggMapHUD-v18-r3-Prepare") p .r0 ?e'
+ System::Call 'kernel32::CreateMutexW(p 0, i 0, w "Local\AniimoEggMapHUD-v20-Prepare") p .r0 ?e'
  Pop $1
  StrCmp $1 183 0 +2
  Quit
@@ -39,11 +39,11 @@ Section
  File /r "${APP_DIR}/*"
  IfErrors failed
  FileOpen $0 "$AppPath\ready.txt" w
- FileWrite $0 "v18-r3"
+ FileWrite $0 "v20"
  FileClose $0
 ready:
  SetOutPath "$AppPath"
- Exec '"$AppPath\AniimoEggMapHUD-Egg.exe" $Args'
+ Exec '"$AppPath\Aniimo Egg Map HUD.exe" $Args'
  IfErrors failed finished
 failed:
  MessageBox MB_ICONSTOP "Unable to start Aniimo Egg Map HUD. Please download the EXE again."

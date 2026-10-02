@@ -22,7 +22,7 @@ function clearResults(){requestId++;matching=false;results=[];choices.replaceChi
 function showStep(next){
  if(next!=='crop')stopLive();step=next;
  for(const name of ['mode','door','source','crop'])$(name+'Step').hidden=next!==name;
- $('stepLabel').textContent='找地圖 / '+({mode:'選擇難度',door:'選擇出口方向',source:'選擷取來源',crop:'框選比對'}[next]);window.mapHud.matcherStep(next);controls();
+ $('stepLabel').textContent='找地圖 / '+({mode:'選擇難度',door:'選擇藍門方向',source:'選擷取來源',crop:'框選比對'}[next]);window.mapHud.matcherStep(next);controls();
 }
 function chooseMode(value){if(difficulty===value)return;difficulty=value;doorDirection='all';clearResults();modes.forEach(input=>input.checked=input.value===value);say('確認難度後，按「下一步」。');}
 modes.forEach(input=>input.addEventListener('change',()=>{window.mapHud.setDifficulty(input.value);chooseMode(input.value);}));
@@ -61,7 +61,7 @@ async function loadSources(){
   say('直接點選遊戲視窗，下一步會顯示即時畫面。');
  }catch(e){say(e.message||'取得視窗失敗，請重試。');}finally{busy=false;controls();}
 }
-$('nextSource').addEventListener('click',()=>{renderDoors();showStep('door');say('選擇出口方向，縮小候選範圍。');});$('refreshSources').addEventListener('click',loadSources);
+$('nextSource').addEventListener('click',()=>{renderDoors();showStep('door');say('選擇藍門方向，縮小候選範圍。');});$('refreshSources').addEventListener('click',loadSources);
 $('backMode').addEventListener('click',()=>{clearResults();renderDoors();showStep('door');});
 $('backSources').addEventListener('click',loadSources);
 function stopLive(){
@@ -184,7 +184,7 @@ function maskFromCrop(){
  if(!difficulty||!image||!crop||matching)return;
  try{
   const data=maskFromCrop();clearResults();matching=true;controls();say(`正在比對目前 ${doorPool().length} 張門位置候選…`);
-  matchCandidateIds=doorPool().map(m=>m.id);if(!matchCandidateIds.length){matching=false;controls();say('此方向沒有候選，請回選門或選不知道出口方向。');return;}worker.postMessage({type:'match',candidateIds:matchCandidateIds,features:databaseFeatures,difficulty,requestId:++requestId,...data});
+  matchCandidateIds=doorPool().map(m=>m.id);if(!matchCandidateIds.length){matching=false;controls();say('此方向沒有候選，請回選門或選不知道藍門方向。');return;}worker.postMessage({type:'match',candidateIds:matchCandidateIds,features:databaseFeatures,difficulty,requestId:++requestId,...data});
  }catch(e){matching=false;controls();say(e.message);}
 }
 worker.onmessage=({data})=>{
