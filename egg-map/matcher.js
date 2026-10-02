@@ -102,7 +102,7 @@
   }
   async function loadMarkerLayers() {
     try {
-      const response = await fetch('marker-layers.json?v=15');
+      const response = await fetch('web-marker-layers.json?v=hud-compatible-20261002');
       if (!response.ok) throw new Error('標記資料載入失敗');
       const data = await response.json();
       if (!Array.isArray(data.maps) || !data.maps.length) throw new Error('標記資料不完整');
@@ -129,7 +129,7 @@
     document.getElementById('doorUnknown').disabled=!ready||capturing;document.getElementById('doorRefine').disabled=!ready||!doorPool().length||capturing;
     if (difficulty) {
       const label = radios.find(radio => radio.value === difficulty).nextElementSibling.firstChild.textContent;
-      const count = maps.filter(map => map.difficulty === difficulty).length;
+      const count = maps.filter(map => window.EggDoors.matches(map,difficulty)).length;
       document.getElementById('difficultyHint').textContent = ready
         ? `已選擇${label}，只比對此難度的 ${count} 張地圖。`
         : '地圖資料尚未載入，請稍候或重新載入。';
@@ -197,15 +197,17 @@
     viewerTitle.textContent = `${map.difficultyLabel} · ${map.name}`;
     selectedMap = map; renderMapLayers(map);
     viewerImage.alt = `${map.difficultyLabel} ${map.name} 的完整標記地圖`;
-    // HUD v5 uses the same current map IDs and difficulty pools.
-    hudLink.hidden = false; hudLink.href = `aniimo-egg-map://show/${id}`;
+    // Archived maps are website-only. Existing HUD uses separate chaos IDs.
+    const sourceDifficulty=selectedCard?.classList.contains('egg-gallery-card') ? document.querySelector('#galleryFilters [aria-pressed="true"]')?.dataset.difficulty : difficulty;
+    const hudId=map.difficulty==='nightmare'&&sourceDifficulty==='chaos'?id+1000:id;
+    hudLink.hidden = map.difficulty==='unused'; hudLink.href = `aniimo-egg-map://show/${hudId}`;
     viewer.hidden = false; setZoom(100);
     document.querySelector('.egg-full-map').scrollTo(0, 0);
     if (selectedCard?.classList.contains('egg-result')) outcome.scrollIntoView({behavior:'instant',block:'start'});
     else viewer.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function renderGallery(filter = 'all') {
-    const shown = maps.filter(map => filter === 'all' || map.difficulty === filter);
+    const shown = maps.filter(map => filter === 'all' || window.EggDoors.matches(map,filter));
     galleryCount.textContent = `${shown.length} 張地圖`;
     gallery.replaceChildren(...shown.map(map => {
       const card = document.createElement('button');
@@ -236,7 +238,7 @@
   });
   async function loadMaps() {
     try {
-      const response = await fetch('maps.json?v=13');
+      const response = await fetch('web-maps.json?v=hud-compatible-20261002');
       if (!response.ok) throw new Error('地圖資料載入失敗');
       const data = await response.json(); maps = data.maps;
       if (!Array.isArray(maps) || maps.length !== 30) throw new Error('地圖資料不完整');

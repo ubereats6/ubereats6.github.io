@@ -1,6 +1,6 @@
 let referencePromise;
 function references() {
-  if (!referencePromise) referencePromise = fetch('features.json?v=13').then(response => {
+  if (!referencePromise) referencePromise = fetch('web-features.json?v=hud-compatible-20261002').then(response => {
     if (!response.ok) throw new Error('地圖比對資料載入失敗');
     return response.json();
   }).then(items => items.map(item => {
@@ -79,9 +79,9 @@ function matchOne(ref, query) {
 self.onmessage = async ({data}) => {
   if (data.type !== 'match') return;
   try {
-    if (!['easy','hard','nightmare','chaos'].includes(data.difficulty)) throw new Error('請先選擇搶蛋地圖難度。');
+    if (!['easy','hard','nightmare','chaos','unused'].includes(data.difficulty)) throw new Error('請先選擇搶蛋地圖難度。');
     const allowed=Array.isArray(data.candidateIds)?new Set(data.candidateIds):null;
-    const refs = (await references()).filter(ref => ref.difficulty === data.difficulty && (!allowed || allowed.has(ref.id)));
+    const refs = (await references()).filter(ref => ref.difficulty === (data.difficulty==='chaos'?'nightmare':data.difficulty) && (!allowed || allowed.has(ref.id)));
     if (!refs.length) throw new Error('目前選擇的方向沒有可比對地圖，請改方向或選不知道出口方向。');
     const query = {w:data.w,h:data.h,pixels:new Uint8Array(data.pixels)};
     const results = refs.map(ref => ({id:ref.id,score:matchOne(ref,query)}))
