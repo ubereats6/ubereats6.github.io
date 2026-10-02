@@ -160,10 +160,13 @@ grip.addEventListener('pointermove', event => {
 grip.addEventListener('pointerup', () => { lastPoint=null; });
 grip.addEventListener('pointercancel', () => { lastPoint=null; });
 
+let portalRevealTimer;
 function renderMarkers(id){
+ clearTimeout(portalRevealTimer);
  markerOverlay.replaceChildren();const layer=layerIndex.get(id);if(!layer)return;
  markerOverlay.setAttribute('viewBox',`0 0 ${layer.width} ${layer.height}`);
  for(const group of layer.groups){
+  if(['main','side'].includes(group.type))continue;
   if(group.type!=='egg'&&markerVisibility[group.type]===false)continue;
   const g=document.createElementNS('http://www.w3.org/2000/svg','g');
   for(const item of group.elements){
@@ -178,6 +181,10 @@ function renderMarkers(id){
   }
   markerOverlay.append(g);
  }
+ markerOverlay.append(...window.MapPortals.groups(layer,databaseAssets,{scale:1.43,visibility:markerVisibility}));
+ portalRevealTimer=setTimeout(()=>{
+  for(const marker of markerOverlay.querySelectorAll('.portal-marker'))marker.classList.add('is-revealing');
+ },350);
 }
 for(const input of document.querySelectorAll('[data-marker-toggle]'))input.addEventListener('change',()=>{markerVisibility[input.dataset.markerToggle]=input.checked;renderMarkers(currentMap);});
 let databaseAssets='';

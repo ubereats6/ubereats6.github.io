@@ -1,3 +1,4 @@
+let portalAssetBase="";
 const $=id=>document.getElementById(id);
 const canvas=$('preview'),ctx=canvas.getContext('2d'),viewport=$('cropViewport');
 const video=$('captureVideo'),frameCanvas=document.createElement('canvas'),frameContext=frameCanvas.getContext('2d');
@@ -27,7 +28,7 @@ function chooseMode(value){if(difficulty===value)return;difficulty=value;doorDir
 modes.forEach(input=>input.addEventListener('change',()=>{window.mapHud.setDifficulty(input.value);chooseMode(input.value);}));
 window.mapHud.onRestart(()=>{clearResults();showStep('mode');say('請先確認這次搶蛋難度。');});
 window.mapHud.onState(state=>{if(state.difficulty&&modes.some(input=>input.value===state.difficulty))chooseMode(state.difficulty);});
-window.mapHud.getDatabase().then(data=>{doorLayers=new Map(data.layers.maps.map(m=>[m.id,m]));maps=new Map(data.manifest.maps.map(m=>[m.id,m]));databaseFeatures=data.features;for(const input of modes){const label=input.nextElementSibling?.querySelector('small');if(label)label.textContent=maps.size?`${data.manifest.maps.filter(m=>m.difficulty===input.value).length} 張地圖`:'';}controls();}).catch(()=>say('地圖資料載入失敗，請完整解壓縮下載包。'));
+window.mapHud.getDatabase().then(data=>{portalAssetBase=data.assetBase;const centerIcon=data.layers.maps.flatMap(m=>m.groups).find(g=>g.type==="main")?.elements.find(e=>e.tag==="image");if(centerIcon)document.querySelector(".door-center img").src=new URL(centerIcon.attrs.href,portalAssetBase).href;doorLayers=new Map(data.layers.maps.map(m=>[m.id,m]));maps=new Map(data.manifest.maps.map(m=>[m.id,m]));databaseFeatures=data.features;for(const input of modes){const label=input.nextElementSibling?.querySelector('small');if(label)label.textContent=maps.size?`${data.manifest.maps.filter(m=>m.difficulty===input.value).length} 張地圖`:'';}controls();}).catch(()=>say('地圖資料載入失敗，請完整解壓縮下載包。'));
 function doorPool(){return window.EggDoors.candidates([...maps.values()],doorLayers,difficulty,doorDirection);}
 function renderDoors(){
  const pool=doorPool();
@@ -36,7 +37,7 @@ function renderDoors(){
  $('doorStatus').textContent=`${pool.length} 張候選`;
  $('doorChoices').replaceChildren(...pool.map(map=>{
   const article=document.createElement('article');article.className='door-choice';
-  const preview=document.createElement('button');preview.type='button';preview.setAttribute('aria-label',`放大預覽地圖 ${map.id}`);const img=document.createElement('img');img.src=map.image;img.alt=`地圖 ${map.id}`;preview.append(img);
+  const preview=document.createElement('button');preview.type='button';preview.setAttribute('aria-label',`放大預覽地圖 ${map.id}`);const img=document.createElement('img');img.src=map.image;img.alt=`地圖 ${map.id}`;preview.append(img);window.MapPortals.thumbnail(preview,map,doorLayers.get(map.id),portalAssetBase);
   function enlarge(){$('previewTitle').textContent=`地圖 ${map.id}`;$('largeMap').src=map.image;previewDialog.showModal();}preview.addEventListener('click',enlarge);
   const title=document.createElement('strong');title.textContent=`地圖 ${map.id}`;const actions=document.createElement('div');actions.className='actions';const view=document.createElement('button');view.type='button';view.textContent='預覽';view.addEventListener('click',enlarge);
   const choose=document.createElement('button');choose.type='button';choose.className='primary';choose.textContent='使用';choose.addEventListener('click',()=>{window.mapHud.matchResults({difficulty,ids:pool.map(m=>m.id)});closeDialogs();stopLive();window.mapHud.chooseMatch(map.id);});
@@ -195,7 +196,7 @@ worker.onmessage=({data})=>{
  choices.replaceChildren(...results.map((item,index)=>{
   const article=document.createElement('article');article.className='candidate'+(index===0?' top':'');
   const preview=document.createElement('button');preview.type='button';preview.className='preview-button';preview.setAttribute('aria-label',`放大預覽地圖 ${item.id}`);
-  const thumb=document.createElement('img');thumb.src=maps.get(item.id).image;thumb.alt=`地圖 ${item.id} 縮圖`;preview.append(thumb);
+  const thumb=document.createElement('img');thumb.src=maps.get(item.id).image;thumb.alt=`地圖 ${item.id} 縮圖`;preview.append(thumb);window.MapPortals.thumbnail(preview,maps.get(item.id),doorLayers.get(item.id),portalAssetBase);
   const rank=document.createElement('small');rank.textContent=index===0?'候選 1 · 最相似':`候選 ${index+1}`;
   const title=document.createElement('strong');title.textContent=`地圖 ${item.id}`;const score=document.createElement('p');score.textContent=`輪廓分數 ${Math.min(100,Math.max(0,Math.round(item.score*100)))}`;
   const actions=document.createElement('div');actions.className='actions';const enlarge=document.createElement('button');enlarge.type='button';enlarge.textContent='放大預覽';
