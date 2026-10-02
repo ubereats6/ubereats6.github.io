@@ -70,7 +70,19 @@
     markerVisibility[control.dataset.markerToggle] = control.checked;
     updateMarkerVisibility();
   });
+  let doorAttentionTimer;
+  function highlightDoors() {
+    clearTimeout(doorAttentionTimer);
+    doorAttentionTimer=setTimeout(()=>{
+      for(const group of markerOverlay.querySelectorAll(".egg-portal-marker")){
+        group.classList.remove("is-revealing");
+        void group.getBoundingClientRect();
+        group.classList.add("is-revealing");
+      }
+    },400);
+  }
   function renderMapLayers(map) {
+    clearTimeout(doorAttentionTimer);
     const layers = markerLayers.get(map.id);
     markerOverlay.replaceChildren();
     for (const control of markerControls) control.disabled = !layers;
@@ -96,9 +108,26 @@
         if (item.text) element.textContent = item.text;
         group.append(element);
       }
+      if (['main','side'].includes(layer.type)) {
+        const icon=layer.elements.find(item=>item.tag==='image');
+        if(icon){
+          group.classList.add('egg-portal-marker',`egg-portal-${layer.type}`);
+          const {x,y,width,height}=icon.attrs;
+          const left=Number(x)-5,top=Number(y)-5,right=Number(x)+Number(width)+5,bottom=Number(y)+Number(height)+5;
+          const length=8;
+          const frame=document.createElementNS(svgNS,'path');
+          frame.classList.add('egg-portal-frame');
+          frame.setAttribute('d',`M ${left} ${top+length} V ${top} H ${left+length} M ${right-length} ${top} H ${right} V ${top+length} M ${right} ${bottom-length} V ${bottom} H ${right-length} M ${left+length} ${bottom} H ${left} V ${bottom-length}`);
+          frame.setAttribute('fill','none');frame.setAttribute('stroke-width','2');frame.setAttribute('stroke-linecap','round');
+          group.append(frame);
+        }
+      }
       markerOverlay.append(group);
     }
+    // Keep portal highlights above the other markers without moving their positions.
+    for(const group of markerOverlay.querySelectorAll('.egg-portal-marker'))markerOverlay.append(group);
     updateMarkerVisibility();
+    highlightDoors();
   }
   async function loadMarkerLayers() {
     try {
@@ -568,7 +597,7 @@
     setStatus(`已在門位置候選內完成二次比對，以下 ${cards.length} 張依輪廓排序，仍需自行確認。`);
     revealCandidates(data.requestId);
   };
-  document.getElementById('closeViewer').addEventListener('click',()=>{selectedMap=null;viewer.hidden=true;hudLink.hidden=true;viewerImage.removeAttribute('src');});
+  document.getElementById('closeViewer').addEventListener('click',()=>{clearTimeout(doorAttentionTimer);selectedMap=null;viewer.hidden=true;hudLink.hidden=true;viewerImage.removeAttribute('src');});
   worker.onerror=()=>{matching=false;setOutcomeBusy(false);syncControls();setStatus('辨識程式暫時無法執行，請重新整理後再試。');};
   syncControls(); loadMaps(); loadMarkerLayers();
 })();

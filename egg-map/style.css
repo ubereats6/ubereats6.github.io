@@ -200,3 +200,12 @@
 
 /* Compact hotkeys alongside the HUD title. */
 .egg-hud-title{display:flex;align-items:center;gap:18px;flex-wrap:wrap}.egg-hud-title h2{flex:none}.egg-hud-title .egg-hud-shortcuts{grid-column:auto;font-size:12px;line-height:1.6;color:#a9c3d9;margin:0}.egg-hud-title .egg-hud-shortcuts kbd{font-size:11px}@media(max-width:700px){.egg-hud-title{gap:4px 12px}.egg-hud-title h2{margin:6px 0}.egg-hud-title .egg-hud-shortcuts{font-size:11px}}
+
+/* Brief portal reveal when a full map opens. The center stays transparent. */
+.egg-portal-marker{transform-box:fill-box;transform-origin:center;animation:none}
+.egg-portal-main{--portal-glow:#ffd660;--portal-shadow:rgba(255,197,57,.65)}
+.egg-portal-side{--portal-glow:#66e5ff;--portal-shadow:rgba(54,192,255,.65)}
+.egg-portal-frame{stroke:var(--portal-glow);opacity:.88;filter:drop-shadow(0 0 2px var(--portal-shadow));pointer-events:none}
+.egg-portal-marker.is-revealing{animation:egg-portal-reveal 1.65s ease-out both}
+@keyframes egg-portal-reveal{0%{transform:scale(1)}20%{transform:scale(1.7)}38%{transform:scale(.94)}55%{transform:scale(1.23)}73%{transform:scale(.99)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.egg-portal-marker.is-revealing{animation:none}}
