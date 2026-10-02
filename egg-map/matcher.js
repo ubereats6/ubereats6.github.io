@@ -102,7 +102,7 @@
   }
   async function loadMarkerLayers() {
     try {
-      const response = await fetch('web-marker-layers.json?v=hud-compatible-20261002');
+      const response = await fetch('web-marker-layers.json?v=bright-portals-20261002');
       if (!response.ok) throw new Error('標記資料載入失敗');
       const data = await response.json();
       if (!Array.isArray(data.maps) || !data.maps.length) throw new Error('標記資料不完整');
@@ -238,9 +238,10 @@
   });
   async function loadMaps() {
     try {
-      const response = await fetch('web-maps.json?v=hud-compatible-20261002');
+      const response = await fetch('web-maps.json?v=bright-portals-20261002');
       if (!response.ok) throw new Error('地圖資料載入失敗');
       const data = await response.json(); maps = data.maps;
+      for(const map of maps)map.image += "?v=bright-portals-20261002";
       if (!Array.isArray(maps) || maps.length !== 30) throw new Error('地圖資料不完整');
       renderGallery(document.querySelector('#galleryFilters [aria-pressed="true"]').dataset.difficulty);
       syncControls();renderDoorChoices();
