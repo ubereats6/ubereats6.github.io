@@ -180,7 +180,7 @@
     }
     document.getElementById('doorUnknown').disabled=!ready||capturing;document.getElementById('doorUnknown').setAttribute('aria-pressed',String(doorDirection==='all'));
     document.getElementById('doorRefine').disabled=!ready||!pool.length||capturing;
-    document.getElementById('doorStatus').textContent=!ready?'先選擇上方難度。':!doorLayersReady?'門位置資料尚未載入，可先查看全部地圖或比對截圖。':`出口${doorDirection==='all'?'方向未指定':`在起點的${doorLabels[doorDirection]}`} · ${pool.length} 張候選，可直接挑選或再用截圖比對。`;
+    document.getElementById('doorStatus').textContent=!ready?'先選擇上方難度。':!doorLayersReady?'門位置資料尚未載入，可先查看全部地圖或比對截圖。':`藍門${doorDirection==='all'?'方向未指定':`在橙門的${doorLabels[doorDirection]}`} · ${pool.length} 張候選，可直接挑選或再用截圖比對。`;
     const container=document.getElementById('doorCandidates');container.replaceChildren(...pool.map(map=>{
       const button=document.createElement('button');button.type='button';button.className='egg-door-card';button.dataset.mapId=String(map.id);button.setAttribute('aria-pressed','false');
       const img=document.createElement('img');img.src=map.image;img.alt=`地圖 ${map.id} 候選預覽`;img.loading='lazy';
@@ -554,7 +554,7 @@
   function startMatching() {
     if (!difficulty) { setStatus('請先選擇搶蛋地圖難度。'); return; }
     if (!image || !maps.length || matching) return;
-    if(!doorPool().length){setStatus('目前方向沒有候選，請改方向或選不知道出口方向。');return;}
+    if(!doorPool().length){setStatus('目前方向沒有候選，請改方向或選不知道藍門方向。');return;}
     try {
       const mask=getMask();
       requestId++; matching=true; syncControls();
