@@ -81,6 +81,10 @@
       }
     },400);
   }
+  function portalDisplayAttrs(attrs) {
+    const width=Number(attrs.width),height=Number(attrs.height),scale=1.43;
+    return {...attrs,x:Number(attrs.x)-width*(scale-1)/2,y:Number(attrs.y)-height*(scale-1)/2,width:width*scale,height:height*scale};
+  }
   function renderMapLayers(map) {
     clearTimeout(doorAttentionTimer);
     const layers = markerLayers.get(map.id);
@@ -100,7 +104,8 @@
       for (const item of layer.elements) {
         if (!['image','title','path','rect','text'].includes(item.tag)) continue;
         const element = document.createElementNS(svgNS, item.tag);
-        for (const [key,value] of Object.entries(item.attrs)) {
+        const displayAttrs=item.tag==='image'&&['main','side'].includes(layer.type)?portalDisplayAttrs(item.attrs):item.attrs;
+        for (const [key,value] of Object.entries(displayAttrs)) {
           if (key.startsWith('on') || key === 'style') continue;
           if (key === 'href' && !/^marker-icons\/[a-z]+-[a-f0-9]+\.webp$/.test(value)) continue;
           element.setAttribute(key,value);
@@ -112,7 +117,7 @@
         const icon=layer.elements.find(item=>item.tag==='image');
         if(icon){
           group.classList.add('egg-portal-marker',`egg-portal-${layer.type}`);
-          const {x,y,width,height}=icon.attrs;
+          const {x,y,width,height}=portalDisplayAttrs(icon.attrs);
           const left=Number(x)-5,top=Number(y)-5,right=Number(x)+Number(width)+5,bottom=Number(y)+Number(height)+5;
           const length=8;
           const frame=document.createElementNS(svgNS,'path');
