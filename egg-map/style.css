@@ -209,3 +209,9 @@
 .egg-portal-marker.is-revealing{animation:egg-portal-reveal 1.65s ease-out both}
 @keyframes egg-portal-reveal{0%{transform:scale(1)}20%{transform:scale(1.7)}38%{transform:scale(.94)}55%{transform:scale(1.23)}73%{transform:scale(.99)}100%{transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.egg-portal-marker.is-revealing{animation:none}}
+
+/* Larger portal candidates: two equal columns, with prominent portal overlays. */
+.egg-door-candidates{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.egg-door-preview{position:relative;height:clamp(260px,28vw,370px);background:#020914;border-radius:7px;overflow:hidden}
+.egg-door-card .egg-door-preview img{height:100%;width:100%;object-fit:contain}
+@media(max-width:650px){.egg-door-candidates{grid-template-columns:1fr}.egg-door-preview{height:260px}}

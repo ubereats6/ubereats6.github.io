@@ -184,7 +184,7 @@
     const container=document.getElementById('doorCandidates');container.replaceChildren(...pool.map(map=>{
       const button=document.createElement('button');button.type='button';button.className='egg-door-card';button.dataset.mapId=String(map.id);button.setAttribute('aria-pressed','false');
       const img=document.createElement('img');img.src=map.image;img.alt=`地圖 ${map.id} 候選預覽`;img.loading='lazy';
-      const title=document.createElement('strong');title.textContent=`地圖 ${map.id}`;const hint=document.createElement('span');hint.textContent='查看完整地圖';button.append(img,title,hint);
+      const title=document.createElement('strong');title.textContent=`地圖 ${map.id}`;const hint=document.createElement('span');hint.textContent='查看完整地圖';const stage=document.createElement('div');stage.className='egg-door-preview';stage.append(img);window.MapPortals.thumbnail(stage,map,markerLayers.get(map.id),new URL('.',location.href).href);button.append(stage,title,hint);
       button.addEventListener('click',()=>showMap(map.id,button));return button;
     }));
   }

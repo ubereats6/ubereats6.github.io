@@ -1,0 +1,9 @@
+.portal-preview{position:relative}
+.portal-thumbnail{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.portal-marker{transform-box:fill-box;transform-origin:center}
+.portal-main{--portal-color:#ffd660;--portal-shadow:rgba(255,197,57,.7)}
+.portal-side{--portal-color:#66e5ff;--portal-shadow:rgba(54,192,255,.7)}
+.portal-frame{stroke:var(--portal-color);opacity:.92;filter:drop-shadow(0 0 2px var(--portal-shadow));pointer-events:none}
+.portal-marker.is-revealing{animation:portal-reveal 1.65s ease-out both}
+@keyframes portal-reveal{0%{transform:scale(1)}20%{transform:scale(1.7)}38%{transform:scale(.94)}55%{transform:scale(1.23)}73%{transform:scale(.99)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.portal-marker.is-revealing{animation:none}}
