@@ -20,3 +20,17 @@
 @media(max-width:980px){.team-site-header{width:calc(100% - 28px)}}
 @media(max-width:760px){.team-site-header{width:calc(100% - 24px);height:64px;padding-left:10px}.team-brand{min-width:0;gap:9px}.team-brand img{width:42px;height:42px;flex-basis:42px}.team-brand strong{font-size:.98rem}.team-brand small{display:none}main{padding-top:98px}}
 @media(max-width:720px){.team-site-header{top:10px}.team-menu-button{display:grid;gap:4px;border:0;background:transparent;padding:10px}.team-menu-button span{width:22px;height:2px;background:#c8d8eb}.team-site-nav{position:absolute;left:0;right:0;top:calc(100% + 8px);padding:18px;display:none;flex-direction:column;gap:22px;border:1px solid #438ff538;border-radius:14px;background:rgba(1,9,24,.96)}.team-site-nav.open{display:flex}.team-tool-hero{margin-top:0}}
+
+/* Exact Tools page widths, spacing, typography and hero proportions. */
+main{width:min(1240px,calc(100% - 40px));max-width:none;margin:0 auto;padding:150px 0 90px}
+.team-site-header{background:rgba(1,9,24,.72);font-family:Inter,"Noto Sans TC",sans-serif;box-shadow:0 18px 45px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.035)}
+.team-brand strong{font-family:Inter,"Noto Sans TC",sans-serif}.team-site-nav a[aria-current=page]{color:#52d7ff}
+.team-tool-hero{margin:0 0 36px;padding:76px clamp(26px,6vw,78px);border:1px solid rgba(76,160,255,.25);border-radius:26px;background:radial-gradient(circle at 80% 30%,rgba(31,134,255,.24),transparent 30%),linear-gradient(130deg,rgba(7,29,66,.93),rgba(3,11,28,.96));box-shadow:0 32px 80px rgba(0,0,0,.35),inset 0 1px rgba(255,255,255,.04)}
+.team-tool-hero:before{right:-80px;top:-30px;width:430px;height:230px;transform:rotate(-8deg);opacity:.5;mask-image:none;background:repeating-linear-gradient(165deg,transparent 0 15px,rgba(71,154,255,.20) 16px 18px,transparent 19px 34px)}
+.team-tool-hero h1{font-family:Inter,"Noto Sans TC",AniimoCard,sans-serif;margin:10px 0 14px;font-size:clamp(3rem,8vw,6rem);line-height:.95;letter-spacing:-.065em;font-weight:900;font-style:italic}
+.team-tool-hero>p:last-child{font-family:Inter,"Noto Sans TC",AniimoCard,sans-serif;font-size:16px;max-width:650px;color:#95aac3;margin:0;line-height:1.8}
+@media(max-width:760px){.team-brand strong{font-size:.98rem}}
+@media(max-width:650px){.team-tool-hero h1{font-size:clamp(1.9rem,8vw,2.8rem);line-height:1.25;letter-spacing:-.035em;overflow-wrap:anywhere}}
+@media(max-width:640px){main{width:calc(100% - 28px);padding:122px 0 90px}.team-tool-hero{margin-bottom:24px}}
+
+.actions>.primary{display:block;width:100%;margin-bottom:12px}.actions>.pair{gap:12px}.actions>#status{margin-top:16px}
