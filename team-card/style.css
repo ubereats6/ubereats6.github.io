@@ -4,3 +4,12 @@
 .design-choices{display:grid;gap:9px;margin:16px 0}.design-choices button{display:grid;grid-template-columns:36px 1fr;grid-template-rows:auto auto;text-align:left;column-gap:10px;padding:13px}.design-choices button>span{grid-row:1/3;align-self:center;font-size:28px;text-align:center}.design-choices strong{font-size:14px}.design-choices small{font-size:11px;color:#91aabd;margin-top:5px}.design-choices button[data-design=cute]{background:linear-gradient(120deg,#392b42,#192d40);border-color:#664a68}.design-choices button[data-design=tech]{background:linear-gradient(120deg,#093340,#0c1b31)}.design-choices button[aria-pressed=true]{outline:2px solid #9de4ed;outline-offset:1px}.design-choices button[aria-pressed=true] small{color:#b1d9e7}
 
 .back-tools{color:#a8e6ff;text-decoration:none;font-size:13px;white-space:nowrap}.page-view-counter{margin-top:14px}.page-view-counter img{display:inline-block}header{flex-wrap:wrap;gap:12px}
+
+/* Site tool heading: scoped to preserve editor and exported card designs. */
+.team-tool-hero{position:relative;isolation:isolate;overflow:hidden;margin:28px 0 26px;padding:76px 78px;border:1px solid #214b76;border-radius:24px;background:radial-gradient(ellipse at 76% 0%,#12325c80,transparent 65%),linear-gradient(125deg,#0b2245,#030d1d);box-shadow:inset 0 1px 0 #ffffff04}
+.team-tool-hero:before{content:"";position:absolute;z-index:-1;pointer-events:none;right:-40px;top:-55px;width:400px;height:260px;transform:rotate(-23deg);background:repeating-linear-gradient(0deg,transparent 0 27px,#245e9840 28px 30px);mask-image:linear-gradient(to bottom,#000,transparent)}
+.team-tool-hero .eyebrow{font-size:12px;letter-spacing:2px;font-weight:900;color:#45d8fa;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.hero-beta{font-size:10px;letter-spacing:1.2px;border:1px solid #3b7293;border-radius:5px;padding:3px 7px;color:#a5dced}
+.team-tool-hero h1{font-family:AniimoCard,Inter,"Noto Sans TC","Microsoft JhengHei",sans-serif;font-size:clamp(42px,6.3vw,88px);font-weight:900;font-style:italic;line-height:1.14;letter-spacing:-.045em;margin:0 0 20px;color:#f0f7ff}
+.team-tool-hero>p:last-child{font-size:14px;color:#93acc5;line-height:1.8;max-width:900px}
+@media(max-width:650px){.team-tool-hero{margin-top:20px;padding:35px 24px;border-radius:19px}.team-tool-hero h1{font-size:clamp(30px,8.5vw,48px);line-height:1.25;overflow-wrap:anywhere;letter-spacing:-.035em}.team-tool-hero>p:last-child{font-size:13px}.team-tool-hero:before{opacity:.6;right:-130px}}
