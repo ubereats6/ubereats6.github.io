@@ -31,12 +31,12 @@
   },
   {
     "id": "04",
-    "category": "FUTURE TOOL",
-    "title": "工具欄位預留",
-    "description": "未來可直接擴充，不需要重新調整網站導覽架構。",
-    "buttonText": "COMING SOON",
-    "url": "",
-    "status": "coming-soon",
+    "category": "ANIIMO TOOL · BETA",
+    "title": "伊莫隊伍名片",
+    "description": "選擇四隻伊莫，填入隊伍定位與培養資訊，搭配能力雷達圖，下載專屬隊伍名片。",
+    "buttonText": "OPEN TOOL",
+    "url": "team-card/index.html",
+    "status": "available",
     "newTab": false
   }
 ]
