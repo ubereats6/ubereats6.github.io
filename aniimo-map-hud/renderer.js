@@ -145,25 +145,27 @@ opacity.addEventListener('input', () => {
 document.getElementById('lock').addEventListener('click', () => window.mapHud.setLocked(true));
 document.getElementById('match').addEventListener('click', () => window.mapHud.openMatcher());
 document.getElementById('hide').addEventListener('click', () => window.mapHud.hide());
-const grip = document.getElementById('resizeGrip');
-let resizePointer = null;
+const resizeHandles = document.querySelectorAll('[data-resize-edge]');
+let resizeDrag = null;
 function finishResize() {
-  if (resizePointer === null) return;
-  const pointer = resizePointer;
-  resizePointer = null;
+  if (!resizeDrag) return;
+  const {handle, pointer} = resizeDrag;
+  resizeDrag = null;
   window.mapHud.endResize();
-  if (grip.hasPointerCapture(pointer)) grip.releasePointerCapture(pointer);
+  if (handle.hasPointerCapture(pointer)) handle.releasePointerCapture(pointer);
 }
-grip.addEventListener('pointerdown', event => {
-  if (event.button !== 0) return;
-  event.preventDefault();
-  resizePointer = event.pointerId;
-  grip.setPointerCapture(event.pointerId);
-  window.mapHud.startResize();
-});
-grip.addEventListener('pointerup', finishResize);
-grip.addEventListener('pointercancel', finishResize);
-grip.addEventListener('lostpointercapture', finishResize);
+for (const handle of resizeHandles) {
+  handle.addEventListener('pointerdown', event => {
+    if (event.button !== 0 || document.body.classList.contains('locked')) return;
+    event.preventDefault(); event.stopPropagation();
+    resizeDrag = {handle, pointer:event.pointerId};
+    handle.setPointerCapture(event.pointerId);
+    window.mapHud.startResize(handle.dataset.resizeEdge);
+  });
+  handle.addEventListener('pointerup', finishResize);
+  handle.addEventListener('pointercancel', finishResize);
+  handle.addEventListener('lostpointercapture', finishResize);
+}
 window.addEventListener('blur', finishResize);
 
 let portalRevealTimer;

@@ -7,7 +7,7 @@ contextBridge.exposeInMainWorld('mapHud', {
   onState: callback => ipcRenderer.on('map-state', (_event,state) => callback(state)),
   setOpacity: value => ipcRenderer.send('set-opacity',value),
   setLocked: locked => ipcRenderer.send('set-locked',locked),
-  startResize: () => ipcRenderer.send('resize-start'),
+  startResize: edge => ipcRenderer.send('resize-start',edge),
   endResize: () => ipcRenderer.send('resize-end'),
   hide: () => ipcRenderer.send('hide-hud'),
   openMatcher: () => ipcRenderer.send('open-matcher'),

@@ -100,7 +100,7 @@ function createWindow() {
   win = new BrowserWindow({
     ...initialBounds(), minWidth:MIN_WIDTH, minHeight:MIN_HEIGHT,
     frame:false, transparent:true, backgroundColor:'#00000000', alwaysOnTop:true,
-    resizable:true, movable:true, show:false, skipTaskbar:false,
+    resizable:false, maximizable:false, movable:true, show:false, skipTaskbar:false,
     opacity:state.opacity,
     icon:path.join(__dirname,'icon.ico'),
     webPreferences:{preload:path.join(__dirname,'preload.js'),contextIsolation:true,nodeIntegration:false,sandbox:true}
@@ -205,7 +205,8 @@ function stopResize() {
   if (resizeTimer) clearInterval(resizeTimer);
   resizeTimer = null;
 }
-ipcMain.on('resize-start', event => {
+ipcMain.on('resize-start', (event, edge) => {
+  if (!['n','s','e','w','ne','nw','se','sw'].includes(edge)) return;
   if (event.sender !== win?.webContents || !win || win.isDestroyed() || state.locked) return;
   stopResize();
   const origin = screen.getCursorScreenPoint();
@@ -216,10 +217,13 @@ ipcMain.on('resize-start', event => {
       stopResize(); return;
     }
     const point = screen.getCursorScreenPoint();
-    const width = Math.max(MIN_WIDTH, bounds.width + point.x - origin.x);
-    const height = Math.max(MIN_HEIGHT, bounds.height + point.y - origin.y);
+    const dx = point.x - origin.x, dy = point.y - origin.y;
+    const width = Math.max(MIN_WIDTH, bounds.width + (edge.includes('w') ? -dx : edge.includes('e') ? dx : 0));
+    const height = Math.max(MIN_HEIGHT, bounds.height + (edge.includes('n') ? -dy : edge.includes('s') ? dy : 0));
+    const next = {x: edge.includes('w') ? bounds.x + bounds.width - width : bounds.x,
+      y: edge.includes('n') ? bounds.y + bounds.height - height : bounds.y, width, height};
     const current = win.getBounds();
-    if (current.width !== width || current.height !== height) win.setSize(width, height, false);
+    if (Object.keys(next).some(key => current[key] !== next[key])) win.setBounds(next, false);
   }, 16);
 });
 ipcMain.on('resize-end', event => {
