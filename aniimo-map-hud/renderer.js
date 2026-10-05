@@ -146,19 +146,25 @@ document.getElementById('lock').addEventListener('click', () => window.mapHud.se
 document.getElementById('match').addEventListener('click', () => window.mapHud.openMatcher());
 document.getElementById('hide').addEventListener('click', () => window.mapHud.hide());
 const grip = document.getElementById('resizeGrip');
-let lastPoint = null;
+let resizePointer = null;
+function finishResize() {
+  if (resizePointer === null) return;
+  const pointer = resizePointer;
+  resizePointer = null;
+  window.mapHud.endResize();
+  if (grip.hasPointerCapture(pointer)) grip.releasePointerCapture(pointer);
+}
 grip.addEventListener('pointerdown', event => {
-  lastPoint = {x:event.screenX,y:event.screenY};
+  if (event.button !== 0) return;
+  event.preventDefault();
+  resizePointer = event.pointerId;
   grip.setPointerCapture(event.pointerId);
+  window.mapHud.startResize();
 });
-grip.addEventListener('pointermove', event => {
-  if (!lastPoint) return;
-  const next={x:event.screenX,y:event.screenY};
-  window.mapHud.resizeBy({x:next.x-lastPoint.x,y:next.y-lastPoint.y});
-  lastPoint=next;
-});
-grip.addEventListener('pointerup', () => { lastPoint=null; });
-grip.addEventListener('pointercancel', () => { lastPoint=null; });
+grip.addEventListener('pointerup', finishResize);
+grip.addEventListener('pointercancel', finishResize);
+grip.addEventListener('lostpointercapture', finishResize);
+window.addEventListener('blur', finishResize);
 
 let portalRevealTimer;
 function renderMarkers(id){

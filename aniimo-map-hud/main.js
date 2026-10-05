@@ -112,6 +112,9 @@ function createWindow() {
   win.webContents.on('did-finish-load', sendState);
   win.loadFile(path.join(__dirname,'overlay.html'));
   win.once('ready-to-show', () => { win.showInactive(); setLocked(state.locked); });
+  win.on('blur', stopResize);
+  win.on('hide', stopResize);
+  win.on('closed', stopResize);
   win.on('move', saveSettings);
   win.on('resize', saveSettings);
   win.on('close', event => {
@@ -148,6 +151,7 @@ async function openMatcher() {
   workWin.on('closed',() => { workWin=null;pendingCaptureId=null;allowedSources.clear();if(pendingDatabase)activateDatabase(pendingDatabase); });
 }
 function setLocked(value) {
+  stopResize();
   state.locked = Boolean(value);
   if (win && !win.isDestroyed()) {
     win.setIgnoreMouseEvents(state.locked,{forward:true});
@@ -194,10 +198,32 @@ ipcMain.on('set-opacity', (_event,value) => {
   saveSettings();
 });
 ipcMain.on('set-locked', (_event,value) => setLocked(value));
-ipcMain.on('resize-delta', (_event,delta) => {
-  if (!win || state.locked || !delta || !Number.isFinite(delta.x) || !Number.isFinite(delta.y)) return;
-  const {width,height}=win.getBounds();
-  win.setSize(Math.max(MIN_WIDTH,width+Math.round(delta.x)),Math.max(MIN_HEIGHT,height+Math.round(delta.y)));
+// Read desktop cursor coordinates in the main process. Resizing a transparent
+// window must not depend on pointermove coordinates from its moving corner.
+let resizeTimer = null;
+function stopResize() {
+  if (resizeTimer) clearInterval(resizeTimer);
+  resizeTimer = null;
+}
+ipcMain.on('resize-start', event => {
+  if (event.sender !== win?.webContents || !win || win.isDestroyed() || state.locked) return;
+  stopResize();
+  const origin = screen.getCursorScreenPoint();
+  const bounds = win.getBounds();
+  const started = Date.now();
+  resizeTimer = setInterval(() => {
+    if (!win || win.isDestroyed() || state.locked || Date.now() - started > 30000) {
+      stopResize(); return;
+    }
+    const point = screen.getCursorScreenPoint();
+    const width = Math.max(MIN_WIDTH, bounds.width + point.x - origin.x);
+    const height = Math.max(MIN_HEIGHT, bounds.height + point.y - origin.y);
+    const current = win.getBounds();
+    if (current.width !== width || current.height !== height) win.setSize(width, height, false);
+  }, 16);
+});
+ipcMain.on('resize-end', event => {
+  if (event.sender === win?.webContents) { stopResize(); saveSettings(); }
 });
 ipcMain.on('hide-hud', toggleVisible);
 ipcMain.on('open-matcher',event => { if (event.sender===win?.webContents) openMatcher(); });
