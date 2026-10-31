@@ -1,6 +1,6 @@
 let referencePromise;
 function references() {
-  if (!referencePromise) referencePromise = fetch('web-features.json?v=hud-compatible-20261002').then(response => {
+  if (!referencePromise) referencePromise = fetch('web-features.json?v=shared12-20261031-v1').then(response => {
     if (!response.ok) throw new Error('地圖比對資料載入失敗');
     return response.json();
   }).then(items => items.map(item => {

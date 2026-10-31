@@ -90,7 +90,7 @@
     const layers = markerLayers.get(map.id);
     markerOverlay.replaceChildren();
     for (const control of markerControls) control.disabled = !layers;
-    viewerImage.src = layers ? map.cleanImage : map.image;
+    viewerImage.src = layers ? map.cleanImage+'?v=shared12-20261031-v1' : map.image;
     if (!layers) {
       markerStatus.textContent = '標記圖層尚未載入，目前顯示完整地圖。';
       return;
@@ -136,7 +136,7 @@
   }
   async function loadMarkerLayers() {
     try {
-      const response = await fetch('web-marker-layers.json?v=bright-portals-20261002');
+      const response = await fetch('web-marker-layers.json?v=shared12-20261031-v1');
       if (!response.ok) throw new Error('標記資料載入失敗');
       const data = await response.json();
       if (!Array.isArray(data.maps) || !data.maps.length) throw new Error('標記資料不完整');
@@ -272,11 +272,11 @@
   });
   async function loadMaps() {
     try {
-      const response = await fetch('web-maps.json?v=bright-portals-20261002');
+      const response = await fetch('web-maps.json?v=shared12-20261031-v1');
       if (!response.ok) throw new Error('地圖資料載入失敗');
       const data = await response.json(); maps = data.maps;
-      for(const map of maps)map.image += "?v=bright-portals-20261002";
-      if (!Array.isArray(maps) || maps.length !== 30) throw new Error('地圖資料不完整');
+      for(const map of maps)map.image += "?v=shared12-20261031-v1";
+      if (!Array.isArray(maps) || maps.length < 30) throw new Error('地圖資料不完整');
       renderGallery(document.querySelector('#galleryFilters [aria-pressed="true"]').dataset.difficulty);
       syncControls();renderDoorChoices();
     } catch (error) {
