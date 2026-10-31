@@ -178,6 +178,17 @@
       "image": "maps/hard/50.webp"
     },
     {
+      "id": 31,
+      "name": "地圖 31",
+      "difficulty": "nightmare",
+      "difficultyLabel": "噩夢",
+      "sourceLayout": "layout31",
+      "width": 860,
+      "height": 641,
+      "cleanImage": "clean-maps/nightmare/31.webp",
+      "image": "maps/nightmare/31.webp"
+    },
+    {
       "id": 32,
       "name": "地圖 32",
       "difficulty": "nightmare",
@@ -187,6 +198,17 @@
       "height": 639,
       "cleanImage": "clean-maps/nightmare/32.webp",
       "image": "maps/nightmare/32.webp"
+    },
+    {
+      "id": 33,
+      "name": "地圖 33",
+      "difficulty": "nightmare",
+      "difficultyLabel": "噩夢",
+      "sourceLayout": "layout33",
+      "width": 860,
+      "height": 641,
+      "cleanImage": "clean-maps/nightmare/33.webp",
+      "image": "maps/nightmare/33.webp"
     },
     {
       "id": 34,
@@ -233,6 +255,17 @@
       "image": "maps/nightmare/37.webp"
     },
     {
+      "id": 38,
+      "name": "地圖 38",
+      "difficulty": "nightmare",
+      "difficultyLabel": "噩夢",
+      "sourceLayout": "layout38",
+      "width": 860,
+      "height": 641,
+      "cleanImage": "clean-maps/nightmare/38.webp",
+      "image": "maps/nightmare/38.webp"
+    },
+    {
       "id": 39,
       "name": "地圖 39",
       "difficulty": "nightmare",
@@ -255,6 +288,39 @@
       "image": "maps/nightmare/40.webp"
     },
     {
+      "id": 61,
+      "name": "地圖 61",
+      "difficulty": "nightmare",
+      "difficultyLabel": "噩夢",
+      "sourceLayout": "layout61",
+      "width": 860,
+      "height": 641,
+      "cleanImage": "clean-maps/nightmare/61.webp",
+      "image": "maps/nightmare/61.webp"
+    },
+    {
+      "id": 62,
+      "name": "地圖 62",
+      "difficulty": "nightmare",
+      "difficultyLabel": "噩夢",
+      "sourceLayout": "layout62",
+      "width": 860,
+      "height": 641,
+      "cleanImage": "clean-maps/nightmare/62.webp",
+      "image": "maps/nightmare/62.webp"
+    },
+    {
+      "id": 1031,
+      "name": "地圖 31",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
+      "sourceLayout": "layout31",
+      "width": 860,
+      "height": 641,
+      "cleanImage": "clean-maps/nightmare/31.webp",
+      "image": "maps/nightmare/31.webp"
+    },
+    {
       "id": 1032,
       "name": "地圖 32",
       "difficulty": "chaos",
@@ -264,6 +330,17 @@
       "height": 639,
       "cleanImage": "clean-maps/nightmare/32.webp",
       "image": "maps/nightmare/32.webp"
+    },
+    {
+      "id": 1033,
+      "name": "地圖 33",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
+      "sourceLayout": "layout33",
+      "width": 860,
+      "height": 641,
+      "cleanImage": "clean-maps/nightmare/33.webp",
+      "image": "maps/nightmare/33.webp"
     },
     {
       "id": 1034,
@@ -310,6 +387,17 @@
       "image": "maps/nightmare/37.webp"
     },
     {
+      "id": 1038,
+      "name": "地圖 38",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
+      "sourceLayout": "layout38",
+      "width": 860,
+      "height": 641,
+      "cleanImage": "clean-maps/nightmare/38.webp",
+      "image": "maps/nightmare/38.webp"
+    },
+    {
       "id": 1039,
       "name": "地圖 39",
       "difficulty": "chaos",
@@ -332,43 +420,10 @@
       "image": "maps/nightmare/40.webp"
     },
     {
-      "id": 31,
-      "name": "地圖 31",
-      "difficulty": "nightmare",
-      "difficultyLabel": "噩夢",
-      "sourceLayout": "layout31",
-      "width": 860,
-      "height": 641,
-      "cleanImage": "clean-maps/nightmare/31.webp",
-      "image": "maps/nightmare/31.webp"
-    },
-    {
-      "id": 33,
-      "name": "地圖 33",
-      "difficulty": "nightmare",
-      "difficultyLabel": "噩夢",
-      "sourceLayout": "layout33",
-      "width": 860,
-      "height": 641,
-      "cleanImage": "clean-maps/nightmare/33.webp",
-      "image": "maps/nightmare/33.webp"
-    },
-    {
-      "id": 38,
-      "name": "地圖 38",
-      "difficulty": "nightmare",
-      "difficultyLabel": "噩夢",
-      "sourceLayout": "layout38",
-      "width": 860,
-      "height": 641,
-      "cleanImage": "clean-maps/nightmare/38.webp",
-      "image": "maps/nightmare/38.webp"
-    },
-    {
-      "id": 61,
+      "id": 1061,
       "name": "地圖 61",
-      "difficulty": "nightmare",
-      "difficultyLabel": "噩夢",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
       "sourceLayout": "layout61",
       "width": 860,
       "height": 641,
@@ -376,10 +431,10 @@
       "image": "maps/nightmare/61.webp"
     },
     {
-      "id": 62,
+      "id": 1062,
       "name": "地圖 62",
-      "difficulty": "nightmare",
-      "difficultyLabel": "噩夢",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
       "sourceLayout": "layout62",
       "width": 860,
       "height": 641,

@@ -1,21 +1,21 @@
 {
   "schema": 1,
-  "version": "f38949ea03a51c5fe1208866",
+  "version": "861a4190748f7c42a6ccd5ae",
   "files": [
     {
       "path": "maps.json",
-      "bytes": 9746,
-      "sha256": "378b4f13278451c01dc464620d954597a55ae71aa32a225c706acf189f55cd57"
+      "bytes": 11191,
+      "sha256": "a8c0bd1440d76f4601fd5ea4304116be6ac6a8f48c4dcaa0dd04c74e031f81a2"
     },
     {
       "path": "features.json",
-      "bytes": 35852,
-      "sha256": "a9ac543c484c6dc6214d07beebe64af4ab69a03964e11c9df90999f7f988bfdf"
+      "bytes": 45147,
+      "sha256": "d2176f1a1a4428df259a1074c1c180baf0c0f8dabbf9313fa8d91ae21fcff43e"
     },
     {
       "path": "marker-layers.json",
-      "bytes": 374150,
-      "sha256": "8cae4164b88059264865c70a58c598174608f076c7c06b9a956f1b2e5a739368"
+      "bytes": 440152,
+      "sha256": "28358c9d936dff5e54800342f8e3f1084410a02eeb4ef2db73a4a4ea37de17c6"
     },
     {
       "path": "maps/chaos/31.webp",
