@@ -189,32 +189,10 @@
       "image": "maps/nightmare/31.webp"
     },
     {
-      "id": 1031,
-      "name": "地圖 31",
-      "difficulty": "chaos",
-      "difficultyLabel": "渾沌",
-      "sourceLayout": "layout31",
-      "width": 860,
-      "height": 641,
-      "cleanImage": "clean-maps/chaos/31.webp",
-      "image": "maps/chaos/31.webp"
-    },
-    {
       "id": 32,
       "name": "地圖 32",
       "difficulty": "nightmare",
       "difficultyLabel": "噩夢",
-      "sourceLayout": "layout32",
-      "width": 857,
-      "height": 639,
-      "cleanImage": "clean-maps/nightmare/32.webp",
-      "image": "maps/nightmare/32.webp"
-    },
-    {
-      "id": 1032,
-      "name": "地圖 32",
-      "difficulty": "chaos",
-      "difficultyLabel": "渾沌",
       "sourceLayout": "layout32",
       "width": 857,
       "height": 639,
@@ -233,32 +211,10 @@
       "image": "maps/nightmare/33.webp"
     },
     {
-      "id": 1033,
-      "name": "地圖 33",
-      "difficulty": "chaos",
-      "difficultyLabel": "渾沌",
-      "sourceLayout": "layout33",
-      "width": 860,
-      "height": 641,
-      "cleanImage": "clean-maps/chaos/33.webp",
-      "image": "maps/chaos/33.webp"
-    },
-    {
       "id": 34,
       "name": "地圖 34",
       "difficulty": "nightmare",
       "difficultyLabel": "噩夢",
-      "sourceLayout": "layout34",
-      "width": 857,
-      "height": 637,
-      "cleanImage": "clean-maps/nightmare/34.webp",
-      "image": "maps/nightmare/34.webp"
-    },
-    {
-      "id": 1034,
-      "name": "地圖 34",
-      "difficulty": "chaos",
-      "difficultyLabel": "渾沌",
       "sourceLayout": "layout34",
       "width": 857,
       "height": 637,
@@ -277,32 +233,10 @@
       "image": "maps/nightmare/35.webp"
     },
     {
-      "id": 1035,
-      "name": "地圖 35",
-      "difficulty": "chaos",
-      "difficultyLabel": "渾沌",
-      "sourceLayout": "layout35",
-      "width": 857,
-      "height": 645,
-      "cleanImage": "clean-maps/nightmare/35.webp",
-      "image": "maps/nightmare/35.webp"
-    },
-    {
       "id": 36,
       "name": "地圖 36",
       "difficulty": "nightmare",
       "difficultyLabel": "噩夢",
-      "sourceLayout": "layout36",
-      "width": 853,
-      "height": 637,
-      "cleanImage": "clean-maps/nightmare/36.webp",
-      "image": "maps/nightmare/36.webp"
-    },
-    {
-      "id": 1036,
-      "name": "地圖 36",
-      "difficulty": "chaos",
-      "difficultyLabel": "渾沌",
       "sourceLayout": "layout36",
       "width": 853,
       "height": 637,
@@ -321,17 +255,6 @@
       "image": "maps/nightmare/37.webp"
     },
     {
-      "id": 1037,
-      "name": "地圖 37",
-      "difficulty": "chaos",
-      "difficultyLabel": "渾沌",
-      "sourceLayout": "layout37",
-      "width": 854,
-      "height": 640,
-      "cleanImage": "clean-maps/nightmare/37.webp",
-      "image": "maps/nightmare/37.webp"
-    },
-    {
       "id": 38,
       "name": "地圖 38",
       "difficulty": "nightmare",
@@ -343,32 +266,10 @@
       "image": "maps/nightmare/38.webp"
     },
     {
-      "id": 1038,
-      "name": "地圖 38",
-      "difficulty": "chaos",
-      "difficultyLabel": "渾沌",
-      "sourceLayout": "layout38",
-      "width": 860,
-      "height": 641,
-      "cleanImage": "clean-maps/chaos/38.webp",
-      "image": "maps/chaos/38.webp"
-    },
-    {
       "id": 39,
       "name": "地圖 39",
       "difficulty": "nightmare",
       "difficultyLabel": "噩夢",
-      "sourceLayout": "layout39",
-      "width": 858,
-      "height": 635,
-      "cleanImage": "clean-maps/nightmare/39.webp",
-      "image": "maps/nightmare/39.webp"
-    },
-    {
-      "id": 1039,
-      "name": "地圖 39",
-      "difficulty": "chaos",
-      "difficultyLabel": "渾沌",
       "sourceLayout": "layout39",
       "width": 858,
       "height": 635,
@@ -387,17 +288,6 @@
       "image": "maps/nightmare/40.webp"
     },
     {
-      "id": 1040,
-      "name": "地圖 40",
-      "difficulty": "chaos",
-      "difficultyLabel": "渾沌",
-      "sourceLayout": "layout40",
-      "width": 861,
-      "height": 644,
-      "cleanImage": "clean-maps/nightmare/40.webp",
-      "image": "maps/nightmare/40.webp"
-    },
-    {
       "id": 61,
       "name": "地圖 61",
       "difficulty": "nightmare",
@@ -409,17 +299,6 @@
       "image": "maps/nightmare/61.webp"
     },
     {
-      "id": 1061,
-      "name": "地圖 61",
-      "difficulty": "chaos",
-      "difficultyLabel": "渾沌",
-      "sourceLayout": "layout61",
-      "width": 860,
-      "height": 641,
-      "cleanImage": "clean-maps/chaos/61.webp",
-      "image": "maps/chaos/61.webp"
-    },
-    {
       "id": 62,
       "name": "地圖 62",
       "difficulty": "nightmare",
@@ -429,6 +308,127 @@
       "height": 641,
       "cleanImage": "clean-maps/nightmare/62.webp",
       "image": "maps/nightmare/62.webp"
+    },
+    {
+      "id": 1031,
+      "name": "地圖 31",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
+      "sourceLayout": "layout31",
+      "width": 860,
+      "height": 641,
+      "cleanImage": "clean-maps/chaos/31.webp",
+      "image": "maps/chaos/31.webp"
+    },
+    {
+      "id": 1032,
+      "name": "地圖 32",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
+      "sourceLayout": "layout32",
+      "width": 857,
+      "height": 639,
+      "cleanImage": "clean-maps/nightmare/32.webp",
+      "image": "maps/nightmare/32.webp"
+    },
+    {
+      "id": 1033,
+      "name": "地圖 33",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
+      "sourceLayout": "layout33",
+      "width": 860,
+      "height": 641,
+      "cleanImage": "clean-maps/chaos/33.webp",
+      "image": "maps/chaos/33.webp"
+    },
+    {
+      "id": 1034,
+      "name": "地圖 34",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
+      "sourceLayout": "layout34",
+      "width": 857,
+      "height": 637,
+      "cleanImage": "clean-maps/nightmare/34.webp",
+      "image": "maps/nightmare/34.webp"
+    },
+    {
+      "id": 1035,
+      "name": "地圖 35",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
+      "sourceLayout": "layout35",
+      "width": 857,
+      "height": 645,
+      "cleanImage": "clean-maps/nightmare/35.webp",
+      "image": "maps/nightmare/35.webp"
+    },
+    {
+      "id": 1036,
+      "name": "地圖 36",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
+      "sourceLayout": "layout36",
+      "width": 853,
+      "height": 637,
+      "cleanImage": "clean-maps/nightmare/36.webp",
+      "image": "maps/nightmare/36.webp"
+    },
+    {
+      "id": 1037,
+      "name": "地圖 37",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
+      "sourceLayout": "layout37",
+      "width": 854,
+      "height": 640,
+      "cleanImage": "clean-maps/nightmare/37.webp",
+      "image": "maps/nightmare/37.webp"
+    },
+    {
+      "id": 1038,
+      "name": "地圖 38",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
+      "sourceLayout": "layout38",
+      "width": 860,
+      "height": 641,
+      "cleanImage": "clean-maps/chaos/38.webp",
+      "image": "maps/chaos/38.webp"
+    },
+    {
+      "id": 1039,
+      "name": "地圖 39",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
+      "sourceLayout": "layout39",
+      "width": 858,
+      "height": 635,
+      "cleanImage": "clean-maps/nightmare/39.webp",
+      "image": "maps/nightmare/39.webp"
+    },
+    {
+      "id": 1040,
+      "name": "地圖 40",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
+      "sourceLayout": "layout40",
+      "width": 861,
+      "height": 644,
+      "cleanImage": "clean-maps/nightmare/40.webp",
+      "image": "maps/nightmare/40.webp"
+    },
+    {
+      "id": 1061,
+      "name": "地圖 61",
+      "difficulty": "chaos",
+      "difficultyLabel": "渾沌",
+      "sourceLayout": "layout61",
+      "width": 860,
+      "height": 641,
+      "cleanImage": "clean-maps/chaos/61.webp",
+      "image": "maps/chaos/61.webp"
     },
     {
       "id": 1062,
