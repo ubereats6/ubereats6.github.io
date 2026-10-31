@@ -4,7 +4,7 @@
     {
       "id": "easy",
       "label": "簡單",
-      "count": 8
+      "count": 7
     },
     {
       "id": "hard",
@@ -99,17 +99,6 @@
       "height": 645,
       "cleanImage": "clean-maps/easy/59.webp",
       "image": "maps/easy/59.webp"
-    },
-    {
-      "id": 60,
-      "name": "地圖 60",
-      "difficulty": "easy",
-      "difficultyLabel": "簡單",
-      "sourceLayout": "layout60",
-      "width": 859,
-      "height": 640,
-      "cleanImage": "clean-maps/easy/60.webp",
-      "image": "maps/easy/60.webp"
     },
     {
       "id": 41,

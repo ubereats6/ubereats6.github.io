@@ -90,7 +90,7 @@
     const layers = markerLayers.get(map.id);
     markerOverlay.replaceChildren();
     for (const control of markerControls) control.disabled = !layers;
-    viewerImage.src = layers ? map.cleanImage+'?v=shared12-20261031-v1' : map.image;
+    viewerImage.src = layers ? map.cleanImage+'?v=shared12-archive60-v2' : map.image;
     if (!layers) {
       markerStatus.textContent = '標記圖層尚未載入，目前顯示完整地圖。';
       return;
@@ -136,7 +136,7 @@
   }
   async function loadMarkerLayers() {
     try {
-      const response = await fetch('web-marker-layers.json?v=shared12-20261031-v1');
+      const response = await fetch('web-marker-layers.json?v=shared12-archive60-v2');
       if (!response.ok) throw new Error('標記資料載入失敗');
       const data = await response.json();
       if (!Array.isArray(data.maps) || !data.maps.length) throw new Error('標記資料不完整');
@@ -170,7 +170,7 @@
     }
   }
   const doorLabels={N:'上方',NE:'右上',E:'右側',SE:'右下',S:'下方',SW:'左下',W:'左側',NW:'左上'};
-  function doorPool(){return window.EggDoors.candidates(maps,markerLayers,difficulty,doorDirection).sort((a,b)=>a.id-b.id);}
+  function doorPool(){return window.EggDoors.candidates(maps,markerLayers,difficulty,doorDirection);}
   function renderDoorChoices(){
     const ready=Boolean(difficulty&&maps.length),pool=doorPool();
     for(const button of document.querySelectorAll('[data-door-direction]')){
@@ -241,7 +241,7 @@
     else viewer.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function renderGallery(filter = 'all') {
-    const shown = maps.filter(map => filter === 'all' || window.EggDoors.matches(map,filter)).sort((a,b)=>a.id-b.id);
+    const shown = maps.filter(map => filter === 'all' || window.EggDoors.matches(map,filter));
     galleryCount.textContent = `${shown.length} 張地圖`;
     gallery.replaceChildren(...shown.map(map => {
       const card = document.createElement('button');
@@ -272,10 +272,10 @@
   });
   async function loadMaps() {
     try {
-      const response = await fetch('web-maps.json?v=shared12-20261031-v1');
+      const response = await fetch('web-maps.json?v=shared12-archive60-v2');
       if (!response.ok) throw new Error('地圖資料載入失敗');
       const data = await response.json(); maps = data.maps;
-      for(const map of maps)map.image += "?v=shared12-20261031-v1";
+      for(const map of maps)map.image += "?v=shared12-archive60-v2";
       if (!Array.isArray(maps) || maps.length < 30) throw new Error('地圖資料不完整');
       renderGallery(document.querySelector('#galleryFilters [aria-pressed="true"]').dataset.difficulty);
       syncControls();renderDoorChoices();
