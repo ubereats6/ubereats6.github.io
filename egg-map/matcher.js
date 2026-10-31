@@ -170,7 +170,7 @@
     }
   }
   const doorLabels={N:'上方',NE:'右上',E:'右側',SE:'右下',S:'下方',SW:'左下',W:'左側',NW:'左上'};
-  function doorPool(){return window.EggDoors.candidates(maps,markerLayers,difficulty,doorDirection);}
+  function doorPool(){return window.EggDoors.candidates(maps,markerLayers,difficulty,doorDirection).sort((a,b)=>a.id-b.id);}
   function renderDoorChoices(){
     const ready=Boolean(difficulty&&maps.length),pool=doorPool();
     for(const button of document.querySelectorAll('[data-door-direction]')){
@@ -241,7 +241,7 @@
     else viewer.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function renderGallery(filter = 'all') {
-    const shown = maps.filter(map => filter === 'all' || window.EggDoors.matches(map,filter));
+    const shown = maps.filter(map => filter === 'all' || window.EggDoors.matches(map,filter)).sort((a,b)=>a.id-b.id);
     galleryCount.textContent = `${shown.length} 張地圖`;
     gallery.replaceChildren(...shown.map(map => {
       const card = document.createElement('button');
